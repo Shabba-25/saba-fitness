@@ -15,13 +15,13 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0d0d0d;
-      --surface: #161616;
-      --surface2: #1e1e1e;
-      --border: #242424;
+      --bg: #1a1a2e;
+      --surface: #252540;
+      --surface2: #2e2e50;
+      --border: #3a3a60;
       --text: #f0ede6;
-      --muted: #888;
-      --dim: #555;
+      --muted: #aaa;
+      --dim: #888;
       --orange: #e8500a;
       --orange-light: #ff7a3d;
       --blue: #0a7ae8;
@@ -36,7 +36,7 @@
     /* HEADER */
     #header {
       position: sticky; top: 0; z-index: 100;
-      background: #111;
+      background: #14142a;
       border-bottom: 2px solid var(--surface2);
       padding: 20px 20px 14px;
     }
@@ -47,7 +47,7 @@
     /* BOTTOM NAV */
     #bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-      background: #111; border-top: 1px solid var(--surface2);
+      background: #14142a; border-top: 1px solid var(--surface2);
       display: flex;
     }
     .nav-btn {
@@ -161,7 +161,7 @@
     .warmup-detail { font-size: 12px; color: var(--dim); margin-top: 1px; }
 
     /* RECOVERY CARD */
-    .recovery-card { background: #0e1418; border: 1px solid #1a2a35; border-radius: 12px; padding: 16px 18px; margin-top: 8px; display: flex; gap: 14px; align-items: center; }
+    .recovery-card { background: #1a2a3a; border: 1px solid #2a3a55; border-radius: 12px; padding: 16px 18px; margin-top: 8px; display: flex; gap: 14px; align-items: center; }
     .recovery-card .rec-icon { font-size: 28px; }
     .recovery-title { font-size: 13px; color: #88aacc; font-weight: 700; }
     .recovery-sub { font-size: 12px; color: var(--dim); margin-top: 3px; }
@@ -299,17 +299,7 @@
     </div>
   </div>
 
-  <div class="card" id="warmup-card">
-    <div class="card-label">Warm-Up</div>
-    <div class="warmup-item">
-      <div class="warmup-dot"></div>
-      <div><div class="warmup-text">5 min light treadmill walk</div><div class="warmup-detail">2.8 mph, flat</div></div>
-    </div>
-    <div class="warmup-item" style="margin-bottom:0">
-      <div class="warmup-dot"></div>
-      <div><div class="warmup-text">Hip Circles</div><div class="warmup-detail">Hold power tower · 10 each direction, slow</div></div>
-    </div>
-  </div>
+  <div id="warmup-list"></div>
 
   <div class="complete-banner" id="complete-banner">
     <div class="cb-title">🔥 Session Complete!</div>
@@ -386,7 +376,10 @@ const SEED = [
   { date: 'Apr 07', weight: 193.0, note: 'Post soccer' },
 ];
 
-function loadWeights() {
+const WARMUP = [
+  { name: 'Treadmill Walk', sets: '5 mins', reps: '2.8 mph, flat', icon: '🚶', cue: 'Easy pace — this wakes up your joints, not your muscles. Keep it genuinely light. This is preparation, not exercise.' },
+  { name: 'Hip Circles', sets: '2 rounds', reps: '10 each direction', icon: '🔄', cue: 'Hold the power tower for balance. Slow, controlled circles — feel the hip socket open up. Clockwise 10, then counter-clockwise 10. Your left hip especially needs this.' },
+];
   try { const s = localStorage.getItem(STORAGE_KEY); return s ? JSON.parse(s) : [...SEED]; } catch { return [...SEED]; }
 }
 function saveWeights(data) {
@@ -429,6 +422,7 @@ const WORKOUTS = {
 
 let currentWorkout = 'A';
 let completedExercises = {}; // index -> bool for current session
+let completedWarmup = {};
 let sessionSaved = false;
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
@@ -466,6 +460,7 @@ function setScreen(name) {
 function setWorkout(key) {
   currentWorkout = key;
   completedExercises = {};
+  completedWarmup = {};
   sessionSaved = false;
   document.getElementById('complete-banner').classList.remove('show');
   document.getElementById('tab-a').className = 'tab-btn' + (key === 'A' ? ' active-a' : '');
@@ -482,24 +477,25 @@ function toggleExercise(idx) {
 
 function checkSessionComplete() {
   const w = WORKOUTS[currentWorkout];
-  const total = w.exercises.length;
-  const done = Object.values(completedExercises).filter(Boolean).length;
-  if (done === total && !sessionSaved) {
+  const total = WARMUP.length + w.exercises.length;
+  const doneWu = Object.values(completedWarmup).filter(Boolean).length;
+  const doneEx = w.exercises.filter((_, i) => completedExercises[i]).length;
+  if ((doneWu + doneEx) === total && !sessionSaved) {
     saveSession();
   }
 }
 
 function saveSession() {
   const w = WORKOUTS[currentWorkout];
+  const doneWu = WARMUP.map((_, i) => !!completedWarmup[i]);
   const completedArr = w.exercises.map((_, i) => !!completedExercises[i]);
   const session = {
-    id: Date.now(),
-    timestamp: Date.now(),
-    date: todayStr(),
+    id: Date.now(), timestamp: Date.now(), date: todayStr(),
     workout: currentWorkout,
+    warmup: doneWu,
     completed: completedArr,
-    total: w.exercises.length,
-    doneCount: completedArr.filter(Boolean).length
+    total: WARMUP.length + w.exercises.length,
+    doneCount: doneWu.filter(Boolean).length + completedArr.filter(Boolean).length
   };
   sessions = [session, ...sessions];
   saveSessions(sessions);
@@ -517,17 +513,68 @@ function toggleExpand(idx) {
   if (!open) { body.classList.add('open'); chevron.textContent = '▲'; }
 }
 
+function toggleWarmup(idx) {
+  completedWarmup[idx] = !completedWarmup[idx];
+  renderExercises();
+  checkSessionComplete();
+}
+
+function toggleWarmupExpand(idx) {
+  const body = document.getElementById('wu-body-' + idx);
+  const chevron = document.getElementById('wu-chev-' + idx);
+  const open = body.classList.contains('open');
+  document.querySelectorAll('.ex-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('[id^="wu-chev-"],[id^="chev-"]').forEach(c => c.textContent = '▼');
+  if (!open) { body.classList.add('open'); chevron.textContent = '▲'; }
+}
+
 function renderExercises() {
   const w = WORKOUTS[currentWorkout];
-  const total = w.exercises.length;
-  const done = w.exercises.filter((_, i) => completedExercises[i]).length;
+  const totalEx = w.exercises.length;
+  const totalWu = WARMUP.length;
+  const total = totalWu + totalEx;
+  const doneWu = Object.values(completedWarmup).filter(Boolean).length;
+  const doneEx = w.exercises.filter((_, i) => completedExercises[i]).length;
+  const done = doneWu + doneEx;
+
   document.getElementById('session-label').textContent = done + ' / ' + total;
-  const fillPct = (done / total) * 100;
-  document.getElementById('session-fill').style.width = fillPct + '%';
+  document.getElementById('session-fill').style.width = ((done / total) * 100) + '%';
   document.getElementById('session-fill').style.background = 'linear-gradient(90deg,' + w.color + ',' + w.accent + ')';
 
+  // Render warmup cards
+  const wuList = document.getElementById('warmup-list');
+  wuList.innerHTML = `<div style="font-size:10px;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin-bottom:10px;padding:0 2px">Warm-Up</div>` +
+    WARMUP.map((wu, i) => {
+      const isDone = !!completedWarmup[i];
+      const cardBg = isDone ? '#1a2e18' : 'var(--surface)';
+      const cardBorder = isDone ? '#2a4a22' : 'var(--border)';
+      const btnStyle = isDone
+        ? `border:1.5px solid #3a6a2a;background:#1e3a16;color:#5a9a4a`
+        : `border:1.5px solid #888;background:#88888822;color:#aaa`;
+      return `
+        <div style="background:${cardBg};border:1px solid ${cardBorder};border-radius:12px;margin-bottom:10px;overflow:hidden;">
+          <button class="ex-header" onclick="toggleWarmupExpand(${i})">
+            <span class="ex-icon">${wu.icon}</span>
+            <div style="flex:1">
+              <div class="ex-name${isDone ? ' done-name' : ''}">${wu.name}</div>
+              <div class="ex-meta">${wu.sets} · ${wu.reps}</div>
+            </div>
+            <span class="ex-chevron" id="wu-chev-${i}">▼</span>
+          </button>
+          <div class="ex-body" id="wu-body-${i}">
+            <div class="cue-label" style="color:#888">Coaching Cue</div>
+            <div class="cue-text">${wu.cue}</div>
+            <button class="btn-done" style="${btnStyle}" onclick="toggleWarmup(${i})">
+              ${isDone ? '✓ Completed' : 'Mark as Done'}
+            </button>
+          </div>
+        </div>`;
+    }).join('');
+
+  // Render exercise cards
   const list = document.getElementById('exercise-list');
-  list.innerHTML = w.exercises.map((ex, i) => {
+  list.innerHTML = `<div style="font-size:10px;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin-bottom:10px;padding:0 2px">Main Block</div>` +
+    w.exercises.map((ex, i) => {
     const isDone = !!completedExercises[i];
     const cardClass = 'ex-card' + (isDone ? ' done' : ex.finisher ? ' finisher' : '');
     const badge = ex.finisher ? `<span class="finisher-badge${currentWorkout === 'B' ? ' finisher-badge-b' : ''}">Finisher</span>` : '';

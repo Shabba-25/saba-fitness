@@ -1,4 +1,4 @@
-const CACHE = 'saba-fit-v2';
+const CACHE = 'saba-fit-v3';
 const ASSETS = ['/', '/index.html', '/manifest.json'];
 
 self.addEventListener('install', e => {
