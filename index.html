@@ -343,6 +343,64 @@
 </div>
 
 <script>
+// ── CONSTANTS (must be first — referenced by PIN/unlock code below) ───────────
+var LOCAL_W      = 'saba_weights_v3';
+var LOCAL_S      = 'saba_sessions_v1';
+var START_WEIGHT = 200;
+var GOAL_WEIGHT  = 180;
+
+var SEED = [
+  {date:'Mar 10',weight:200.0,note:''},
+  {date:'Mar 17',weight:196.4,note:''},
+  {date:'Mar 22',weight:194.8,note:''},
+  {date:'Mar 26',weight:193.2,note:''},
+  {date:'Mar 28',weight:192.5,note:''},
+  {date:'Apr 03',weight:191.1,note:''},
+  {date:'Apr 05',weight:190.6,note:''},
+  {date:'Apr 06',weight:190.9,note:''},
+  {date:'Apr 07',weight:193.0,note:'Post soccer'},
+  {date:'Apr 10',weight:192.0,note:'Sore — inflammation'}
+];
+
+var WARMUP = [
+  {name:'Treadmill Walk',sets:'5 mins',  reps:'2.8 mph, flat',    icon:'🚶',cue:"Easy pace — this wakes up your joints, not your muscles. Keep it genuinely light. This is preparation, not exercise."},
+  {name:'Hip Circles',   sets:'2 rounds',reps:'10 each direction',icon:'🔄',cue:"Hold the power tower for balance. Slow, controlled circles — feel the hip socket open up. Clockwise 10, then counter-clockwise 10. Your left hip especially needs this."}
+];
+
+var WORKOUTS = {
+  A:{color:'#e8500a',accent:'#ff7a3d',exercises:[
+    {name:'Dead Hang',               sets:'2 sets',     reps:'30–45 sec',             icon:'🏋️',muscles:'Grip · Lats · Spine',           cue:"Grip the power tower bar, let your body hang fully. Relax the shoulders down — this decompresses the spine. Breathe steadily. Don't kip or swing."},
+    {name:'KB Goblet Squat',         sets:'3 sets',     reps:'12 reps',               icon:'🏅',muscles:'Quads · Glutes · Core',          cue:"Hold the 30 lb KB at your chest. Feet shoulder-width, toes slightly out. Descend slowly (3 counts down). Don't force depth if your left hip talks back."},
+    {name:'KB One-Arm Row',          sets:'3 sets',     reps:'12 reps / arm',         icon:'💪',muscles:'Lats · Rhomboids · Biceps',      cue:"Brace your free hand on the bench. Pull the 30 lb KB to your hip — not your shoulder. Keep your back flat. Squeeze at the top for 1 second."},
+    {name:'Power Tower Knee Raises', sets:'3 sets',     reps:'12 reps',               icon:'⬆️',muscles:'Lower Abs · Hip Flexors · Core', cue:"Arms on the pads, back flat against the pad. Raise knees slowly to 90°, hold 1 second, lower slowly. No swinging — if you're swinging, your core isn't working."},
+    {name:'Push-Ups (Tower Handles)',sets:'2 sets',     reps:'To comfortable failure',icon:'🤜',muscles:'Chest · Triceps · Shoulders',    cue:"Body straight from head to heels. Slow descent (3 counts), explosive push up. Stop 1–2 reps before your form breaks."},
+    {name:'Incline Walk Finisher',   sets:'1 round',    reps:'20 mins',               icon:'🚶',muscles:'Glutes · Calves · Cardio',       cue:'Incline: 5.0 | Speed: 3.5 mph. Hands off the rails — this is the fat burner. Stay in it for the full 20.',finisher:true}
+  ]},
+  B:{color:'#0a7ae8',accent:'#3da8ff',exercises:[
+    {name:'Warm-Up Walk',            sets:'1 round',    reps:'5 mins',                icon:'🚶',muscles:'Full Body Warm-Up',              cue:"Speed: 3.5 mph, flat. This isn't optional — your joints need this before sprinting."},
+    {name:'10.5 mph Sprints',        sets:'8–10 rounds',reps:'30s sprint / 90s walk', icon:'⚡',muscles:'Full Body · VO2 Max · Fat Burn',  cue:"30 sec @ 10.5 mph — go hard. Then 90 sec @ 3.0 mph recovery walk. Use all of it.",finisher:true},
+    {name:'KB Halos',                sets:'3 sets',     reps:'10 reps each direction',icon:'🔄',muscles:'Shoulders · Core · Mobility',     cue:'Hold the 30 lb KB by the horns at chest height. Circle it slowly around your head — clockwise 10, counter-clockwise 10.'},
+    {name:'Push-Ups (Tower Handles)',sets:'3 sets',     reps:'To failure',            icon:'🤜',muscles:'Chest · Triceps · Shoulders',    cue:"More fatigued here — that's the point. Keep form tight. The moment your hips sag, the set is done."},
+    {name:'Cool Down + Stretch',     sets:'1 round',    reps:'5 mins walk + stretch', icon:'🧘',muscles:'Recovery · Flexibility',          cue:"5 mins slow walk @ 2.5 mph. Hamstring stretch 30 sec each leg, hip flexor lunge 30 sec each side. Don't skip this."}
+  ]}
+};
+
+var CARDIO_PRESETS = {
+  'Recovery Walk': {duration:25,incline:4.0,speed:3.2,tip:'Easy recovery pace — the goal is blood flow and inflammation flush, not intensity. Hands off the rails. You should be able to hold a full conversation throughout.'},
+  'Fat Burn Walk':  {duration:30,incline:6.0,speed:3.5,tip:'This is your primary fat burner. Higher incline cranks up glute and hamstring engagement and keeps heart rate in the fat-burning zone without beating up the joints. No holding the rails.'},
+  'HIIT Intervals': {duration:25,incline:1.0,speed:10.5,tip:'30 sec sprint @ 10.5 mph, 90 sec walk @ 3.0 mph. Repeat 8–10 rounds. The 90 sec recovery is sacred — use all of it. Drop to 9.5 if needed and build up over time.'},
+  'Easy Walk':      {duration:20,incline:2.0,speed:3.0,tip:'Active recovery or warm-up pace. Flat and easy — get the body moving without any real demand. Good for very sore days or as a warm-up before strength work.'}
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+var weights        = [];
+var sessions       = [];
+var currentWorkout = 'A';
+var doneWarmup     = {};
+var doneExercises  = {};
+var sessionSaved   = false;
+var cardioType     = 'Recovery Walk';
+
 // ── SUPABASE CONFIG ───────────────────────────────────────────────────────────
 var SB_URL = 'https://iuayhmylmsnnczybpxoy.supabase.co';
 var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1YXlobXlsbXNubmN6eWJweG95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4MjAzODcsImV4cCI6MjA5MTM5NjM4N30.zWdOzbMMhbNblxpw0vqEeaNjU22vnad_x_QwQulLfgc';
@@ -476,48 +534,6 @@ function checkPin() {
   }
 }
 
-// ── CONSTANTS ─────────────────────────────────────────────────────────────────
-var LOCAL_W  = 'saba_weights_v3';
-var LOCAL_S  = 'saba_sessions_v1';
-var START_WEIGHT = 200;
-var GOAL_WEIGHT  = 180;
-
-var SEED = [
-  {date:'Mar 10',weight:200.0,note:''},
-  {date:'Mar 17',weight:196.4,note:''},
-  {date:'Mar 22',weight:194.8,note:''},
-  {date:'Mar 26',weight:193.2,note:''},
-  {date:'Mar 28',weight:192.5,note:''},
-  {date:'Apr 03',weight:191.1,note:''},
-  {date:'Apr 05',weight:190.6,note:''},
-  {date:'Apr 06',weight:190.9,note:''},
-  {date:'Apr 07',weight:193.0,note:'Post soccer'},
-  {date:'Apr 10',weight:192.0,note:'Sore — inflammation'}
-];
-
-var WARMUP = [
-  {name:'Treadmill Walk',sets:'5 mins',  reps:'2.8 mph, flat',    icon:'🚶',cue:"Easy pace — this wakes up your joints, not your muscles. Keep it genuinely light. This is preparation, not exercise."},
-  {name:'Hip Circles',   sets:'2 rounds',reps:'10 each direction',icon:'🔄',cue:"Hold the power tower for balance. Slow, controlled circles — feel the hip socket open up. Clockwise 10, then counter-clockwise 10. Your left hip especially needs this."}
-];
-
-var WORKOUTS = {
-  A:{color:'#e8500a',accent:'#ff7a3d',exercises:[
-    {name:'Dead Hang',               sets:'2 sets',     reps:'30–45 sec',             icon:'🏋️',muscles:'Grip · Lats · Spine',           cue:"Grip the power tower bar, let your body hang fully. Relax the shoulders down — this decompresses the spine. Breathe steadily. Don't kip or swing."},
-    {name:'KB Goblet Squat',         sets:'3 sets',     reps:'12 reps',               icon:'🏅',muscles:'Quads · Glutes · Core',          cue:"Hold the 30 lb KB at your chest. Feet shoulder-width, toes slightly out. Descend slowly (3 counts down). Don't force depth if your left hip talks back."},
-    {name:'KB One-Arm Row',          sets:'3 sets',     reps:'12 reps / arm',         icon:'💪',muscles:'Lats · Rhomboids · Biceps',      cue:"Brace your free hand on the bench. Pull the 30 lb KB to your hip — not your shoulder. Keep your back flat. Squeeze at the top for 1 second."},
-    {name:'Power Tower Knee Raises', sets:'3 sets',     reps:'12 reps',               icon:'⬆️',muscles:'Lower Abs · Hip Flexors · Core', cue:"Arms on the pads, back flat against the pad. Raise knees slowly to 90°, hold 1 second, lower slowly. No swinging — if you're swinging, your core isn't working."},
-    {name:'Push-Ups (Tower Handles)',sets:'2 sets',     reps:'To comfortable failure',icon:'🤜',muscles:'Chest · Triceps · Shoulders',    cue:"Body straight from head to heels. Slow descent (3 counts), explosive push up. Stop 1–2 reps before your form breaks."},
-    {name:'Incline Walk Finisher',   sets:'1 round',    reps:'20 mins',               icon:'🚶',muscles:'Glutes · Calves · Cardio',       cue:'Incline: 5.0 | Speed: 3.5 mph. Hands off the rails — this is the fat burner. Stay in it for the full 20.',finisher:true}
-  ]},
-  B:{color:'#0a7ae8',accent:'#3da8ff',exercises:[
-    {name:'Warm-Up Walk',            sets:'1 round',    reps:'5 mins',                icon:'🚶',muscles:'Full Body Warm-Up',              cue:"Speed: 3.5 mph, flat. This isn't optional — your joints need this before sprinting."},
-    {name:'10.5 mph Sprints',        sets:'8–10 rounds',reps:'30s sprint / 90s walk', icon:'⚡',muscles:'Full Body · VO2 Max · Fat Burn',  cue:"30 sec @ 10.5 mph — go hard. Then 90 sec @ 3.0 mph recovery walk. Use all of it.",finisher:true},
-    {name:'KB Halos',                sets:'3 sets',     reps:'10 reps each direction',icon:'🔄',muscles:'Shoulders · Core · Mobility',     cue:'Hold the 30 lb KB by the horns at chest height. Circle it slowly around your head — clockwise 10, counter-clockwise 10.'},
-    {name:'Push-Ups (Tower Handles)',sets:'3 sets',     reps:'To failure',            icon:'🤜',muscles:'Chest · Triceps · Shoulders',    cue:"More fatigued here — that's the point. Keep form tight. The moment your hips sag, the set is done."},
-    {name:'Cool Down + Stretch',     sets:'1 round',    reps:'5 mins walk + stretch', icon:'🧘',muscles:'Recovery · Flexibility',          cue:"5 mins slow walk @ 2.5 mph. Hamstring stretch 30 sec each leg, hip flexor lunge 30 sec each side. Don't skip this."}
-  ]}
-};
-
 // ── LOCAL CACHE ───────────────────────────────────────────────────────────────
 function localWeights() {
   try {
@@ -537,14 +553,6 @@ function localSessions() {
   } catch(e) { return null; }
 }
 function cacheSessions(d){ try{if(Array.isArray(d))localStorage.setItem(LOCAL_S,JSON.stringify(d));}catch(e){} }
-
-// ── STATE ─────────────────────────────────────────────────────────────────────
-var weights        = [];
-var sessions       = [];
-var currentWorkout = 'A';
-var doneWarmup     = {};
-var doneExercises  = {};
-var sessionSaved   = false;
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 async function initApp() {
@@ -656,28 +664,6 @@ function setWorkout(key) {
     renderWorkout();
   }
 }
-
-// ── CARDIO ────────────────────────────────────────────────────────────────────
-var CARDIO_PRESETS = {
-  'Recovery Walk': {
-    duration:25, incline:4.0, speed:3.2,
-    tip:'Easy recovery pace — the goal is blood flow and inflammation flush, not intensity. Hands off the rails. You should be able to hold a full conversation throughout.'
-  },
-  'Fat Burn Walk': {
-    duration:30, incline:6.0, speed:3.5,
-    tip:'This is your primary fat burner. Higher incline cranks up glute and hamstring engagement and keeps heart rate in the fat-burning zone without beating up the joints. No holding the rails.'
-  },
-  'HIIT Intervals': {
-    duration:25, incline:1.0, speed:10.5,
-    tip:'30 sec sprint @ 10.5 mph, 90 sec walk @ 3.0 mph. Repeat 8–10 rounds. The 90 sec recovery is sacred — use all of it. Drop to 9.5 if needed and build up over time.'
-  },
-  'Easy Walk': {
-    duration:20, incline:2.0, speed:3.0,
-    tip:'Active recovery or warm-up pace. Flat and easy — get the body moving without any real demand. Good for very sore days or as a warm-up before strength work.'
-  }
-};
-
-var cardioType = 'Recovery Walk';
 
 function setCardioType(type) {
   cardioType = type;
