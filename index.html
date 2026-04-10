@@ -319,7 +319,8 @@ function checkPin() {
 }
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
-var STORAGE_KEY  = 'saba_weights_v2';
+var STORAGE_KEY  = 'saba_weights_v3';
+var STORAGE_KEY_OLD = 'saba_weights_v2';
 var SESSIONS_KEY = 'saba_sessions_v1';
 var START_WEIGHT = 200;
 var GOAL_WEIGHT  = 180;
@@ -363,8 +364,21 @@ var WORKOUTS = {
 // ── STORAGE ───────────────────────────────────────────────────────────────────
 function loadWeights() {
   try {
+    // 1. Already on new key — use it, never touch seed
     var s = localStorage.getItem(STORAGE_KEY);
     if (s) return JSON.parse(s);
+    // 2. Migrate from old key, merge any missing seed entries
+    var old = localStorage.getItem(STORAGE_KEY_OLD);
+    if (old) {
+      var migrated = JSON.parse(old);
+      SEED.forEach(function(entry) {
+        if (!migrated.some(function(w){return w.date===entry.date;})) migrated.push(entry);
+      });
+      migrated.sort(function(a,b){return new Date('2026 '+a.date)-new Date('2026 '+b.date);});
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+      return migrated;
+    }
+    // 3. Truly first visit — seed and save
     localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED));
     return SEED.map(function(x){return Object.assign({},x);});
   } catch(e) { return SEED.map(function(x){return Object.assign({},x);}); }
