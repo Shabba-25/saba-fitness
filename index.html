@@ -127,6 +127,12 @@
     .muscles-text span { color:#999; }
     .btn-done   { margin-top:14px; width:100%; padding:11px; border-radius:8px; font-size:13px; letter-spacing:1px; font-weight:700; transition:all 0.2s; }
 
+    /* ── CARDIO ── */
+    .cardio-type-btn { padding:12px 8px; border-radius:10px; border:1px solid var(--border); background:var(--surface); color:var(--dim); font-size:13px; font-weight:700; transition:all 0.2s; }
+    .cardio-type-btn.active-type { border-color:var(--orange); background:rgba(232,80,10,0.15); color:var(--orange-light); }
+    .cardio-saved-banner { background:linear-gradient(135deg,#1a3a12,#0e2a0a); border:1px solid #3a6a22; border-radius:12px; padding:16px 18px; margin-bottom:14px; display:none; text-align:center; }
+    .cardio-saved-banner.show { display:block; }
+
     .complete-banner { background:linear-gradient(135deg,#1a3a12,#0e2a0a); border:1px solid #3a6a22; border-radius:12px; padding:16px 18px; margin-bottom:14px; display:none; text-align:center; }
     .complete-banner.show { display:block; }
     .cb-title { font-family:'Bebas Neue',sans-serif; font-size:22px; color:#6abf4a; letter-spacing:1px; }
@@ -148,6 +154,7 @@
     .wh-badge    { font-family:'Bebas Neue',sans-serif; font-size:18px; padding:3px 10px; border-radius:6px; }
     .wh-badge-a  { background:rgba(232,80,10,0.2); color:var(--orange-light); }
     .wh-badge-b  { background:rgba(10,122,232,0.2); color:var(--blue-light); }
+    .wh-badge-c  { background:rgba(76,175,80,0.2);  color:#6abf4a; }
     .wh-body     { display:none; padding:0 18px 14px; border-top:1px solid var(--surface2); }
     .wh-body.open { display:block; }
     .wh-ex-row   { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--surface2); }
@@ -234,23 +241,83 @@
 
   <!-- WORKOUT SCREEN -->
   <div id="screen-workout" class="screen">
-    <div class="workout-tabs">
-      <button class="tab-btn active-a" id="tab-a" onclick="setWorkout('A')">Workout A<span class="tab-sub">Strength &amp; Burn</span></button>
-      <button class="tab-btn"          id="tab-b" onclick="setWorkout('B')">Workout B<span class="tab-sub">HIIT Engine</span></button>
+    <div class="workout-tabs" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+      <button class="tab-btn active-a" id="tab-a" onclick="setWorkout('A')">Workout A<span class="tab-sub">Strength</span></button>
+      <button class="tab-btn"          id="tab-b" onclick="setWorkout('B')">Workout B<span class="tab-sub">HIIT</span></button>
+      <button class="tab-btn"          id="tab-c" onclick="setWorkout('C')">Cardio<span class="tab-sub">Treadmill</span></button>
     </div>
-    <div class="progress-wrap">
-      <div class="progress-meta"><span>Session Progress</span><span class="p-accent" id="session-label">0 / 0</span></div>
-      <div class="progress-track"><div class="progress-fill" id="session-fill" style="width:0%"></div></div>
+
+    <!-- A/B progress + exercises -->
+    <div id="ab-section">
+      <div class="progress-wrap" style="margin-top:14px">
+        <div class="progress-meta"><span>Session Progress</span><span class="p-accent" id="session-label">0 / 0</span></div>
+        <div class="progress-track"><div class="progress-fill" id="session-fill" style="width:0%"></div></div>
+      </div>
+      <div class="complete-banner" id="complete-banner">
+        <div class="cb-title">🔥 Session Complete!</div>
+        <div class="cb-sub">Saved to your history. Hit that hot tub, Saba.</div>
+      </div>
+      <div id="warmup-list"></div>
+      <div id="exercise-list"></div>
+      <div class="recovery-card">
+        <div class="rec-icon">🛁</div>
+        <div><div class="recovery-title">Post-Workout Recovery</div><div class="recovery-sub">Stretch 2–3 mins → Hot tub 15 mins → Drink water before &amp; after</div></div>
+      </div>
     </div>
-    <div class="complete-banner" id="complete-banner">
-      <div class="cb-title">🔥 Session Complete!</div>
-      <div class="cb-sub">Saved to your history. Hit that hot tub, Saba.</div>
-    </div>
-    <div id="warmup-list"></div>
-    <div id="exercise-list"></div>
-    <div class="recovery-card">
-      <div class="rec-icon">🛁</div>
-      <div><div class="recovery-title">Post-Workout Recovery</div><div class="recovery-sub">Stretch 2–3 mins → Hot tub 15 mins → Drink water before &amp; after</div></div>
+
+    <!-- Cardio logger -->
+    <div id="cardio-section" style="display:none;margin-top:14px">
+      <div class="card">
+        <div class="card-label">Cardio Type</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="cardio-type-btns">
+          <button class="cardio-type-btn active-type" onclick="setCardioType('Recovery Walk')"    id="ct-rw">🚶 Recovery Walk</button>
+          <button class="cardio-type-btn"             onclick="setCardioType('Fat Burn Walk')"    id="ct-fb">🔥 Fat Burn Walk</button>
+          <button class="cardio-type-btn"             onclick="setCardioType('HIIT Intervals')"   id="ct-hi">⚡ HIIT Intervals</button>
+          <button class="cardio-type-btn"             onclick="setCardioType('Easy Walk')"        id="ct-ew">😌 Easy Walk</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Session Details</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div>
+            <div class="field-label">Duration (mins)</div>
+            <input id="c-duration" class="field-input" type="number" min="1" max="120" placeholder="30" oninput="updateCalcPreview()"/>
+          </div>
+          <div>
+            <div class="field-label">Incline</div>
+            <input id="c-incline" class="field-input" type="number" min="0" max="15" step="0.5" placeholder="4.0" oninput="updateCalcPreview()"/>
+          </div>
+          <div>
+            <div class="field-label">Speed (mph)</div>
+            <input id="c-speed" class="field-input" type="number" min="1" max="12" step="0.1" placeholder="3.2" oninput="updateCalcPreview()"/>
+          </div>
+          <div>
+            <div class="field-label">Est. Calories</div>
+            <div id="cal-preview" style="padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--orange-light)">—</div>
+          </div>
+        </div>
+        <div style="margin-bottom:10px">
+          <div class="field-label">Note (optional)</div>
+          <input id="c-note" class="field-input" placeholder="e.g. felt strong, hip tight..."/>
+        </div>
+        <button class="btn-primary" id="btn-log-cardio" onclick="logCardio()">Log Cardio Session</button>
+      </div>
+
+      <div class="card" id="cardio-tip-card">
+        <div class="card-label">Tonight's Target</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center">
+          <div><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--orange-light)">4.0</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">INCLINE</div></div>
+          <div><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--orange-light)">3.2</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MPH</div></div>
+          <div><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--orange-light)">25</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MINS</div></div>
+        </div>
+        <div style="margin-top:10px;font-size:13px;color:var(--dim);line-height:1.6">Recovery pace — flush the inflammation, burn calories without stressing the muscles. Hands off the rails.</div>
+      </div>
+
+      <div class="recovery-card">
+        <div class="rec-icon">🛁</div>
+        <div><div class="recovery-title">Post-Cardio Recovery</div><div class="recovery-sub">Stretch hips 2 mins → Hot tub 15 mins → Water before &amp; after</div></div>
+      </div>
     </div>
   </div>
 
@@ -525,8 +592,122 @@ function setWorkout(key) {
   document.getElementById('complete-banner').classList.remove('show');
   document.getElementById('tab-a').className='tab-btn'+(key==='A'?' active-a':'');
   document.getElementById('tab-b').className='tab-btn'+(key==='B'?' active-b':'');
-  document.getElementById('header-title').innerHTML='Training <span style="color:'+WORKOUTS[key].color+'">Protocol</span>';
-  renderWorkout();
+  document.getElementById('tab-c').className='tab-btn'+(key==='C'?' active-type':'');
+
+  if (key === 'C') {
+    document.getElementById('ab-section').style.display    = 'none';
+    document.getElementById('cardio-section').style.display = 'block';
+    document.getElementById('header-title').innerHTML = 'Cardio <span style="color:var(--orange)">Session</span>';
+    // Load the currently selected preset
+    setCardioType(cardioType);
+  } else {
+    document.getElementById('ab-section').style.display    = 'block';
+    document.getElementById('cardio-section').style.display = 'none';
+    document.getElementById('header-title').innerHTML = 'Training <span style="color:'+WORKOUTS[key].color+'">Protocol</span>';
+    renderWorkout();
+  }
+}
+
+// ── CARDIO ────────────────────────────────────────────────────────────────────
+var CARDIO_PRESETS = {
+  'Recovery Walk': {
+    duration:25, incline:4.0, speed:3.2,
+    tip:'Easy recovery pace — the goal is blood flow and inflammation flush, not intensity. Hands off the rails. You should be able to hold a full conversation throughout.'
+  },
+  'Fat Burn Walk': {
+    duration:30, incline:6.0, speed:3.5,
+    tip:'This is your primary fat burner. Higher incline cranks up glute and hamstring engagement and keeps heart rate in the fat-burning zone without beating up the joints. No holding the rails.'
+  },
+  'HIIT Intervals': {
+    duration:25, incline:1.0, speed:10.5,
+    tip:'30 sec sprint @ 10.5 mph, 90 sec walk @ 3.0 mph. Repeat 8–10 rounds. The 90 sec recovery is sacred — use all of it. Drop to 9.5 if needed and build up over time.'
+  },
+  'Easy Walk': {
+    duration:20, incline:2.0, speed:3.0,
+    tip:'Active recovery or warm-up pace. Flat and easy — get the body moving without any real demand. Good for very sore days or as a warm-up before strength work.'
+  }
+};
+
+var cardioType = 'Recovery Walk';
+
+function setCardioType(type) {
+  cardioType = type;
+  var map = {'Recovery Walk':'ct-rw','Fat Burn Walk':'ct-fb','HIIT Intervals':'ct-hi','Easy Walk':'ct-ew'};
+  Object.values(map).forEach(function(id){ document.getElementById(id).classList.remove('active-type'); });
+  document.getElementById(map[type]).classList.add('active-type');
+
+  // Auto-fill preset values
+  var p = CARDIO_PRESETS[type];
+  document.getElementById('c-duration').value = p.duration;
+  document.getElementById('c-incline').value  = p.incline;
+  document.getElementById('c-speed').value    = p.speed;
+
+  // Update coaching tip
+  var tipCard = document.getElementById('cardio-tip-card');
+  tipCard.innerHTML = '<div class="card-label">Coaching Tip</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;margin-bottom:12px">'
+    + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.incline+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">INCLINE</div></div>'
+    + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.speed+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MPH</div></div>'
+    + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.duration+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MINS</div></div>'
+    + '</div>'
+    + '<div style="font-size:13px;color:var(--dim);line-height:1.6">'+p.tip+'</div>';
+
+  updateCalcPreview();
+}
+
+function updateCalcPreview() {
+  var dur  = parseFloat(document.getElementById('c-duration').value) || 0;
+  var inc  = parseFloat(document.getElementById('c-incline').value)  || 0;
+  var spd  = parseFloat(document.getElementById('c-speed').value)    || 0;
+  if (!dur || !spd) { document.getElementById('cal-preview').textContent = '—'; return; }
+  // MET-based estimate for 185 lb person
+  // Base MET for walking ~3.5 mph = 4.3, adjust for speed and incline
+  var met  = 2.8 + (spd * 0.7) + (inc * 0.18);
+  var kcal = Math.round(met * 84 * (dur / 60)); // 84kg ~= 185 lbs
+  document.getElementById('cal-preview').textContent = kcal;
+}
+
+async function logCardio() {
+  var dur  = parseFloat(document.getElementById('c-duration').value);
+  var inc  = parseFloat(document.getElementById('c-incline').value);
+  var spd  = parseFloat(document.getElementById('c-speed').value);
+  var note = document.getElementById('c-note').value.trim();
+  if (!dur || isNaN(dur)) { alert('Please enter a duration'); return; }
+
+  var cal  = parseInt(document.getElementById('cal-preview').textContent) || 0;
+  var ts   = Date.now();
+  var s = {
+    id: ts, timestamp: ts, date: todayStr(), workout: 'C',
+    warmup: [], completed: [],
+    total: 1, doneCount: 1,
+    cardioType: cardioType,
+    duration: dur, incline: inc || 0, speed: spd || 0,
+    calories: cal, note: note
+  };
+
+  sessions = [s].concat(sessions);
+  cacheSessions(sessions);
+
+  // Clear inputs
+  document.getElementById('c-duration').value = '';
+  document.getElementById('c-incline').value  = '';
+  document.getElementById('c-speed').value    = '';
+  document.getElementById('c-note').value     = '';
+  document.getElementById('cal-preview').textContent = '—';
+
+  var btn = document.getElementById('btn-log-cardio');
+  btn.textContent = '✓ Logged!'; btn.classList.add('saved');
+  setTimeout(function(){ btn.textContent='Log Cardio Session'; btn.classList.remove('saved'); }, 2500);
+
+  // Save to Supabase
+  showSync('syncing','↑ Saving cardio...');
+  var ok = await sbUpsert('sessions',[{
+    id: s.id, timestamp: s.timestamp, date: s.date, workout: 'C',
+    warmup: [], completed: [],
+    total: 1, done_count: 1,
+    note: JSON.stringify({type:cardioType,duration:dur,incline:inc||0,speed:spd||0,calories:cal,note:note})
+  }]);
+  showSync(ok?'synced':'error', ok?'✓ Cardio saved':'⚠ Saved offline');
 }
 
 function toggleWarmup(i)    { doneWarmup[i]=!doneWarmup[i];      renderWorkout(); checkComplete(); }
@@ -650,16 +831,40 @@ function renderSessionHistory() {
   if(!sessions.length){list.innerHTML='<div class="wh-empty">No sessions logged yet.<br>Complete a workout to see your history here.</div>';return;}
   var html='';
   sessions.forEach(function(s,si){
-    var w=WORKOUTS[s.workout],rows='';
-    WARMUP.forEach(function(wu,i){var ok=s.warmup?!!s.warmup[i]:false;
-      rows+='<div class="wh-ex-row"><span class="wh-ex-icon">'+wu.icon+'</span><span class="wh-ex-name">'+wu.name+'</span><span class="'+(ok?'wh-check':'wh-skip')+'">'+(ok?'✓':'—')+'</span></div>';});
-    w.exercises.forEach(function(ex,i){var ok=!!s.completed[i];
-      rows+='<div class="wh-ex-row"><span class="wh-ex-icon">'+ex.icon+'</span><span class="wh-ex-name">'+ex.name+'</span><span class="'+(ok?'wh-check':'wh-skip')+'">'+(ok?'✓':'—')+'</span></div>';});
+    var rows='';
+    var badgeCls, badgeLabel;
+
+    if (s.workout === 'C') {
+      // Cardio session
+      var meta = {};
+      try { meta = JSON.parse(s.note||'{}'); } catch(e) { meta = {}; }
+      badgeCls   = 'wh-badge' + ' ' + 'wh-badge-c';
+      badgeLabel = '🚶 Cardio';
+      rows = '<div class="wh-ex-row">'
+        +'<span class="wh-ex-icon">🏃</span>'
+        +'<span class="wh-ex-name">'+(meta.type||'Cardio Walk')+'</span>'
+        +'<span class="wh-check">✓</span></div>';
+      if (meta.duration) rows += '<div class="wh-ex-row"><span class="wh-ex-icon">⏱</span><span class="wh-ex-name">'+meta.duration+' mins</span></div>';
+      if (meta.incline)  rows += '<div class="wh-ex-row"><span class="wh-ex-icon">📐</span><span class="wh-ex-name">Incline '+meta.incline+'</span></div>';
+      if (meta.speed)    rows += '<div class="wh-ex-row"><span class="wh-ex-icon">💨</span><span class="wh-ex-name">'+meta.speed+' mph</span></div>';
+      if (meta.calories) rows += '<div class="wh-ex-row"><span class="wh-ex-icon">🔥</span><span class="wh-ex-name">~'+meta.calories+' cal burned</span></div>';
+      if (meta.note)     rows += '<div class="wh-ex-row"><span class="wh-ex-icon">📝</span><span class="wh-ex-name">'+meta.note+'</span></div>';
+    } else {
+      // Strength/HIIT session
+      badgeCls   = 'wh-badge wh-badge-'+s.workout.toLowerCase();
+      badgeLabel = 'Workout '+s.workout;
+      var w=WORKOUTS[s.workout];
+      WARMUP.forEach(function(wu,i){var ok=s.warmup?!!s.warmup[i]:false;
+        rows+='<div class="wh-ex-row"><span class="wh-ex-icon">'+wu.icon+'</span><span class="wh-ex-name">'+wu.name+'</span><span class="'+(ok?'wh-check':'wh-skip')+'">'+(ok?'✓':'—')+'</span></div>';});
+      w.exercises.forEach(function(ex,i){var ok=!!s.completed[i];
+        rows+='<div class="wh-ex-row"><span class="wh-ex-icon">'+ex.icon+'</span><span class="wh-ex-name">'+ex.name+'</span><span class="'+(ok?'wh-check':'wh-skip')+'">'+(ok?'✓':'—')+'</span></div>';});
+    }
+
     html+='<div class="wh-session">'
       +'<div class="wh-header" onclick="toggleSR('+si+')">'
       +'<div><div class="wh-date">'+s.date+'</div><div class="wh-sub">'+s.doneCount+'/'+s.total+' completed</div></div>'
       +'<div style="display:flex;align-items:center;gap:10px">'
-      +'<span class="wh-badge wh-badge-'+s.workout.toLowerCase()+'">Workout '+s.workout+'</span>'
+      +'<span class="'+badgeCls+'">'+badgeLabel+'</span>'
       +'<span style="color:var(--dim);font-size:12px" id="whs-c-'+si+'">▼</span></div></div>'
       +'<div class="wh-body" id="whs-b-'+si+'"><div style="padding-top:10px">'+rows+'</div>'
       +'<button onclick="delSession('+s.id+')" style="margin-top:10px;background:none;border:1px solid var(--border);color:var(--dim);padding:7px 14px;border-radius:6px;font-size:12px;width:100%">Remove Session</button>'
