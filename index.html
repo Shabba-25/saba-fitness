@@ -43,7 +43,7 @@
     .pin-err   { margin-top:22px; font-size:13px; color:#e84a4a; letter-spacing:1px; height:18px; }
 
     /* ── SYNC STATUS ── */
-    #sync-bar { position:fixed; top:0; left:0; right:0; z-index:200; padding:6px 16px; font-size:11px; letter-spacing:2px; text-transform:uppercase; text-align:center; display:none; transition:all 0.3s; }
+    #sync-bar { position:fixed; top:0; left:0; right:0; z-index:9999; padding:8px 16px; font-size:11px; letter-spacing:2px; text-transform:uppercase; text-align:center; display:none; transition:all 0.3s; }
     #sync-bar.syncing { display:block; background:#1a2a3a; color:#88aacc; }
     #sync-bar.synced  { display:block; background:#1a3a12; color:#5a9a4a; }
     #sync-bar.error   { display:block; background:#3a1212; color:#e84a4a; }
@@ -534,15 +534,29 @@ var sessionSaved   = false;
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 async function initApp() {
-  // Load from cache immediately so UI is instant
+  showDebug('Step 1: initApp started');
+
+  // Load from local cache
   var cached = localWeights();
+  showDebug('Step 2: localWeights = ' + (cached ? cached.length + ' entries' : 'null'));
+
   weights = cached || SEED.map(function(x){return Object.assign({},x);});
   var cachedS = localSessions();
   sessions = cachedS || [];
+
   renderTracker();
   renderWorkout();
+  showDebug('Step 3: rendered from cache. Now trying Supabase...');
 
-  // Then sync from Supabase in background
+  // Test basic network first
+  try {
+    var testResp = await fetch('https://iuayhmylmsnnczybpxoy.supabase.co/rest/v1/', {headers: HEADERS});
+    showDebug('Step 4: Supabase reachable — HTTP ' + testResp.status);
+  } catch(netErr) {
+    showDebug('Step 4 FAIL: Cannot reach Supabase — ' + netErr.message);
+    return;
+  }
+
   showSync('syncing', '↑↓ Syncing with cloud...');
   await syncFromCloud();
 }
