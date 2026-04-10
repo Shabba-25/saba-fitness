@@ -538,7 +538,7 @@ async function initApp() {
 
   // Load from local cache
   var cached = localWeights();
-  showDebug('Step 2: localWeights = ' + (cached ? cached.length + ' entries' : 'null'));
+  showDebug('Step 2: localWeights = ' + (cached ? cached.length + ' entries' : 'null — will load from Supabase'));
 
   weights = cached || SEED.map(function(x){return Object.assign({},x);});
   var cachedS = localSessions();
@@ -546,24 +546,24 @@ async function initApp() {
 
   renderTracker();
   renderWorkout();
-  showDebug('Step 3: rendered from cache. Now trying Supabase...');
 
-  // Test basic network first
-  try {
-    var testResp = await fetch('https://iuayhmylmsnnczybpxoy.supabase.co/rest/v1/', {headers: HEADERS});
-    showDebug('Step 4: Supabase reachable — HTTP ' + testResp.status);
-  } catch(netErr) {
-    showDebug('Step 4 FAIL: Cannot reach Supabase — ' + netErr.message);
-    return;
-  }
-
+  // Always sync from Supabase regardless of cache state
+  showDebug('Step 3: attempting Supabase sync...');
   showSync('syncing', '↑↓ Syncing with cloud...');
-  await syncFromCloud();
+
+  try {
+    await syncFromCloud();
+    showDebug('Step 4: sync complete — weights now: ' + weights.length);
+  } catch(e) {
+    showDebug('Step 4 ERROR: ' + e.message);
+  }
 }
 
 async function syncFromCloud() {
   // ── Weights ──
   var cloudW = await sbGet('weights');
+  showDebug('syncFromCloud: cloudW = ' + (cloudW === null ? 'null' : Array.isArray(cloudW) ? cloudW.length+' rows' : typeof cloudW));
+
   if (cloudW === null || !Array.isArray(cloudW)) {
     showSync('error', '⚠ Offline — using local data');
     return;
