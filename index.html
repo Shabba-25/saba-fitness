@@ -25,23 +25,28 @@
     input  { font-family:'Crimson Pro',Georgia,serif; }
     input:focus { outline:none; }
 
-    /* ── PIN SCREEN ── */
+    /* ── PIN ── */
     #pin-screen { position:fixed; inset:0; z-index:999; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 20px; }
     #pin-screen.gone { display:none; }
-    .pin-logo { font-family:'Bebas Neue',sans-serif; font-size:48px; letter-spacing:2px; margin-bottom:6px; }
+    .pin-logo    { font-family:'Bebas Neue',sans-serif; font-size:48px; letter-spacing:2px; margin-bottom:6px; }
     .pin-logo span { color:var(--orange); }
     .pin-tagline { font-size:11px; color:var(--dim); letter-spacing:4px; text-transform:uppercase; margin-bottom:52px; }
-    .pin-dots { display:flex; gap:18px; margin-bottom:44px; }
-    .pin-dot { width:16px; height:16px; border-radius:50%; border:2px solid var(--border); background:transparent; transition:all 0.15s; }
+    .pin-dots    { display:flex; gap:18px; margin-bottom:44px; }
+    .pin-dot     { width:16px; height:16px; border-radius:50%; border:2px solid var(--border); background:transparent; transition:all 0.15s; }
     .pin-dot.filled { background:var(--orange); border-color:var(--orange); }
-    .pin-dot.error  { background:#e84a4a; border-color:#e84a4a; animation:shake 0.3s ease; }
-    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
-    .pin-pad { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; width:264px; }
-    .pin-btn { padding:18px 0; border-radius:14px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:1px; transition:all 0.1s; }
+    .pin-dot.error  { background:#e84a4a; border-color:#e84a4a; }
+    .pin-pad  { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; width:264px; }
+    .pin-btn  { padding:18px 0; border-radius:14px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:1px; transition:all 0.1s; }
     .pin-btn:active { background:var(--surface2); transform:scale(0.94); }
-    .pin-del { font-family:'Crimson Pro',Georgia,serif !important; font-size:20px !important; color:var(--dim) !important; }
+    .pin-del   { font-family:'Crimson Pro',Georgia,serif !important; font-size:20px !important; color:var(--dim) !important; }
     .pin-empty { background:transparent !important; border-color:transparent !important; cursor:default; }
-    .pin-err { margin-top:22px; font-size:13px; color:#e84a4a; letter-spacing:1px; height:18px; }
+    .pin-err   { margin-top:22px; font-size:13px; color:#e84a4a; letter-spacing:1px; height:18px; }
+
+    /* ── SYNC STATUS ── */
+    #sync-bar { position:fixed; top:0; left:0; right:0; z-index:200; padding:6px 16px; font-size:11px; letter-spacing:2px; text-transform:uppercase; text-align:center; display:none; transition:all 0.3s; }
+    #sync-bar.syncing { display:block; background:#1a2a3a; color:#88aacc; }
+    #sync-bar.synced  { display:block; background:#1a3a12; color:#5a9a4a; }
+    #sync-bar.error   { display:block; background:#3a1212; color:#e84a4a; }
 
     /* ── APP ── */
     #app { display:none; }
@@ -62,7 +67,7 @@
     .screen.active { display:block; }
 
     .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 18px; margin-bottom:14px; }
-    .card-label { font-size:10px; letter-spacing:3px; color:var(--dim); text-transform:uppercase; margin-bottom:12px; }
+    .card-label    { font-size:10px; letter-spacing:3px; color:var(--dim); text-transform:uppercase; margin-bottom:12px; }
     .section-label { font-size:10px; letter-spacing:3px; color:var(--dim); text-transform:uppercase; margin-bottom:10px; padding:0 2px; }
 
     .stats-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:16px; }
@@ -163,7 +168,7 @@
 </head>
 <body>
 
-<!-- ── PIN SCREEN ──────────────────────────────────────────────────────────── -->
+<!-- PIN -->
 <div id="pin-screen">
   <div class="pin-logo">Saba <span>Fit</span></div>
   <div class="pin-tagline">Enter your PIN to continue</div>
@@ -190,9 +195,11 @@
   <div class="pin-err" id="pin-err"></div>
 </div>
 
-<!-- ── APP ────────────────────────────────────────────────────────────────── -->
-<div id="app">
+<!-- SYNC BAR -->
+<div id="sync-bar"></div>
 
+<!-- APP -->
+<div id="app">
   <div id="header">
     <div class="eyebrow">Saba's Program</div>
     <h1 id="header-title">Weight <span style="color:var(--orange)">Tracker</span></h1>
@@ -216,8 +223,8 @@
     <div class="card">
       <div class="card-label">Log Today's Weight</div>
       <div class="form-grid">
-        <div><div class="field-label">Date</div><input id="inp-date" class="field-input" placeholder="e.g. Apr 10" /></div>
-        <div><div class="field-label">Weight (lbs)</div><input id="inp-weight" class="field-input" type="number" step="0.1" placeholder="e.g. 192.0" /></div>
+        <div><div class="field-label">Date</div><input id="inp-date" class="field-input" placeholder="e.g. Apr 11" /></div>
+        <div><div class="field-label">Weight (lbs)</div><input id="inp-weight" class="field-input" type="number" step="0.1" placeholder="e.g. 191.5" /></div>
         <div class="full-width"><div class="field-label">Note (optional)</div><input id="inp-note" class="field-input" placeholder="e.g. post-soccer, feeling good..." /></div>
       </div>
       <button class="btn-primary" id="btn-log">Log Weight</button>
@@ -259,8 +266,7 @@
     <button class="nav-btn"        onclick="setScreen('workout')"><span class="nav-icon">💪</span><span class="nav-label">Workout</span></button>
     <button class="nav-btn"        onclick="setScreen('history')"><span class="nav-icon">📋</span><span class="nav-label">History</span></button>
   </nav>
-
-</div><!-- end #app -->
+</div>
 
 <div id="install-banner">
   <p><strong>Install Saba Fit</strong><br>Add to home screen for the full app experience</p>
@@ -269,19 +275,80 @@
 </div>
 
 <script>
+// ── SUPABASE CONFIG ───────────────────────────────────────────────────────────
+var SB_URL = 'https://iuayhmylmsnnczybpxoy.supabase.co';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml1YXlobXlsbXNubmN6eWJweG95Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4MjAzODcsImV4cCI6MjA5MTM5NjM4N30.zWdOzbMMhbNblxpw0vqEeaNjU22vnad_x_QwQulLfgc';
+
+var HEADERS = {
+  'Content-Type': 'application/json',
+  'apikey': SB_KEY,
+  'Authorization': 'Bearer ' + SB_KEY,
+  'Prefer': 'resolution=merge-duplicates'
+};
+
+// ── SUPABASE API ──────────────────────────────────────────────────────────────
+async function sbGet(table) {
+  try {
+    var r = await fetch(SB_URL+'/rest/v1/'+table+'?select=*&order=date.asc', {headers: HEADERS});
+    if (!r.ok) return null;
+    return await r.json();
+  } catch(e) { return null; }
+}
+
+async function sbUpsert(table, data) {
+  try {
+    var r = await fetch(SB_URL+'/rest/v1/'+table, {
+      method: 'POST',
+      headers: Object.assign({}, HEADERS, {'Prefer': 'resolution=merge-duplicates,return=minimal'}),
+      body: JSON.stringify(data)
+    });
+    return r.ok;
+  } catch(e) { return false; }
+}
+
+async function sbDelete(table, col, val) {
+  try {
+    var r = await fetch(SB_URL+'/rest/v1/'+table+'?'+col+'=eq.'+encodeURIComponent(val), {
+      method: 'DELETE',
+      headers: HEADERS
+    });
+    return r.ok;
+  } catch(e) { return false; }
+}
+
+async function sbGetSessions() {
+  try {
+    var r = await fetch(SB_URL+'/rest/v1/sessions?select=*&order=timestamp.desc', {headers: HEADERS});
+    if (!r.ok) return null;
+    return await r.json();
+  } catch(e) { return null; }
+}
+
+// ── SYNC BAR ──────────────────────────────────────────────────────────────────
+var syncTimer = null;
+function showSync(state, msg) {
+  var bar = document.getElementById('sync-bar');
+  bar.textContent = msg;
+  bar.className = '';
+  bar.classList.add(state);
+  clearTimeout(syncTimer);
+  if (state !== 'syncing') {
+    syncTimer = setTimeout(function(){ bar.className = ''; bar.style.display = 'none'; }, 2500);
+  }
+}
+
 // ── PIN ───────────────────────────────────────────────────────────────────────
 var CORRECT_PIN = '2244';
-var pinEntry    = '';
+var pinEntry = '';
 
 function unlock() {
   document.getElementById('pin-screen').classList.add('gone');
   document.getElementById('app').classList.add('show');
-  // persist for this browser session
-  try { sessionStorage.setItem('sf_ok','1'); } catch(e){}
+  try { sessionStorage.setItem('sf_ok','1'); } catch(e) {}
+  initApp();
 }
 
-// If already unlocked this session, skip PIN immediately
-try { if (sessionStorage.getItem('sf_ok')==='1') unlock(); } catch(e){}
+try { if (sessionStorage.getItem('sf_ok')==='1') unlock(); } catch(e) {}
 
 function pp(digit) {
   if (pinEntry.length >= 4) return;
@@ -289,39 +356,30 @@ function pp(digit) {
   renderDots(false);
   if (pinEntry.length === 4) setTimeout(checkPin, 150);
 }
-
-function pd() {
-  pinEntry = pinEntry.slice(0,-1);
-  renderDots(false);
-}
-
+function pd() { pinEntry = pinEntry.slice(0,-1); renderDots(false); }
 function renderDots(err) {
   for (var i=0;i<4;i++) {
     var dot = document.getElementById('d'+i);
     dot.className = 'pin-dot';
-    if (err)             dot.classList.add('error');
-    else if (i<pinEntry.length) dot.classList.add('filled');
+    if (err) dot.classList.add('error');
+    else if (i < pinEntry.length) dot.classList.add('filled');
   }
 }
-
 function checkPin() {
-  if (pinEntry === CORRECT_PIN) {
-    unlock();
-  } else {
+  if (pinEntry === CORRECT_PIN) { unlock(); }
+  else {
     renderDots(true);
     document.getElementById('pin-err').textContent = 'Incorrect PIN — try again';
-    setTimeout(function() {
-      pinEntry = '';
-      renderDots(false);
+    setTimeout(function(){
+      pinEntry = ''; renderDots(false);
       document.getElementById('pin-err').textContent = '';
     }, 1200);
   }
 }
 
-// ── DATA ──────────────────────────────────────────────────────────────────────
-var STORAGE_KEY  = 'saba_weights_v3';
-var STORAGE_KEY_OLD = 'saba_weights_v2';
-var SESSIONS_KEY = 'saba_sessions_v1';
+// ── CONSTANTS ─────────────────────────────────────────────────────────────────
+var LOCAL_W  = 'saba_weights_v3';
+var LOCAL_S  = 'saba_sessions_v1';
 var START_WEIGHT = 200;
 var GOAL_WEIGHT  = 180;
 
@@ -339,66 +397,97 @@ var SEED = [
 ];
 
 var WARMUP = [
-  {name:'Treadmill Walk',sets:'5 mins',  reps:'2.8 mph, flat',     icon:'🚶',cue:"Easy pace — this wakes up your joints, not your muscles. Keep it genuinely light. This is preparation, not exercise."},
-  {name:'Hip Circles',   sets:'2 rounds',reps:'10 each direction', icon:'🔄',cue:"Hold the power tower for balance. Slow, controlled circles — feel the hip socket open up. Clockwise 10, then counter-clockwise 10. Your left hip especially needs this."}
+  {name:'Treadmill Walk',sets:'5 mins',  reps:'2.8 mph, flat',    icon:'🚶',cue:"Easy pace — this wakes up your joints, not your muscles. Keep it genuinely light. This is preparation, not exercise."},
+  {name:'Hip Circles',   sets:'2 rounds',reps:'10 each direction',icon:'🔄',cue:"Hold the power tower for balance. Slow, controlled circles — feel the hip socket open up. Clockwise 10, then counter-clockwise 10. Your left hip especially needs this."}
 ];
 
 var WORKOUTS = {
   A:{color:'#e8500a',accent:'#ff7a3d',exercises:[
     {name:'Dead Hang',               sets:'2 sets',     reps:'30–45 sec',             icon:'🏋️',muscles:'Grip · Lats · Spine',           cue:"Grip the power tower bar, let your body hang fully. Relax the shoulders down — this decompresses the spine. Breathe steadily. Don't kip or swing."},
-    {name:'KB Goblet Squat',         sets:'3 sets',     reps:'12 reps',               icon:'🏅',muscles:'Quads · Glutes · Core',          cue:"Hold the 30 lb KB at your chest. Feet shoulder-width, toes slightly out. Descend slowly (3 counts down). Don't force depth if your left hip talks back — stop where it's comfortable."},
+    {name:'KB Goblet Squat',         sets:'3 sets',     reps:'12 reps',               icon:'🏅',muscles:'Quads · Glutes · Core',          cue:"Hold the 30 lb KB at your chest. Feet shoulder-width, toes slightly out. Descend slowly (3 counts down). Don't force depth if your left hip talks back."},
     {name:'KB One-Arm Row',          sets:'3 sets',     reps:'12 reps / arm',         icon:'💪',muscles:'Lats · Rhomboids · Biceps',      cue:"Brace your free hand on the bench. Pull the 30 lb KB to your hip — not your shoulder. Keep your back flat. Squeeze at the top for 1 second."},
     {name:'Power Tower Knee Raises', sets:'3 sets',     reps:'12 reps',               icon:'⬆️',muscles:'Lower Abs · Hip Flexors · Core', cue:"Arms on the pads, back flat against the pad. Raise knees slowly to 90°, hold 1 second, lower slowly. No swinging — if you're swinging, your core isn't working."},
-    {name:'Push-Ups (Tower Handles)',sets:'2 sets',     reps:'To comfortable failure',icon:'🤜',muscles:'Chest · Triceps · Shoulders',    cue:"Use the low handles on the power tower. Body straight from head to heels. Slow descent (3 counts), explosive push up. Stop 1–2 reps before your form breaks."},
+    {name:'Push-Ups (Tower Handles)',sets:'2 sets',     reps:'To comfortable failure',icon:'🤜',muscles:'Chest · Triceps · Shoulders',    cue:"Body straight from head to heels. Slow descent (3 counts), explosive push up. Stop 1–2 reps before your form breaks."},
     {name:'Incline Walk Finisher',   sets:'1 round',    reps:'20 mins',               icon:'🚶',muscles:'Glutes · Calves · Cardio',       cue:'Incline: 5.0 | Speed: 3.5 mph. Hands off the rails — this is the fat burner. Stay in it for the full 20.',finisher:true}
   ]},
   B:{color:'#0a7ae8',accent:'#3da8ff',exercises:[
     {name:'Warm-Up Walk',            sets:'1 round',    reps:'5 mins',                icon:'🚶',muscles:'Full Body Warm-Up',              cue:"Speed: 3.5 mph, flat. This isn't optional — your joints need this before sprinting."},
-    {name:'10.5 mph Sprints',        sets:'8–10 rounds',reps:'30s sprint / 90s walk', icon:'⚡',muscles:'Full Body · VO2 Max · Fat Burn',  cue:"30 sec @ 10.5 mph — go hard. Then 90 sec @ 3.0 mph recovery walk. That recovery is sacred — use all of it.",finisher:true},
-    {name:'KB Halos',                sets:'3 sets',     reps:'10 reps each direction',icon:'🔄',muscles:'Shoulders · Core · Mobility',     cue:'Hold the 30 lb KB by the horns at chest height. Circle it slowly around your head — clockwise 10 times, then counter-clockwise 10.'},
-    {name:'Push-Ups (Tower Handles)',sets:'3 sets',     reps:'To failure',            icon:'🤜',muscles:'Chest · Triceps · Shoulders',    cue:"Same as Workout A but you're more fatigued here — that's the point. Keep form tight. The moment your hips sag, the set is done."},
-    {name:'Cool Down + Stretch',     sets:'1 round',    reps:'5 mins walk + stretch', icon:'🧘',muscles:'Recovery · Flexibility',          cue:"5 mins slow walk @ 2.5 mph. Then: hamstring stretch 30 sec each leg, hip flexor lunge stretch 30 sec each side. Don't skip this."}
+    {name:'10.5 mph Sprints',        sets:'8–10 rounds',reps:'30s sprint / 90s walk', icon:'⚡',muscles:'Full Body · VO2 Max · Fat Burn',  cue:"30 sec @ 10.5 mph — go hard. Then 90 sec @ 3.0 mph recovery walk. Use all of it.",finisher:true},
+    {name:'KB Halos',                sets:'3 sets',     reps:'10 reps each direction',icon:'🔄',muscles:'Shoulders · Core · Mobility',     cue:'Hold the 30 lb KB by the horns at chest height. Circle it slowly around your head — clockwise 10, counter-clockwise 10.'},
+    {name:'Push-Ups (Tower Handles)',sets:'3 sets',     reps:'To failure',            icon:'🤜',muscles:'Chest · Triceps · Shoulders',    cue:"More fatigued here — that's the point. Keep form tight. The moment your hips sag, the set is done."},
+    {name:'Cool Down + Stretch',     sets:'1 round',    reps:'5 mins walk + stretch', icon:'🧘',muscles:'Recovery · Flexibility',          cue:"5 mins slow walk @ 2.5 mph. Hamstring stretch 30 sec each leg, hip flexor lunge 30 sec each side. Don't skip this."}
   ]}
 };
 
-// ── STORAGE ───────────────────────────────────────────────────────────────────
-function loadWeights() {
-  try {
-    // 1. Already on new key — use it, never touch seed
-    var s = localStorage.getItem(STORAGE_KEY);
-    if (s) return JSON.parse(s);
-    // 2. Migrate from old key, merge any missing seed entries
-    var old = localStorage.getItem(STORAGE_KEY_OLD);
-    if (old) {
-      var migrated = JSON.parse(old);
-      SEED.forEach(function(entry) {
-        if (!migrated.some(function(w){return w.date===entry.date;})) migrated.push(entry);
-      });
-      migrated.sort(function(a,b){return new Date('2026 '+a.date)-new Date('2026 '+b.date);});
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
-      return migrated;
-    }
-    // 3. Truly first visit — seed and save
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED));
-    return SEED.map(function(x){return Object.assign({},x);});
-  } catch(e) { return SEED.map(function(x){return Object.assign({},x);}); }
-}
-function saveWeights(d)  { try{localStorage.setItem(STORAGE_KEY,JSON.stringify(d));}catch(e){} }
-function loadSessions()  { try{var s=localStorage.getItem(SESSIONS_KEY);return s?JSON.parse(s):[];}catch(e){return[];} }
-function saveSessions(d) { try{localStorage.setItem(SESSIONS_KEY,JSON.stringify(d));}catch(e){} }
+// ── LOCAL CACHE ───────────────────────────────────────────────────────────────
+function localWeights()  { try{var s=localStorage.getItem(LOCAL_W);return s?JSON.parse(s):null;}catch(e){return null;} }
+function cacheWeights(d) { try{localStorage.setItem(LOCAL_W,JSON.stringify(d));}catch(e){} }
+function localSessions() { try{var s=localStorage.getItem(LOCAL_S);return s?JSON.parse(s):null;}catch(e){return null;} }
+function cacheSessions(d){ try{localStorage.setItem(LOCAL_S,JSON.stringify(d));}catch(e){} }
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
-var weights        = loadWeights();
-var sessions       = loadSessions();
+var weights        = [];
+var sessions       = [];
 var currentWorkout = 'A';
 var doneWarmup     = {};
 var doneExercises  = {};
 var sessionSaved   = false;
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
-function todayStr() {
-  var d=new Date(), mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return mo[d.getMonth()]+' '+d.getDate();
+// ── INIT ──────────────────────────────────────────────────────────────────────
+async function initApp() {
+  // Load from cache immediately so UI is instant
+  var cached = localWeights();
+  weights = cached || SEED.map(function(x){return Object.assign({},x);});
+  var cachedS = localSessions();
+  sessions = cachedS || [];
+  renderTracker();
+  renderWorkout();
+
+  // Then sync from Supabase in background
+  showSync('syncing', '↑↓ Syncing with cloud...');
+  await syncFromCloud();
+}
+
+async function syncFromCloud() {
+  // Weights
+  var cloudW = await sbGet('weights');
+  if (cloudW && cloudW.length > 0) {
+    // Merge cloud + local — cloud wins on conflicts
+    var merged = cloudW.map(function(r){return {date:r.date,weight:parseFloat(r.weight),note:r.note||''};});
+    // Add any local entries not yet in cloud
+    var localW = localWeights() || [];
+    localW.forEach(function(lw){
+      if (!merged.some(function(m){return m.date===lw.date;})) {
+        merged.push(lw);
+        sbUpsert('weights',[{date:lw.date,weight:lw.weight,note:lw.note}]);
+      }
+    });
+    merged.sort(function(a,b){return new Date('2026 '+a.date)-new Date('2026 '+b.date);});
+    weights = merged;
+    cacheWeights(weights);
+    renderTracker();
+  } else if (cloudW && cloudW.length === 0) {
+    // Cloud is empty — seed it with our data
+    var toSeed = localWeights() || SEED;
+    await sbUpsert('weights', toSeed.map(function(w){return {date:w.date,weight:w.weight,note:w.note};}));
+    weights = toSeed;
+    cacheWeights(weights);
+    renderTracker();
+  }
+
+  // Sessions
+  var cloudS = await sbGetSessions();
+  if (cloudS) {
+    sessions = cloudS.map(function(r){
+      return {id:r.id,timestamp:r.timestamp,date:r.date,workout:r.workout,
+              warmup:r.warmup||[],completed:r.completed||[],
+              total:r.total,doneCount:r.done_count};
+    });
+    cacheSessions(sessions);
+    if (document.getElementById('screen-history').classList.contains('active')) renderSessionHistory();
+  }
+
+  showSync('synced', '✓ Synced');
 }
 
 // ── SCREENS ───────────────────────────────────────────────────────────────────
@@ -407,7 +496,7 @@ function setScreen(name) {
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
   document.getElementById('screen-'+name).classList.add('active');
   document.querySelectorAll('.nav-btn')[{track:0,workout:1,history:2}[name]].classList.add('active');
-  var wc=WORKOUTS[currentWorkout].color;
+  var wc = WORKOUTS[currentWorkout].color;
   document.getElementById('header-title').innerHTML = {
     track:  'Weight <span style="color:var(--orange)">Tracker</span>',
     workout:'Training <span style="color:'+wc+'">Protocol</span>',
@@ -426,8 +515,8 @@ function setWorkout(key) {
   renderWorkout();
 }
 
-function toggleWarmup(i)   { doneWarmup[i]=!doneWarmup[i];     renderWorkout(); checkComplete(); }
-function toggleExercise(i) { doneExercises[i]=!doneExercises[i]; renderWorkout(); checkComplete(); }
+function toggleWarmup(i)    { doneWarmup[i]=!doneWarmup[i];      renderWorkout(); checkComplete(); }
+function toggleExercise(i)  { doneExercises[i]=!doneExercises[i]; renderWorkout(); checkComplete(); }
 
 function toggleExpand(pfx,idx) {
   var body=document.getElementById(pfx+'-body-'+idx), chev=document.getElementById(pfx+'-chev-'+idx);
@@ -445,17 +534,29 @@ function checkComplete() {
   if (dW+dE===total && !sessionSaved) saveSession();
 }
 
-function saveSession() {
+async function saveSession() {
   var w=WORKOUTS[currentWorkout];
   var wuArr=WARMUP.map(function(_,i){return !!doneWarmup[i];});
   var exArr=w.exercises.map(function(_,i){return !!doneExercises[i];});
-  var s={id:Date.now(),timestamp:Date.now(),date:todayStr(),workout:currentWorkout,
-         warmup:wuArr,completed:exArr,
-         total:WARMUP.length+w.exercises.length,
-         doneCount:wuArr.filter(Boolean).length+exArr.filter(Boolean).length};
-  sessions=[s].concat(sessions); saveSessions(sessions); sessionSaved=true;
+  var s={
+    id:Date.now(), timestamp:Date.now(), date:todayStr(), workout:currentWorkout,
+    warmup:wuArr, completed:exArr,
+    total:WARMUP.length+w.exercises.length,
+    doneCount:wuArr.filter(Boolean).length+exArr.filter(Boolean).length
+  };
+  sessions=[s].concat(sessions);
+  cacheSessions(sessions);
+  sessionSaved=true;
   var b=document.getElementById('complete-banner');
   b.classList.add('show'); b.scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  // Save to Supabase
+  showSync('syncing','↑ Saving session...');
+  var ok = await sbUpsert('sessions',[{
+    id:s.id, timestamp:s.timestamp, date:s.date, workout:s.workout,
+    warmup:s.warmup, completed:s.completed, total:s.total, done_count:s.doneCount
+  }]);
+  showSync(ok?'synced':'error', ok?'✓ Session saved':'⚠ Saved offline');
 }
 
 function renderWorkout() {
@@ -466,7 +567,6 @@ function renderWorkout() {
   document.getElementById('session-fill').style.width=((done/total)*100)+'%';
   document.getElementById('session-fill').style.background='linear-gradient(90deg,'+w.color+','+w.accent+')';
 
-  // Warmup
   var wuH='<div class="section-label">Warm-Up</div>';
   WARMUP.forEach(function(wu,i){
     var ok=!!doneWarmup[i];
@@ -486,7 +586,6 @@ function renderWorkout() {
   });
   document.getElementById('warmup-list').innerHTML=wuH;
 
-  // Exercises
   var exH='<div class="section-label" style="margin-top:6px">Main Block</div>';
   w.exercises.forEach(function(ex,i){
     var ok=!!doneExercises[i];
@@ -537,7 +636,7 @@ function renderSessionHistory() {
   if(!sessions.length){list.innerHTML='<div class="wh-empty">No sessions logged yet.<br>Complete a workout to see your history here.</div>';return;}
   var html='';
   sessions.forEach(function(s,si){
-    var w=WORKOUTS[s.workout], rows='';
+    var w=WORKOUTS[s.workout],rows='';
     WARMUP.forEach(function(wu,i){var ok=s.warmup?!!s.warmup[i]:false;
       rows+='<div class="wh-ex-row"><span class="wh-ex-icon">'+wu.icon+'</span><span class="wh-ex-name">'+wu.name+'</span><span class="'+(ok?'wh-check':'wh-skip')+'">'+(ok?'✓':'—')+'</span></div>';});
     w.exercises.forEach(function(ex,i){var ok=!!s.completed[i];
@@ -562,9 +661,10 @@ function toggleSR(idx){
   if(!open){b.classList.add('open');if(c)c.textContent='▲';}
 }
 
-function delSession(id){
+async function delSession(id) {
   sessions=sessions.filter(function(s){return s.id!==id;});
-  saveSessions(sessions); renderSessionHistory();
+  cacheSessions(sessions); renderSessionHistory();
+  await sbDelete('sessions','id',id);
 }
 
 // ── WEIGHT TRACKER ────────────────────────────────────────────────────────────
@@ -619,25 +719,40 @@ function renderWeightHistory(){
   document.getElementById('history-list').innerHTML=html;
 }
 
-function logWeight(){
+async function logWeight(){
   var date=document.getElementById('inp-date').value.trim();
   var val=parseFloat(document.getElementById('inp-weight').value);
   var note=document.getElementById('inp-note').value.trim();
   if(!date||isNaN(val))return;
+
   weights=weights.filter(function(w){return w.date!==date;});
   weights.push({date:date,weight:val,note:note});
-  saveWeights(weights); renderTracker();
+  weights.sort(function(a,b){return new Date('2026 '+a.date)-new Date('2026 '+b.date);});
+  cacheWeights(weights); renderTracker();
+
   document.getElementById('inp-date').value='';
   document.getElementById('inp-weight').value='';
   document.getElementById('inp-note').value='';
   var btn=document.getElementById('btn-log');
   btn.textContent='✓ Saved!'; btn.classList.add('saved');
   setTimeout(function(){btn.textContent='Log Weight';btn.classList.remove('saved');},2000);
+
+  // Sync to Supabase
+  showSync('syncing','↑ Saving weight...');
+  var ok=await sbUpsert('weights',[{date:date,weight:val,note:note}]);
+  showSync(ok?'synced':'error',ok?'✓ Weight saved to cloud':'⚠ Saved offline only');
 }
 
-function deleteWeight(date){
+async function deleteWeight(date){
   weights=weights.filter(function(w){return w.date!==date;});
-  saveWeights(weights); renderTracker();
+  cacheWeights(weights); renderTracker();
+  await sbDelete('weights','date',encodeURIComponent(date));
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function todayStr(){
+  var d=new Date(),mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return mo[d.getMonth()]+' '+d.getDate();
 }
 
 // ── PWA ───────────────────────────────────────────────────────────────────────
@@ -651,11 +766,7 @@ document.getElementById('btn-install').addEventListener('click',async function()
   deferredPrompt.prompt(); await deferredPrompt.userChoice;
   deferredPrompt=null; document.getElementById('install-banner').classList.remove('show');
 });
-
-// ── INIT ──────────────────────────────────────────────────────────────────────
 document.getElementById('btn-log').addEventListener('click',logWeight);
-renderTracker();
-renderWorkout();
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){});}
 </script>
 </body>
