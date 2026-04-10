@@ -375,7 +375,7 @@ async function sbUpsert(table, data) {
 
 async function sbDelete(table, col, val) {
   try {
-    var r = await fetch(SB_URL+'/rest/v1/'+table+'?'+col+'=eq.'+encodeURIComponent(val), {
+    var r = await fetch(SB_URL+'/rest/v1/'+table+'?'+col+'=eq.'+val, {
       method: 'DELETE',
       headers: HEADERS
     });
@@ -965,7 +965,9 @@ async function logWeight(){
 async function deleteWeight(date){
   weights=weights.filter(function(w){return w.date!==date;});
   cacheWeights(weights); renderTracker();
-  await sbDelete('weights','date',encodeURIComponent(date));
+  showSync('syncing','↑ Deleting...');
+  var ok = await sbDelete('weights','date',date);
+  showSync(ok?'synced':'error', ok?'✓ Deleted':'⚠ Delete failed');
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
@@ -986,7 +988,12 @@ document.getElementById('btn-install').addEventListener('click',async function()
   deferredPrompt=null; document.getElementById('install-banner').classList.remove('show');
 });
 document.getElementById('btn-log').addEventListener('click',logWeight);
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){});}
+// Unregister any existing service workers — Supabase handles sync, SW caching causes stale data
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function(regs) {
+    regs.forEach(function(reg) { reg.unregister(); });
+  });
+}
 </script>
 </body>
 </html>
