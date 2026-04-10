@@ -411,11 +411,11 @@ var pinEntry = '';
 function unlock() {
   document.getElementById('pin-screen').classList.add('gone');
   document.getElementById('app').classList.add('show');
-  try { sessionStorage.setItem('sf_ok','1'); } catch(e) {}
+  try { localStorage.setItem('sf_ok','1'); } catch(e) {}
   initApp();
 }
 
-try { if (sessionStorage.getItem('sf_ok')==='1') unlock(); } catch(e) {}
+try { if (localStorage.getItem('sf_ok')==='1') unlock(); } catch(e) {}
 
 function pp(digit) {
   if (pinEntry.length >= 4) return;
