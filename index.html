@@ -357,19 +357,28 @@ var HEADERS = {
 // ── SUPABASE API ──────────────────────────────────────────────────────────────
 async function sbGet(table) {
   try {
-    var r = await fetch(SB_URL+'/rest/v1/'+table+'?select=*&order=date.asc', {headers: HEADERS});
+    showDebug('sbGet: fetching ' + table + '...');
+    var controller = new AbortController();
+    var timeout = setTimeout(function(){ controller.abort(); }, 8000);
+    var r = await fetch(SB_URL+'/rest/v1/'+table+'?select=*&order=date.asc', {
+      headers: HEADERS,
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+    showDebug('sbGet: got HTTP ' + r.status);
     if (!r.ok) {
-      showDebug('sbGet '+table+' HTTP '+r.status);
+      showDebug('sbGet ERROR: HTTP ' + r.status);
       return null;
     }
     var data = await r.json();
     if (!Array.isArray(data)) {
-      showDebug('sbGet '+table+' not array: '+JSON.stringify(data).substring(0,80));
+      showDebug('sbGet: not array: ' + JSON.stringify(data).substring(0,60));
       return null;
     }
+    showDebug('sbGet: success — ' + data.length + ' rows');
     return data;
   } catch(e) {
-    showDebug('sbGet '+table+' error: '+e.message);
+    showDebug('sbGet CATCH: ' + e.message);
     return null;
   }
 }
@@ -409,7 +418,12 @@ function showDebug(msg) {
   var el = document.getElementById('debug-card');
   if (!el) return;
   el.style.display = 'block';
-  el.innerHTML = '<div class="card-label">Debug</div><div style="font-size:11px;color:#ff7a3d;word-break:break-all;line-height:1.6">' + msg + '</div>';
+  var existing = el.querySelector('.debug-msgs');
+  if (!existing) {
+    el.innerHTML = '<div class="card-label">Debug</div><div class="debug-msgs" style="font-size:11px;color:#ff7a3d;word-break:break-all;line-height:1.8"></div>';
+    existing = el.querySelector('.debug-msgs');
+  }
+  existing.innerHTML += msg + '<br>';
 }
 function showSync(state, msg) {
   var bar = document.getElementById('sync-bar');
