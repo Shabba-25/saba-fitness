@@ -237,6 +237,7 @@
       <button class="btn-primary" id="btn-log">Log Weight</button>
     </div>
     <div class="card"><div class="card-label">History</div><div id="history-list"></div></div>
+    <div class="card" id="debug-card" style="display:none;border-color:#e8500a"></div>
   </div>
 
   <!-- WORKOUT SCREEN -->
@@ -357,9 +358,20 @@ var HEADERS = {
 async function sbGet(table) {
   try {
     var r = await fetch(SB_URL+'/rest/v1/'+table+'?select=*&order=date.asc', {headers: HEADERS});
-    if (!r.ok) return null;
-    return await r.json();
-  } catch(e) { return null; }
+    if (!r.ok) {
+      showDebug('sbGet '+table+' HTTP '+r.status);
+      return null;
+    }
+    var data = await r.json();
+    if (!Array.isArray(data)) {
+      showDebug('sbGet '+table+' not array: '+JSON.stringify(data).substring(0,80));
+      return null;
+    }
+    return data;
+  } catch(e) {
+    showDebug('sbGet '+table+' error: '+e.message);
+    return null;
+  }
 }
 
 async function sbUpsert(table, data) {
@@ -393,6 +405,12 @@ async function sbGetSessions() {
 
 // ── SYNC BAR ──────────────────────────────────────────────────────────────────
 var syncTimer = null;
+function showDebug(msg) {
+  var el = document.getElementById('debug-card');
+  if (!el) return;
+  el.style.display = 'block';
+  el.innerHTML = '<div class="card-label">Debug</div><div style="font-size:11px;color:#ff7a3d;word-break:break-all;line-height:1.6">' + msg + '</div>';
+}
 function showSync(state, msg) {
   var bar = document.getElementById('sync-bar');
   bar.textContent = msg;
