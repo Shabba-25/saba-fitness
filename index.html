@@ -487,10 +487,24 @@ var WORKOUTS = {
 };
 
 // ── LOCAL CACHE ───────────────────────────────────────────────────────────────
-function localWeights()  { try{var s=localStorage.getItem(LOCAL_W);return s?JSON.parse(s):null;}catch(e){return null;} }
-function cacheWeights(d) { try{localStorage.setItem(LOCAL_W,JSON.stringify(d));}catch(e){} }
-function localSessions() { try{var s=localStorage.getItem(LOCAL_S);return s?JSON.parse(s):null;}catch(e){return null;} }
-function cacheSessions(d){ try{localStorage.setItem(LOCAL_S,JSON.stringify(d));}catch(e){} }
+function localWeights() {
+  try {
+    var s = localStorage.getItem(LOCAL_W);
+    if (!s) return null;
+    var parsed = JSON.parse(s);
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : null;
+  } catch(e) { return null; }
+}
+function cacheWeights(d) { try{if(Array.isArray(d))localStorage.setItem(LOCAL_W,JSON.stringify(d));}catch(e){} }
+function localSessions() {
+  try {
+    var s = localStorage.getItem(LOCAL_S);
+    if (!s) return null;
+    var parsed = JSON.parse(s);
+    return Array.isArray(parsed) ? parsed : null;
+  } catch(e) { return null; }
+}
+function cacheSessions(d){ try{if(Array.isArray(d))localStorage.setItem(LOCAL_S,JSON.stringify(d));}catch(e){} }
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
 var weights        = [];
@@ -518,13 +532,11 @@ async function initApp() {
 async function syncFromCloud() {
   // ── Weights ──
   var cloudW = await sbGet('weights');
-  if (cloudW === null) {
-    // Network error — keep local cache, show warning
+  if (cloudW === null || !Array.isArray(cloudW)) {
     showSync('error', '⚠ Offline — using local data');
     return;
   }
   if (cloudW.length > 0) {
-    // Merge: start from cloud, add any local-only entries
     var merged = cloudW.map(function(r){return {date:r.date,weight:parseFloat(r.weight),note:r.note||''};});
     var localW = localWeights() || [];
     localW.forEach(function(lw){
@@ -538,22 +550,15 @@ async function syncFromCloud() {
     cacheWeights(weights);
     renderTracker();
   } else {
-    // Cloud empty — push local data up, never wipe it
     var toSeed = localWeights();
     if (!toSeed || toSeed.length === 0) toSeed = SEED;
     var ok = await sbUpsert('weights', toSeed.map(function(w){return {date:w.date,weight:w.weight,note:w.note};}));
-    if (ok) {
-      weights = toSeed;
-      cacheWeights(weights);
-      renderTracker();
-    }
-    // If upsert failed, weights already loaded from local cache in initApp — do nothing
+    if (ok) { weights = toSeed; cacheWeights(weights); renderTracker(); }
   }
 
   // ── Sessions ──
   var cloudS = await sbGetSessions();
-  if (cloudS === null) {
-    // Network error — keep local sessions
+  if (cloudS === null || !Array.isArray(cloudS)) {
     showSync('error', '⚠ Offline — using local data');
     return;
   }
@@ -566,7 +571,6 @@ async function syncFromCloud() {
     cacheSessions(sessions);
     if (document.getElementById('screen-history').classList.contains('active')) renderSessionHistory();
   }
-  // If cloud sessions empty, keep local sessions — don't overwrite
 
   showSync('synced', '✓ Synced');
 }
