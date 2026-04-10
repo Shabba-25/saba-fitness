@@ -449,12 +449,16 @@ async function initApp() {
 }
 
 async function syncFromCloud() {
-  // Weights
+  // ── Weights ──
   var cloudW = await sbGet('weights');
-  if (cloudW && cloudW.length > 0) {
-    // Merge cloud + local — cloud wins on conflicts
+  if (cloudW === null) {
+    // Network error — keep local cache, show warning
+    showSync('error', '⚠ Offline — using local data');
+    return;
+  }
+  if (cloudW.length > 0) {
+    // Merge: start from cloud, add any local-only entries
     var merged = cloudW.map(function(r){return {date:r.date,weight:parseFloat(r.weight),note:r.note||''};});
-    // Add any local entries not yet in cloud
     var localW = localWeights() || [];
     localW.forEach(function(lw){
       if (!merged.some(function(m){return m.date===lw.date;})) {
@@ -466,18 +470,27 @@ async function syncFromCloud() {
     weights = merged;
     cacheWeights(weights);
     renderTracker();
-  } else if (cloudW && cloudW.length === 0) {
-    // Cloud is empty — seed it with our data
-    var toSeed = localWeights() || SEED;
-    await sbUpsert('weights', toSeed.map(function(w){return {date:w.date,weight:w.weight,note:w.note};}));
-    weights = toSeed;
-    cacheWeights(weights);
-    renderTracker();
+  } else {
+    // Cloud empty — push local data up, never wipe it
+    var toSeed = localWeights();
+    if (!toSeed || toSeed.length === 0) toSeed = SEED;
+    var ok = await sbUpsert('weights', toSeed.map(function(w){return {date:w.date,weight:w.weight,note:w.note};}));
+    if (ok) {
+      weights = toSeed;
+      cacheWeights(weights);
+      renderTracker();
+    }
+    // If upsert failed, weights already loaded from local cache in initApp — do nothing
   }
 
-  // Sessions
+  // ── Sessions ──
   var cloudS = await sbGetSessions();
-  if (cloudS) {
+  if (cloudS === null) {
+    // Network error — keep local sessions
+    showSync('error', '⚠ Offline — using local data');
+    return;
+  }
+  if (cloudS.length > 0) {
     sessions = cloudS.map(function(r){
       return {id:r.id,timestamp:r.timestamp,date:r.date,workout:r.workout,
               warmup:r.warmup||[],completed:r.completed||[],
@@ -486,6 +499,7 @@ async function syncFromCloud() {
     cacheSessions(sessions);
     if (document.getElementById('screen-history').classList.contains('active')) renderSessionHistory();
   }
+  // If cloud sessions empty, keep local sessions — don't overwrite
 
   showSync('synced', '✓ Synced');
 }
