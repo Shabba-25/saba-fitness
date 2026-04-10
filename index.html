@@ -550,26 +550,25 @@ var sessionSaved   = false;
 async function initApp() {
   showDebug('Step 1: initApp started');
 
-  // Load from local cache
   var cached = localWeights();
-  showDebug('Step 2: localWeights = ' + (cached ? cached.length + ' entries' : 'null — will load from Supabase'));
+  showDebug('Step 2: localWeights = ' + (cached ? cached.length + ' entries' : 'null'));
 
   weights = cached || SEED.map(function(x){return Object.assign({},x);});
   var cachedS = localSessions();
   sessions = cachedS || [];
 
-  renderTracker();
-  renderWorkout();
+  showDebug('Step 3: attempting renders...');
+  try { renderTracker(); showDebug('Step 3a: renderTracker OK'); } catch(e) { showDebug('Step 3a FAIL: '+e.message); }
+  try { renderWorkout(); showDebug('Step 3b: renderWorkout OK'); } catch(e) { showDebug('Step 3b FAIL: '+e.message); }
 
-  // Always sync from Supabase regardless of cache state
-  showDebug('Step 3: attempting Supabase sync...');
-  showSync('syncing', '↑↓ Syncing with cloud...');
+  showDebug('Step 4: starting Supabase sync...');
+  showSync('syncing', '↑↓ Syncing...');
 
   try {
     await syncFromCloud();
-    showDebug('Step 4: sync complete — weights now: ' + weights.length);
+    showDebug('Step 5: sync done — weights: ' + weights.length);
   } catch(e) {
-    showDebug('Step 4 ERROR: ' + e.message);
+    showDebug('Step 5 ERROR: ' + e.message);
   }
 }
 
@@ -808,9 +807,16 @@ function renderWorkout() {
   var w=WORKOUTS[currentWorkout], total=WARMUP.length+w.exercises.length;
   var dW=Object.values(doneWarmup).filter(Boolean).length;
   var dE=Object.values(doneExercises).filter(Boolean).length, done=dW+dE;
-  document.getElementById('session-label').textContent=done+' / '+total;
-  document.getElementById('session-fill').style.width=((done/total)*100)+'%';
-  document.getElementById('session-fill').style.background='linear-gradient(90deg,'+w.color+','+w.accent+')';
+
+  var labelEl = document.getElementById('session-label');
+  var fillEl  = document.getElementById('session-fill');
+  var wuEl    = document.getElementById('warmup-list');
+  var exEl    = document.getElementById('exercise-list');
+  if (!labelEl || !fillEl || !wuEl || !exEl) return; // not rendered yet
+
+  labelEl.textContent=done+' / '+total;
+  fillEl.style.width=((done/total)*100)+'%';
+  fillEl.style.background='linear-gradient(90deg,'+w.color+','+w.accent+')';
 
   var wuH='<div class="section-label">Warm-Up</div>';
   WARMUP.forEach(function(wu,i){
@@ -829,7 +835,7 @@ function renderWorkout() {
       +'<button class="btn-done" style="'+bs+'" onclick="toggleWarmup('+i+')">'+(ok?'✓ Completed':'Mark as Done')+'</button>'
       +'</div></div>';
   });
-  document.getElementById('warmup-list').innerHTML=wuH;
+  wuEl.innerHTML=wuH;
 
   var exH='<div class="section-label" style="margin-top:6px">Main Block</div>';
   w.exercises.forEach(function(ex,i){
@@ -851,7 +857,7 @@ function renderWorkout() {
       +'<button class="btn-done" style="'+bs+'" onclick="toggleExercise('+i+')">'+(ok?'✓ Completed':'Mark as Done')+'</button>'
       +'</div></div>';
   });
-  document.getElementById('exercise-list').innerHTML=exH;
+  exEl.innerHTML=exH;
 }
 
 // ── SESSION HISTORY ───────────────────────────────────────────────────────────
