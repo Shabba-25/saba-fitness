@@ -33,6 +33,12 @@ echo "🔄  Syncing Capacitor..."
 cd "$CAP_DIR"
 npx cap sync android > /dev/null
 
+# Step 3.5 — fix Java version (cap sync resets this every time)
+echo "☕  Fixing Java version..."
+find "$CAP_DIR" -name "*.gradle" -o -name "*.gradle.kts" | xargs grep -rl "VERSION_21" 2>/dev/null | while read f; do
+  sed -i 's/VERSION_21/VERSION_17/g' "$f"
+done
+
 # Step 4 — build APK
 echo "🔨  Building APK..."
 cd "$CAP_DIR/android"
