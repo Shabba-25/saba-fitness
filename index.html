@@ -25,7 +25,25 @@
     input  { font-family:'Crimson Pro',Georgia,serif; }
     input:focus { outline:none; }
 
-    #header { position:sticky; top:0; z-index:100; background:#14142a; border-bottom:2px solid var(--surface2); padding:20px 20px 14px; }
+    /* PIN LOCK SCREEN */
+    #pin-screen { position:fixed; inset:0; z-index:999; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 20px; }
+    #pin-screen.hidden { display:none; }
+    .pin-logo { font-family:'Bebas Neue',sans-serif; font-size:42px; letter-spacing:2px; margin-bottom:6px; }
+    .pin-logo span { color:var(--orange); }
+    .pin-sub { font-size:12px; color:var(--dim); letter-spacing:3px; text-transform:uppercase; margin-bottom:48px; }
+    .pin-dots { display:flex; gap:16px; margin-bottom:40px; }
+    .pin-dot { width:16px; height:16px; border-radius:50%; border:2px solid var(--border); background:transparent; transition:all 0.15s; }
+    .pin-dot.filled { background:var(--orange); border-color:var(--orange); }
+    .pin-dot.error  { background:#e84a4a; border-color:#e84a4a; }
+    .pin-pad { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; width:260px; }
+    .pin-btn { padding:18px 0; border-radius:14px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:1px; transition:all 0.1s; }
+    .pin-btn:active { background:var(--surface2); transform:scale(0.95); }
+    .pin-btn.pin-del { font-family:'Crimson Pro',Georgia,serif; font-size:18px; color:var(--dim); }
+    .pin-error-msg { margin-top:20px; font-size:13px; color:#e84a4a; letter-spacing:1px; opacity:0; transition:opacity 0.3s; }
+    .pin-error-msg.show { opacity:1; }
+
+    #app-shell { display:none; }
+    #app-shell.unlocked { display:block; }
     .eyebrow { font-size:10px; letter-spacing:4px; color:var(--dim); text-transform:uppercase; margin-bottom:4px; }
     #header h1 { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:1px; line-height:1; }
 
@@ -137,11 +155,84 @@
     #install-banner p strong { color:var(--orange-light); }
     .btn-install { padding:8px 14px; background:var(--orange); color:#fff; border:none; border-radius:8px; font-size:13px; font-weight:700; white-space:nowrap; }
     .btn-dismiss { background:none; border:none; color:var(--dim); font-size:20px; padding:4px; }
+
+    /* PIN SCREEN */
+    #pin-screen { position:fixed; inset:0; z-index:999; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 20px; }
+    #pin-screen.hidden { display:none; }
+    .pin-logo { font-family:'Bebas Neue',sans-serif; font-size:42px; letter-spacing:2px; margin-bottom:6px; }
+    .pin-logo span { color:var(--orange); }
+    .pin-sub { font-size:12px; letter-spacing:3px; color:var(--dim); text-transform:uppercase; margin-bottom:48px; }
+    .pin-dots { display:flex; gap:16px; margin-bottom:40px; }
+    .pin-dot { width:16px; height:16px; border-radius:50%; background:var(--surface2); border:2px solid var(--border); transition:all 0.15s; }
+    .pin-dot.filled { background:var(--orange); border-color:var(--orange); }
+    .pin-dot.error  { background:#e83a3a; border-color:#e83a3a; }
+    .pin-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; width:100%; max-width:280px; }
+    .pin-btn { padding:20px 0; border-radius:14px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:1px; transition:all 0.1s; active:opacity:0.7; }
+    .pin-btn:active { background:var(--surface2); transform:scale(0.95); }
+    .pin-btn.zero { grid-column:2; }
+    .pin-btn.del  { background:transparent; border-color:transparent; color:var(--dim); font-size:20px; }
+    .pin-error-msg { font-size:13px; color:#e83a3a; margin-top:20px; height:20px; text-align:center; }
   </style>
 </head>
 <body>
 
-<div id="header">
+<!-- PIN SCREEN -->
+<div id="pin-screen">
+  <div class="pin-logo">Saba <span>Fit</span></div>
+  <div class="pin-sub">Enter PIN to continue</div>
+  <div class="pin-dots">
+    <div class="pin-dot" id="dot-0"></div>
+    <div class="pin-dot" id="dot-1"></div>
+    <div class="pin-dot" id="dot-2"></div>
+    <div class="pin-dot" id="dot-3"></div>
+  </div>
+  <div class="pin-grid">
+    <button class="pin-btn" onclick="pinPress('1')">1</button>
+    <button class="pin-btn" onclick="pinPress('2')">2</button>
+    <button class="pin-btn" onclick="pinPress('3')">3</button>
+    <button class="pin-btn" onclick="pinPress('4')">4</button>
+    <button class="pin-btn" onclick="pinPress('5')">5</button>
+    <button class="pin-btn" onclick="pinPress('6')">6</button>
+    <button class="pin-btn" onclick="pinPress('7')">7</button>
+    <button class="pin-btn" onclick="pinPress('8')">8</button>
+    <button class="pin-btn" onclick="pinPress('9')">9</button>
+    <button class="pin-btn zero" onclick="pinPress('0')">0</button>
+    <button class="pin-btn del"  onclick="pinDel()">⌫</button>
+  </div>
+  <div class="pin-error-msg" id="pin-error"></div>
+</div>
+
+<div id="app-wrap" style="display:none">
+
+<!-- PIN LOCK SCREEN -->
+<div id="pin-screen">
+  <div class="pin-logo">Saba <span>Fit</span></div>
+  <div class="pin-sub">Enter your PIN</div>
+  <div class="pin-dots">
+    <div class="pin-dot" id="dot-0"></div>
+    <div class="pin-dot" id="dot-1"></div>
+    <div class="pin-dot" id="dot-2"></div>
+    <div class="pin-dot" id="dot-3"></div>
+  </div>
+  <div class="pin-pad">
+    <button class="pin-btn" onclick="pinPress('1')">1</button>
+    <button class="pin-btn" onclick="pinPress('2')">2</button>
+    <button class="pin-btn" onclick="pinPress('3')">3</button>
+    <button class="pin-btn" onclick="pinPress('4')">4</button>
+    <button class="pin-btn" onclick="pinPress('5')">5</button>
+    <button class="pin-btn" onclick="pinPress('6')">6</button>
+    <button class="pin-btn" onclick="pinPress('7')">7</button>
+    <button class="pin-btn" onclick="pinPress('8')">8</button>
+    <button class="pin-btn" onclick="pinPress('9')">9</button>
+    <div></div>
+    <button class="pin-btn" onclick="pinPress('0')">0</button>
+    <button class="pin-btn pin-del" onclick="pinDel()">⌫</button>
+  </div>
+  <div class="pin-error-msg" id="pin-error">Incorrect PIN</div>
+</div>
+
+<!-- APP SHELL -->
+<div id="app-shell">
   <div class="eyebrow">Saba's Program</div>
   <h1 id="header-title">Weight <span style="color:var(--orange)">Tracker</span></h1>
 </div>
@@ -208,13 +299,73 @@
   <button class="nav-btn"        onclick="setScreen('history')"><span class="nav-icon">📋</span><span class="nav-label">History</span></button>
 </nav>
 
+</div><!-- end app-shell -->
+
 <div id="install-banner">
   <p><strong>Install Saba Fit</strong><br>Add to home screen for the full app experience</p>
   <button class="btn-install" id="btn-install">Install</button>
   <button class="btn-dismiss" onclick="document.getElementById('install-banner').classList.remove('show')">✕</button>
 </div>
 
+</div><!-- end app-wrap -->
+
 <script>
+// ── PIN LOCK ──────────────────────────────────────────────────────────────────
+var CORRECT_PIN  = '2244';
+var PIN_SESSION  = 'saba_unlocked';
+var pinEntry     = '';
+
+function pinPress(digit) {
+  if (pinEntry.length >= 4) return;
+  pinEntry += digit;
+  updateDots();
+  if (pinEntry.length === 4) {
+    setTimeout(checkPin, 120);
+  }
+}
+
+function pinDel() {
+  pinEntry = pinEntry.slice(0, -1);
+  updateDots();
+}
+
+function updateDots() {
+  for (var i = 0; i < 4; i++) {
+    var dot = document.getElementById('dot-' + i);
+    dot.classList.toggle('filled', i < pinEntry.length);
+    dot.classList.remove('error');
+  }
+}
+
+function checkPin() {
+  if (pinEntry === CORRECT_PIN) {
+    sessionStorage.setItem(PIN_SESSION, '1');
+    document.getElementById('pin-screen').classList.add('hidden');
+    document.getElementById('app-shell').classList.add('unlocked');
+  } else {
+    for (var i = 0; i < 4; i++) {
+      var dot = document.getElementById('dot-' + i);
+      dot.classList.remove('filled');
+      dot.classList.add('error');
+    }
+    var msg = document.getElementById('pin-error');
+    msg.classList.add('show');
+    setTimeout(function() {
+      msg.classList.remove('show');
+      for (var i = 0; i < 4; i++) {
+        document.getElementById('dot-' + i).classList.remove('error');
+      }
+    }, 1200);
+    pinEntry = '';
+  }
+}
+
+// Check if already unlocked this session
+if (sessionStorage.getItem(PIN_SESSION) === '1') {
+  document.getElementById('pin-screen').classList.add('hidden');
+  document.getElementById('app-shell').classList.add('unlocked');
+}
+
 // ── CONSTANTS ─────────────────────────────────────────────────────────────────
 var STORAGE_KEY  = 'saba_weights_v2';
 var SESSIONS_KEY = 'saba_sessions_v1';
@@ -631,10 +782,72 @@ document.getElementById('btn-install').addEventListener('click',async function()
   document.getElementById('install-banner').classList.remove('show');
 });
 
+// ── PIN ───────────────────────────────────────────────────────────────────────
+var CORRECT_PIN  = '2244';
+var PIN_SESSION  = 'saba_unlocked';
+var pinEntry     = '';
+
+function pinPress(digit) {
+  if (pinEntry.length >= 4) return;
+  pinEntry += digit;
+  updateDots();
+  if (pinEntry.length === 4) {
+    setTimeout(checkPin, 120);
+  }
+}
+
+function pinDel() {
+  pinEntry = pinEntry.slice(0, -1);
+  updateDots(false);
+  document.getElementById('pin-error').textContent = '';
+}
+
+function updateDots(checking) {
+  for (var i = 0; i < 4; i++) {
+    var dot = document.getElementById('dot-' + i);
+    dot.classList.toggle('filled', i < pinEntry.length);
+    dot.classList.remove('error');
+  }
+}
+
+function checkPin() {
+  if (pinEntry === CORRECT_PIN) {
+    sessionStorage.setItem(PIN_SESSION, '1');
+    unlockApp();
+  } else {
+    for (var i = 0; i < 4; i++) {
+      var dot = document.getElementById('dot-' + i);
+      dot.classList.remove('filled');
+      dot.classList.add('error');
+    }
+    document.getElementById('pin-error').textContent = 'Incorrect PIN — try again';
+    pinEntry = '';
+    setTimeout(function() {
+      for (var i = 0; i < 4; i++) {
+        document.getElementById('dot-' + i).classList.remove('error');
+      }
+      document.getElementById('pin-error').textContent = '';
+    }, 1000);
+  }
+}
+
+function unlockApp() {
+  document.getElementById('pin-screen').classList.add('hidden');
+  document.getElementById('app-wrap').style.display = 'block';
+  renderTracker();
+  renderWorkout();
+}
+
+function initPin() {
+  if (sessionStorage.getItem(PIN_SESSION) === '1') {
+    unlockApp();
+  }
+  // else PIN screen stays visible
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 document.getElementById('btn-log').addEventListener('click',logWeight);
-renderTracker();
-renderWorkout();
+initPin();
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(function(){});}
 </script>
 </body>
