@@ -187,6 +187,12 @@
     .modal-step:last-child { border-bottom:none; }
     .modal-btn     { width:100%; padding:14px; border-radius:10px; border:none; background:var(--orange); color:#fff; font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; cursor:pointer; margin-top:16px; display:block; }
     .modal-btn.secondary { background:transparent; border:1px solid var(--border); color:var(--dim); font-family:'Crimson Pro',Georgia,serif; font-size:14px; letter-spacing:0; margin-top:10px; }
+    /* ── STEPPERS ── */
+    .stepper-row  { display:flex; align-items:center; background:var(--surface2); border:1px solid var(--border); border-radius:10px; overflow:hidden; height:44px; }
+    .stepper-btn  { width:44px; height:44px; border:none; background:transparent; font-size:24px; color:var(--orange); cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:300; transition:background 0.1s; user-select:none; -webkit-user-select:none; }
+    .stepper-btn:active { background:rgba(200,16,46,0.12); }
+    .stepper-val  { flex:1; text-align:center; font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--text); letter-spacing:1px; }
+    .stepper-unit { font-size:9px; color:var(--dim); letter-spacing:1px; text-transform:uppercase; text-align:center; margin-top:3px; }
     .cardio-type-btn.active-type { border-color:var(--orange); background:rgba(200,16,46,0.15); color:var(--orange-light); }
     .cardio-saved-banner { background:linear-gradient(135deg,#e8f0e8,#d8eed8); border:1px solid #a0c8a0; border-radius:12px; padding:16px 18px; margin-bottom:14px; display:none; text-align:center; }
     .cardio-saved-banner.show { display:block; }
@@ -299,7 +305,7 @@
     <div class="card">
       <div class="card-label">Log Today's Weight</div>
       <div class="form-grid">
-        <div><div class="field-label">Date</div><input id="inp-date" class="field-input" placeholder="e.g. Apr 11" /></div>
+        <div><div class="field-label">Date <span style="font-size:10px;color:var(--dim);letter-spacing:0;text-transform:none;font-weight:400">(edit to backfill)</span></div><input id="inp-date" class="field-input" placeholder="e.g. Apr 11" /></div>
         <div><div class="field-label">Weight (lbs)</div><input id="inp-weight" class="field-input" type="number" step="0.1" placeholder="e.g. 191.5" /></div>
         <div class="full-width"><div class="field-label">Note (optional)</div><input id="inp-note" class="field-input" placeholder="e.g. post-soccer, feeling good..." /></div>
       </div>
@@ -351,26 +357,46 @@
       </div>
 
       <div class="card">
-        <div class="card-label">Session Details</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div class="card-label">Session Details <span style="font-size:10px;color:var(--dim);letter-spacing:0;text-transform:none;font-weight:400">— tap + / − to adjust</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
           <div>
-            <div class="field-label">Duration (mins)</div>
-            <input id="c-duration" class="field-input" type="number" min="1" max="120" placeholder="30" oninput="updateCalcPreview()"/>
+            <div class="field-label">Duration</div>
+            <div class="stepper-row">
+              <button class="stepper-btn" onclick="adjCardio('dur',-5)">−</button>
+              <div class="stepper-val" id="c-duration-val">30</div>
+              <button class="stepper-btn" onclick="adjCardio('dur',5)">+</button>
+            </div>
+            <div class="stepper-unit">mins</div>
           </div>
           <div>
             <div class="field-label">Incline</div>
-            <input id="c-incline" class="field-input" type="number" min="0" max="15" step="0.5" placeholder="4.0" oninput="updateCalcPreview()"/>
+            <div class="stepper-row">
+              <button class="stepper-btn" onclick="adjCardio('inc',-0.5)">−</button>
+              <div class="stepper-val" id="c-incline-val">6.0</div>
+              <button class="stepper-btn" onclick="adjCardio('inc',0.5)">+</button>
+            </div>
+            <div class="stepper-unit">%</div>
           </div>
           <div>
-            <div class="field-label">Speed (mph)</div>
-            <input id="c-speed" class="field-input" type="number" min="1" max="12" step="0.1" placeholder="3.2" oninput="updateCalcPreview()"/>
+            <div class="field-label">Speed</div>
+            <div class="stepper-row">
+              <button class="stepper-btn" onclick="adjCardio('spd',-0.1)">−</button>
+              <div class="stepper-val" id="c-speed-val">3.5</div>
+              <button class="stepper-btn" onclick="adjCardio('spd',0.1)">+</button>
+            </div>
+            <div class="stepper-unit">mph</div>
           </div>
           <div>
             <div class="field-label">Est. Calories</div>
-            <div id="cal-preview" style="padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--orange-light)">—</div>
+            <div id="cal-preview" style="height:44px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--orange-light)">—</div>
+            <div class="stepper-unit">kcal</div>
           </div>
         </div>
-        <div style="margin-bottom:10px">
+        <!-- Hidden inputs for logCardio() compatibility -->
+        <input id="c-duration" type="hidden" value="30"/>
+        <input id="c-incline"  type="hidden" value="6.0"/>
+        <input id="c-speed"    type="hidden" value="3.5"/>
+        <div style="margin-bottom:12px">
           <div class="field-label">Note (optional)</div>
           <input id="c-note" class="field-input" placeholder="e.g. felt strong, hip tight..."/>
         </div>
@@ -632,7 +658,8 @@ async function initApp() {
     try { renderSchedule(); } catch(e) {}
     try { renderTracker(); } catch(e) {}
     try { renderWorkout(); } catch(e) {}
-  
+    var dateEl = document.getElementById('inp-date');
+    if (dateEl) dateEl.value = todayStr();
   });
 
   showSync('syncing', '↑↓ Syncing...');
@@ -866,6 +893,10 @@ function setScreen(name) {
   // header stays fixed as SABA'S FITNESS TRACKER
   if (name==='history') renderSessionHistory();
   if (name==='schedule') renderSchedule();
+  if (name==='track') {
+    var dateEl = document.getElementById('inp-date');
+    if (dateEl && !dateEl.value) dateEl.value = todayStr();
+  }
 }
 
 // ── WORKOUT ───────────────────────────────────────────────────────────────────
@@ -896,13 +927,16 @@ function setCardioType(type) {
   Object.values(map).forEach(function(id){ document.getElementById(id).classList.remove('active-type'); });
   document.getElementById(map[type]).classList.add('active-type');
 
-  // Auto-fill preset values
   var p = CARDIO_PRESETS[type];
+  // Update hidden inputs and stepper displays
   document.getElementById('c-duration').value = p.duration;
   document.getElementById('c-incline').value  = p.incline;
   document.getElementById('c-speed').value    = p.speed;
+  document.getElementById('c-duration-val').textContent = p.duration;
+  document.getElementById('c-incline-val').textContent  = p.incline.toFixed(1);
+  document.getElementById('c-speed-val').textContent    = p.speed.toFixed(1);
+  cardioVals.dur = p.duration; cardioVals.inc = p.incline; cardioVals.spd = p.speed;
 
-  // Update coaching tip
   var tipCard = document.getElementById('cardio-tip-card');
   tipCard.innerHTML = '<div class="card-label">Coaching Tip</div>'
     + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;margin-bottom:12px">'
@@ -912,6 +946,25 @@ function setCardioType(type) {
     + '</div>'
     + '<div style="font-size:13px;color:var(--dim);line-height:1.6">'+p.tip+'</div>';
 
+  updateCalcPreview();
+}
+
+var cardioVals = { dur:30, inc:6.0, spd:3.5 };
+var cardioLimits = {
+  dur: { min:5,  max:120, dp:0 },
+  inc: { min:0,  max:15,  dp:1 },
+  spd: { min:1,  max:12,  dp:1 }
+};
+var cardioIds = { dur:'c-duration', inc:'c-incline', spd:'c-speed' };
+var cardioDisplayIds = { dur:'c-duration-val', inc:'c-incline-val', spd:'c-speed-val' };
+
+function adjCardio(key, delta) {
+  var l = cardioLimits[key];
+  cardioVals[key] = Math.round((cardioVals[key] + delta) * 100) / 100;
+  cardioVals[key] = Math.max(l.min, Math.min(cardioLimits[key].max||120, cardioVals[key]));
+  var disp = cardioVals[key].toFixed(l.dp);
+  document.getElementById(cardioDisplayIds[key]).textContent = disp;
+  document.getElementById(cardioIds[key]).value = disp;
   updateCalcPreview();
 }
 
