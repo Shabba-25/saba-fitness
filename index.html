@@ -151,7 +151,45 @@
     .game-date { font-size:14px; font-weight:700; color:#88aaff; }
     .game-time { font-size:12px; color:var(--dim); margin-top:2px; }
     .game-badge { font-family:'Bebas Neue',sans-serif; font-size:16px; color:#88aaff; background:rgba(136,170,255,0.15); padding:4px 10px; border-radius:6px; }
-    .cardio-type-btn { padding:12px 8px; border-radius:10px; border:1px solid var(--border); background:var(--surface); color:var(--dim); font-size:13px; font-weight:700; transition:all 0.2s; }
+    /* ── DAY DETAIL MODAL ── */
+    #day-modal { display:none; position:fixed; inset:0; z-index:500; background:rgba(0,0,0,0.7); align-items:flex-end; justify-content:center; }
+    #day-modal.show { display:flex; }
+    #day-modal-inner { background:var(--surface); border-radius:20px 20px 0 0; padding:24px 20px 40px; width:100%; max-height:80vh; overflow-y:auto; }
+    .modal-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
+    .modal-date   { font-size:11px; color:var(--dim); letter-spacing:3px; text-transform:uppercase; margin-bottom:6px; }
+    .modal-title  { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:1px; margin-bottom:10px; }
+    .modal-detail { font-size:15px; color:var(--muted); line-height:1.7; margin-bottom:20px; }
+    .modal-steps  { background:var(--surface2); border-radius:10px; padding:14px 16px; margin-bottom:20px; }
+    .modal-step   { font-size:13px; color:#ccc; line-height:1.8; border-bottom:1px solid var(--border); padding:8px 0; }
+    .modal-step:last-child { border-bottom:none; }
+    .modal-btn    { width:100%; padding:14px; border-radius:10px; border:none; background:var(--orange); color:#fff; font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; cursor:pointer; margin-bottom:10px; }
+    .modal-btn.secondary { background:var(--surface2); color:var(--dim); font-size:15px; font-family:'Crimson Pro',Georgia,serif; letter-spacing:0; }
+    .week-day { cursor:pointer; transition:transform 0.1s; }
+    .week-day:active { transform:scale(0.92); }
+
+    /* ── DAY MODAL ── */
+    #day-modal { display:none; position:fixed; inset:0; z-index:500; background:rgba(0,0,0,0.7); align-items:flex-end; justify-content:center; }
+    #day-modal.show { display:flex; }
+    .modal-sheet { background:var(--surface); border-radius:20px 20px 0 0; padding:24px 20px 40px; width:100%; max-height:85vh; overflow-y:auto; }
+    .modal-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
+    .modal-date  { font-size:11px; letter-spacing:3px; color:var(--dim); text-transform:uppercase; margin-bottom:6px; }
+    .modal-title { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:1px; margin-bottom:6px; }
+    .modal-desc  { font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:18px; }
+    .modal-section { font-size:10px; letter-spacing:3px; color:var(--dim); text-transform:uppercase; margin-bottom:10px; margin-top:16px; }
+    .modal-ex { display:flex; align-items:flex-start; gap:12px; padding:10px 0; border-bottom:1px solid var(--surface2); }
+    .modal-ex:last-child { border-bottom:none; }
+    .modal-ex-icon { font-size:20px; width:28px; text-align:center; flex-shrink:0; margin-top:2px; }
+    .modal-ex-name { font-size:14px; font-weight:700; }
+    .modal-ex-sets { font-size:12px; color:var(--dim); margin-top:2px; }
+    .modal-ex-cue  { font-size:13px; color:var(--muted); margin-top:4px; line-height:1.6; }
+    .modal-go-btn  { width:100%; padding:14px; border-radius:10px; border:none; background:var(--orange); color:#fff; font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; cursor:pointer; margin-top:20px; }
+    .modal-close   { width:100%; padding:12px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--dim); font-size:14px; cursor:pointer; margin-top:10px; }
+    .modal-detail  { font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:14px; }
+    .modal-steps   { margin-bottom:8px; }
+    .modal-step    { display:flex; align-items:flex-start; gap:10px; padding:9px 0; border-bottom:1px solid var(--surface2); font-size:13px; color:var(--muted); line-height:1.5; }
+    .modal-step:last-child { border-bottom:none; }
+    .modal-btn     { width:100%; padding:14px; border-radius:10px; border:none; background:var(--orange); color:#fff; font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; cursor:pointer; margin-top:16px; display:block; }
+    .modal-btn.secondary { background:transparent; border:1px solid var(--border); color:var(--dim); font-family:'Crimson Pro',Georgia,serif; font-size:14px; letter-spacing:0; margin-top:10px; }
     .cardio-type-btn.active-type { border-color:var(--orange); background:rgba(232,80,10,0.15); color:var(--orange-light); }
     .cardio-saved-banner { background:linear-gradient(135deg,#1a3a12,#0e2a0a); border:1px solid #3a6a22; border-radius:12px; padding:16px 18px; margin-bottom:14px; display:none; text-align:center; }
     .cardio-saved-banner.show { display:block; }
@@ -366,10 +404,19 @@
   </nav>
 </div>
 
+
 <div id="install-banner">
   <p><strong>Install Saba Fit</strong><br>Add to home screen for the full app experience</p>
   <button class="btn-install" id="btn-install">Install</button>
   <button class="btn-dismiss" onclick="document.getElementById('install-banner').classList.remove('show')">✕</button>
+</div>
+
+<!-- DAY DETAIL MODAL -->
+<div id="day-modal" onclick="closeDayModal(event)">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-handle"></div>
+    <div id="modal-content"></div>
+  </div>
 </div>
 
 <script>
@@ -732,46 +779,49 @@ function renderSchedule() {
       +'<div class="today-sub">No session scheduled. Rest or add a walk if you feel good.</div></div>';
   }
 
-  // ── Week calendar ──
+  // ── 2-Week calendar ──
   var wc = document.getElementById('week-calendar');
-  // Get start of current week (Sunday)
   var weekStart = new Date(now);
   weekStart.setDate(now.getDate() - now.getDay());
 
-  var wHtml = '<div class="card-label" style="margin-bottom:10px">This Week</div><div class="week-grid">';
-  var dayAbbr = ['Su','Mo','Tu','We','Th','Fr','Sa'];
-  for (var i=0; i<7; i++) {
-    var d = new Date(weekStart);
-    d.setDate(weekStart.getDate()+i);
-    var dk = dateKey(d);
-    var dp = PLAN[dk];
-    var isToday = isSameDay(d, now);
-    var done2 = isDayDone(dk);
-    var isPast = d < now && !isToday;
+  var wHtml = '<div class="card-label" style="margin-bottom:10px">2-Week View — Tap Any Day</div>';
 
-    var cls = 'week-day';
-    if (isToday) cls += ' today';
-    else if (done2) cls += ' done';
-    else if (dp && dp.type==='soccer') cls += ' soccer';
-    else if (dp && dp.type==='rest') cls += ' rest';
+  for (var week=0; week<2; week++) {
+    wHtml += '<div class="week-grid" style="margin-bottom:8px">';
+    var dayAbbr = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+    for (var i=0; i<7; i++) {
+      var d = new Date(weekStart);
+      d.setDate(weekStart.getDate() + (week*7) + i);
+      var dk = dateKey(d);
+      var dp = PLAN[dk];
+      var isToday = isSameDay(d, now);
+      var done2 = isDayDone(dk);
+      var isPast = d < now && !isToday;
 
-    var icon = '';
-    if (done2) icon = '✅';
-    else if (dp && dp.type==='soccer') icon = '⚽';
-    else if (dp && dp.type==='rest') icon = '😴';
-    else if (dp && dp.type==='easy') icon = '🚶';
-    else if (dp && dp.type==='cardio') icon = '🔥';
-    else if (dp && dp.type==='A') icon = '💪';
-    else if (dp && dp.type==='B') icon = '⚡';
-    else if (isPast) icon = '—';
+      var cls = 'week-day';
+      if (isToday) cls += ' today';
+      else if (done2) cls += ' done';
+      else if (dp && dp.type==='soccer') cls += ' soccer';
+      else if (dp && dp.type==='rest') cls += ' rest';
 
-    wHtml += '<div class="'+cls+'">'
-      +'<div class="wd-name">'+dayAbbr[d.getDay()]+'</div>'
-      +'<div class="wd-num">'+d.getDate()+'</div>'
-      +'<div class="wd-icon">'+icon+'</div>'
-      +'</div>';
+      var icon = '';
+      if (done2) icon = '✅';
+      else if (dp && dp.type==='soccer') icon = '⚽';
+      else if (dp && dp.type==='rest') icon = '😴';
+      else if (dp && dp.type==='easy') icon = '🚶';
+      else if (dp && dp.type==='cardio') icon = '🔥';
+      else if (dp && dp.type==='A') icon = '💪';
+      else if (dp && dp.type==='B') icon = '⚡';
+      else if (isPast) icon = '—';
+
+      wHtml += '<div class="'+cls+'" onclick="showDayModal(\''+dk+'\')">'
+        +'<div class="wd-name">'+dayAbbr[d.getDay()]+'</div>'
+        +'<div class="wd-num">'+d.getDate()+'</div>'
+        +'<div class="wd-icon">'+icon+'</div>'
+        +'</div>';
+    }
+    wHtml += '</div>';
   }
-  wHtml += '</div>';
   wc.innerHTML = '<div class="card">'+wHtml+'</div>';
 
   // ── Upcoming games ──
@@ -1023,6 +1073,80 @@ function renderWorkout() {
 }
 
 // ── SESSION HISTORY ───────────────────────────────────────────────────────────
+function showDayModal(dk) {
+  var d    = new Date(dk+'T12:00:00');
+  var plan = PLAN[dk];
+  var moN  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var dayN = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var dateLabel = dayN[d.getDay()]+', '+moN[d.getMonth()]+' '+d.getDate();
+  var done = isDayDone(dk);
+
+  var color = '#f0ede6';
+  if (plan) {
+    if (plan.type==='soccer') color='#88aaff';
+    else if (plan.type==='rest') color='var(--dim)';
+    else if (plan.type==='A' || plan.type==='B') color='var(--orange-light)';
+    else color='var(--green)';
+  }
+
+  var stepsHtml = '';
+  if (plan && plan.type==='A') {
+    stepsHtml = '<div class="modal-steps">'
+      +'<div class="modal-step">🚶 Warm-up: 5 min walk + Hip Circles (15 each direction)</div>'
+      +'<div class="modal-step">🏋️ Dead Hang: 2 sets × 30–45 sec</div>'
+      +'<div class="modal-step">🏅 KB Goblet Squat: 3 sets × 12 reps @ 30 lbs</div>'
+      +'<div class="modal-step">💪 KB One-Arm Row: 3 sets × 12 reps per arm</div>'
+      +'<div class="modal-step">⬆️ Power Tower Knee Raises: 3 sets × 12 reps</div>'
+      +'<div class="modal-step">🤜 Push-Ups (Tower): 2 sets to failure</div>'
+      +'<div class="modal-step">🔥 Incline Walk Finisher: 20 mins · Incline 5.0 · 3.5 mph</div>'
+      +'</div>';
+  } else if (plan && plan.type==='B') {
+    stepsHtml = '<div class="modal-steps">'
+      +'<div class="modal-step">🚶 Warm-up Walk: 5 mins @ 3.5 mph flat</div>'
+      +'<div class="modal-step">⚡ Sprints: 8–10 rounds × 30s @ 10.5 mph / 90s walk</div>'
+      +'<div class="modal-step">🔄 KB Halos: 3 sets × 10 each direction</div>'
+      +'<div class="modal-step">🤜 Push-Ups (Tower): 3 sets to failure</div>'
+      +'<div class="modal-step">🧘 Cool Down + Stretch: 5 mins + hip flexor stretch</div>'
+      +'</div>';
+  } else if (plan && (plan.type==='cardio' || plan.type==='easy')) {
+    var presets = {
+      'Recovery Walk':  '25 mins · Incline 4.0 · Speed 3.2 mph',
+      'Fat Burn Walk':  '30 mins · Incline 6.0 · Speed 3.5 mph',
+      'Easy Walk':      '20 mins · Incline 2.0 · Speed 3.0 mph'
+    };
+    var pKey = plan.label;
+    var pDetail = presets[pKey] || plan.detail;
+    stepsHtml = '<div class="modal-steps">'
+      +'<div class="modal-step">🚶 '+pKey+': '+pDetail+'</div>'
+      +'<div class="modal-step">🛁 Hot tub 15 mins after</div>'
+      +'<div class="modal-step">💧 Water before & after</div>'
+      +'</div>';
+  }
+
+  var btnHtml = '';
+  if (plan && plan.workout && !done) {
+    btnHtml = '<button class="modal-btn" onclick="closeDayModal();setScreen(\'workout\');setWorkout(\''+plan.workout+'\')">Start '+plan.label+' →</button>';
+  } else if (done) {
+    btnHtml = '<div style="text-align:center;padding:10px 0"><span style="font-size:32px">✅</span><div style="font-size:13px;color:var(--green);margin-top:4px">Completed!</div></div>';
+  }
+
+  document.getElementById('modal-content').innerHTML =
+    '<div class="modal-date">'+dateLabel+'</div>'
+    +'<div class="modal-title" style="color:'+color+'">'+(plan ? plan.label : 'Free Day')+'</div>'
+    +'<div class="modal-detail">'+(plan ? plan.detail : 'No session scheduled. Rest or add a walk if you feel good.')+'</div>'
+    +stepsHtml
+    +btnHtml
+    +'<button class="modal-btn secondary" onclick="closeDayModal()">Close</button>';
+
+  document.getElementById('day-modal').classList.add('show');
+}
+
+function closeDayModal(e) {
+  if (!e || e.target === document.getElementById('day-modal')) {
+    document.getElementById('day-modal').classList.remove('show');
+  }
+}
+
 function renderSessionHistory() {
   var total=sessions.length;
   var thisWeek=sessions.filter(function(s){return(Date.now()-s.timestamp)<7*86400000;}).length;
