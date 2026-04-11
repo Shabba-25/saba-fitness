@@ -324,8 +324,8 @@
         </g>
       </svg>
     </div>
-    <div class="eyebrow">Saba's Program</div>
-    <h1 id="header-title">Weight <span style="color:var(--orange)">Tracker</span></h1>
+    <div class="eyebrow" style="display:none">Saba's Program</div>
+    <h1 id="header-title" style="font-size:22px;letter-spacing:2px"><span style="color:#f5f5f5">SABA'S </span><span style="color:#C8102E">FITNESS </span><span style="color:#f5f5f5">TRACKER</span></h1>
   </div>
 
   <!-- SCHEDULE SCREEN -->
@@ -681,7 +681,7 @@ async function initApp() {
     try { renderSchedule(); } catch(e) {}
     try { renderTracker(); } catch(e) {}
     try { renderWorkout(); } catch(e) {}
-    document.getElementById('header-title').innerHTML = "Today's <span style=\"color:var(--orange)\">Plan</span>";
+  
   });
 
   showSync('syncing', '↑↓ Syncing...');
@@ -912,12 +912,7 @@ function setScreen(name) {
   document.getElementById('screen-'+name).classList.add('active');
   document.querySelectorAll('.nav-btn')[{schedule:0,track:1,workout:2,history:3}[name]].classList.add('active');
   var wc = WORKOUTS[currentWorkout].color;
-  document.getElementById('header-title').innerHTML = {
-    schedule:"Today's <span style=\"color:var(--orange)\">Plan</span>",
-    track:   'Weight <span style="color:var(--orange)">Tracker</span>',
-    workout: 'Training <span style="color:'+wc+'">Protocol</span>',
-    history: 'Workout <span style="color:var(--green)">History</span>'
-  }[name];
+  // header stays fixed as SABA'S FITNESS TRACKER
   if (name==='history') renderSessionHistory();
   if (name==='schedule') renderSchedule();
 }
@@ -933,13 +928,13 @@ function setWorkout(key) {
   if (key === 'C') {
     document.getElementById('ab-section').style.display    = 'none';
     document.getElementById('cardio-section').style.display = 'block';
-    document.getElementById('header-title').innerHTML = 'Cardio <span style="color:var(--orange)">Session</span>';
+
     // Load the currently selected preset
     setCardioType(cardioType);
   } else {
     document.getElementById('ab-section').style.display    = 'block';
     document.getElementById('cardio-section').style.display = 'none';
-    document.getElementById('header-title').innerHTML = 'Training <span style="color:'+WORKOUTS[key].color+'">Protocol</span>';
+
     renderWorkout();
   }
 }
