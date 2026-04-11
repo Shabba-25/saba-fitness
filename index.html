@@ -127,7 +127,30 @@
     .muscles-text span { color:#999; }
     .btn-done   { margin-top:14px; width:100%; padding:11px; border-radius:8px; font-size:13px; letter-spacing:1px; font-weight:700; transition:all 0.2s; }
 
-    /* ── CARDIO ── */
+    /* ── SCHEDULE ── */
+    .today-card { background:linear-gradient(135deg,#1e1e3a,#252550); border:1px solid var(--orange); border-radius:16px; padding:20px; margin-bottom:14px; }
+    .today-label { font-size:10px; letter-spacing:4px; color:var(--orange); text-transform:uppercase; margin-bottom:6px; }
+    .today-date  { font-size:13px; color:var(--dim); margin-bottom:12px; }
+    .today-title { font-family:'Bebas Neue',sans-serif; font-size:32px; letter-spacing:1px; line-height:1; margin-bottom:8px; }
+    .today-sub   { font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:16px; }
+    .today-btn   { width:100%; padding:14px; border-radius:10px; border:none; background:var(--orange); color:#fff; font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; cursor:pointer; }
+    .today-btn.rest { background:var(--surface2); color:var(--dim); }
+    .today-btn.soccer { background:#2a4a8a; color:#88aaff; }
+
+    .week-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-bottom:14px; }
+    .week-day  { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:8px 4px; text-align:center; }
+    .week-day.today   { border-color:var(--orange); background:rgba(232,80,10,0.12); }
+    .week-day.done    { border-color:var(--green); background:rgba(76,175,80,0.12); }
+    .week-day.soccer  { border-color:#88aaff; background:rgba(136,170,255,0.1); }
+    .week-day.rest    { opacity:0.5; }
+    .wd-name  { font-size:9px; color:var(--dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+    .wd-num   { font-family:'Bebas Neue',sans-serif; font-size:18px; line-height:1; margin-bottom:4px; }
+    .wd-icon  { font-size:14px; height:18px; }
+
+    .game-card { background:#1a1e30; border:1px solid #2a3a60; border-radius:12px; padding:14px 18px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; }
+    .game-date { font-size:14px; font-weight:700; color:#88aaff; }
+    .game-time { font-size:12px; color:var(--dim); margin-top:2px; }
+    .game-badge { font-family:'Bebas Neue',sans-serif; font-size:16px; color:#88aaff; background:rgba(136,170,255,0.15); padding:4px 10px; border-radius:6px; }
     .cardio-type-btn { padding:12px 8px; border-radius:10px; border:1px solid var(--border); background:var(--surface); color:var(--dim); font-size:13px; font-weight:700; transition:all 0.2s; }
     .cardio-type-btn.active-type { border-color:var(--orange); background:rgba(232,80,10,0.15); color:var(--orange-light); }
     .cardio-saved-banner { background:linear-gradient(135deg,#1a3a12,#0e2a0a); border:1px solid #3a6a22; border-radius:12px; padding:16px 18px; margin-bottom:14px; display:none; text-align:center; }
@@ -212,8 +235,15 @@
     <h1 id="header-title">Weight <span style="color:var(--orange)">Tracker</span></h1>
   </div>
 
+  <!-- SCHEDULE SCREEN -->
+  <div id="screen-schedule" class="screen active">
+    <div id="today-card"></div>
+    <div id="week-calendar"></div>
+    <div id="upcoming-games"></div>
+  </div>
+
   <!-- WEIGHT SCREEN -->
-  <div id="screen-track" class="screen active">
+  <div id="screen-track" class="screen">
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-label">Lost</div><div class="stat-value" id="stat-lost" style="color:var(--orange)">—</div><span class="stat-unit">lbs</span></div>
       <div class="stat-card"><div class="stat-label">Current</div><div class="stat-value" id="stat-current">—</div><span class="stat-unit">lbs</span></div>
@@ -237,7 +267,6 @@
       <button class="btn-primary" id="btn-log">Log Weight</button>
     </div>
     <div class="card"><div class="card-label">History</div><div id="history-list"></div></div>
-    <div class="card" id="debug-card" style="display:none;border-color:#e8500a"></div>
   </div>
 
   <!-- WORKOUT SCREEN -->
@@ -330,7 +359,8 @@
   </div>
 
   <nav id="bottom-nav">
-    <button class="nav-btn active" onclick="setScreen('track')"><span class="nav-icon">⚖️</span><span class="nav-label">Weight</span></button>
+    <button class="nav-btn active" onclick="setScreen('schedule')"><span class="nav-icon">📅</span><span class="nav-label">Today</span></button>
+    <button class="nav-btn"        onclick="setScreen('track')"><span class="nav-icon">⚖️</span><span class="nav-label">Weight</span></button>
     <button class="nav-btn"        onclick="setScreen('workout')"><span class="nav-icon">💪</span><span class="nav-label">Workout</span></button>
     <button class="nav-btn"        onclick="setScreen('history')"><span class="nav-icon">📋</span><span class="nav-label">History</span></button>
   </nav>
@@ -415,7 +445,6 @@ var HEADERS = {
 // ── SUPABASE API ──────────────────────────────────────────────────────────────
 async function sbGet(table) {
   try {
-    showDebug('sbGet: fetching ' + table + '...');
     var controller = new AbortController();
     var timeout = setTimeout(function(){ controller.abort(); }, 8000);
     var r = await fetch(SB_URL+'/rest/v1/'+table+'?select=*&order=date.asc', {
@@ -423,20 +452,15 @@ async function sbGet(table) {
       signal: controller.signal
     });
     clearTimeout(timeout);
-    showDebug('sbGet: got HTTP ' + r.status);
     if (!r.ok) {
-      showDebug('sbGet ERROR: HTTP ' + r.status);
       return null;
     }
     var data = await r.json();
     if (!Array.isArray(data)) {
-      showDebug('sbGet: not array: ' + JSON.stringify(data).substring(0,60));
       return null;
     }
-    showDebug('sbGet: success — ' + data.length + ' rows');
     return data;
   } catch(e) {
-    showDebug('sbGet CATCH: ' + e.message);
     return null;
   }
 }
@@ -472,17 +496,6 @@ async function sbGetSessions() {
 
 // ── SYNC BAR ──────────────────────────────────────────────────────────────────
 var syncTimer = null;
-function showDebug(msg) {
-  var el = document.getElementById('debug-card');
-  if (!el) return;
-  el.style.display = 'block';
-  var existing = el.querySelector('.debug-msgs');
-  if (!existing) {
-    el.innerHTML = '<div class="card-label">Debug</div><div class="debug-msgs" style="font-size:11px;color:#ff7a3d;word-break:break-all;line-height:1.8"></div>';
-    existing = el.querySelector('.debug-msgs');
-  }
-  existing.innerHTML += msg + '<br>';
-}
 function showSync(state, msg) {
   var bar = document.getElementById('sync-bar');
   bar.textContent = msg;
@@ -556,34 +569,27 @@ function cacheSessions(d){ try{if(Array.isArray(d))localStorage.setItem(LOCAL_S,
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 async function initApp() {
-  showDebug('Step 1: initApp started');
 
   var cached = localWeights();
-  showDebug('Step 2: localWeights = ' + (cached ? cached.length + ' entries' : 'null'));
 
   weights = cached || SEED.map(function(x){return Object.assign({},x);});
   var cachedS = localSessions();
   sessions = cachedS || [];
-
-  showDebug('Step 3: attempting renders...');
-  try { renderTracker(); showDebug('Step 3a: renderTracker OK'); } catch(e) { showDebug('Step 3a FAIL: '+e.message); }
-  try { renderWorkout(); showDebug('Step 3b: renderWorkout OK'); } catch(e) { showDebug('Step 3b FAIL: '+e.message); }
-
-  showDebug('Step 4: starting Supabase sync...');
+  try { renderTracker(); } catch(e) {}
+  try { renderWorkout(); } catch(e) {}
+  try { renderSchedule(); } catch(e) {}
+  document.getElementById('header-title').innerHTML = "Today's <span style=\"color:var(--orange)\">Plan</span>";
   showSync('syncing', '↑↓ Syncing...');
 
   try {
     await syncFromCloud();
-    showDebug('Step 5: sync done — weights: ' + weights.length);
   } catch(e) {
-    showDebug('Step 5 ERROR: ' + e.message);
   }
 }
 
 async function syncFromCloud() {
   // ── Weights ──
   var cloudW = await sbGet('weights');
-  showDebug('syncFromCloud: cloudW = ' + (cloudW === null ? 'null' : Array.isArray(cloudW) ? cloudW.length+' rows' : typeof cloudW));
 
   if (cloudW === null || !Array.isArray(cloudW)) {
     showSync('error', '⚠ Offline — using local data');
@@ -618,7 +624,9 @@ async function syncFromCloud() {
   if (cloudS.length > 0) {
     sessions = cloudS.map(function(r){
       return {id:r.id,timestamp:r.timestamp,date:r.date,workout:r.workout,
-              warmup:r.warmup||[],completed:r.completed||[],
+              warmup:   (typeof r.warmup   === 'string' ? JSON.parse(r.warmup||'[]')   : r.warmup||[]),
+              completed:(typeof r.completed === 'string' ? JSON.parse(r.completed||'[]') : r.completed||[]),
+              note: r.note||'',
               total:r.total,doneCount:r.done_count};
     });
     cacheSessions(sessions);
@@ -628,19 +636,180 @@ async function syncFromCloud() {
   showSync('synced', '✓ Synced');
 }
 
-// ── SCREENS ───────────────────────────────────────────────────────────────────
+// ── SCHEDULE ──────────────────────────────────────────────────────────────────
+var SOCCER_DATES = ['2026-04-19','2026-04-26','2026-05-03','2026-05-10','2026-05-17'];
+
+// Full plan: date -> {type, label, detail, workout}
+// type: 'A','B','cardio','rest','soccer','easy'
+var PLAN = {
+  '2026-04-11': {type:'A',    label:'Workout A',         detail:'Strength & Burn — modified for hip recovery. Shallower squats today, listen to your body.', workout:'A'},
+  '2026-04-12': {type:'cardio',label:'Fat Burn Walk',    detail:'30 mins · Incline 6.0 · Speed 3.5 mph. Hands off the rails.', workout:'C'},
+  '2026-04-13': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Full session — you should be recovered from Saturday.', workout:'B'},
+  '2026-04-14': {type:'cardio',label:'Fat Burn Walk',    detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
+  '2026-04-15': {type:'A',    label:'Workout A',         detail:'Strength & Burn — full depth today if hips allow.', workout:'A'},
+  '2026-04-16': {type:'rest', label:'Rest Day',          detail:'Hot tub, stretch, water. Let the body consolidate the week.'},
+  '2026-04-17': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Strong finish to the week.', workout:'B'},
+  '2026-04-18': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph. Legs fresh for tomorrow\'s game.', workout:'C'},
+  '2026-04-19': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 10:00pm. No training today — save everything for the pitch.'},
+  '2026-04-20': {type:'rest', label:'Rest Day',          detail:'Full recovery. Hot tub if you can. You played late — sleep in.'},
+  '2026-04-21': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 3.2 mph. Flush out the match soreness.', workout:'C'},
+  '2026-04-22': {type:'A',    label:'Workout A',         detail:'Strength & Burn. Back to full intensity.', workout:'A'},
+  '2026-04-23': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
+  '2026-04-24': {type:'B',    label:'Workout B',         detail:'HIIT Engine.', workout:'B'},
+  '2026-04-25': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph. Legs fresh for tomorrow.', workout:'C'},
+  '2026-04-26': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 10:00pm. No training today.'},
+  '2026-04-27': {type:'rest', label:'Rest Day',          detail:'Full recovery. Hot tub, stretch, water.'},
+  '2026-04-28': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 3.2 mph.', workout:'C'},
+  '2026-04-29': {type:'A',    label:'Workout A',         detail:'Strength & Burn.', workout:'A'},
+  '2026-04-30': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
+  '2026-05-01': {type:'B',    label:'Workout B',         detail:'HIIT Engine.', workout:'B'},
+  '2026-05-02': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph.', workout:'C'},
+  '2026-05-03': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 10:00pm. No training today.'},
+  '2026-05-04': {type:'rest', label:'Rest Day',          detail:'Full recovery.'},
+  '2026-05-05': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 3.2 mph.', workout:'C'},
+  '2026-05-06': {type:'A',    label:'Workout A',         detail:'Strength & Burn.', workout:'A'},
+  '2026-05-07': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
+  '2026-05-08': {type:'B',    label:'Workout B',         detail:'HIIT Engine.', workout:'B'},
+  '2026-05-09': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph.', workout:'C'},
+  '2026-05-10': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 9:00pm. No training today.'},
+  '2026-05-11': {type:'rest', label:'Rest Day',          detail:'Full recovery.'},
+  '2026-05-12': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 3.2 mph.', workout:'C'},
+  '2026-05-13': {type:'A',    label:'Workout A',         detail:'Strength & Burn.', workout:'A'},
+  '2026-05-14': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
+  '2026-05-15': {type:'B',    label:'Workout B',         detail:'HIIT Engine.', workout:'B'},
+  '2026-05-16': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph.', workout:'C'},
+  '2026-05-17': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 9:00pm. No training today.'},
+  '2026-05-18': {type:'rest', label:'Rest Day',          detail:'Full recovery.'},
+  '2026-05-19': {type:'A',    label:'Workout A',         detail:'Back to full training block.', workout:'A'}
+};
+
+function dateKey(d) {
+  var mo = d.getMonth()+1, dy = d.getDate();
+  return d.getFullYear()+'-'+(mo<10?'0':'')+mo+'-'+(dy<10?'0':'')+dy;
+}
+
+function isSameDay(d1, d2) {
+  return d1.getFullYear()===d2.getFullYear() && d1.getMonth()===d2.getMonth() && d1.getDate()===d2.getDate();
+}
+
+function isDayDone(dateStr) {
+  // Check if any session was logged on this date
+  return sessions.some(function(s){ return s.date === fmtDisplayDate(new Date(dateStr+'T12:00:00')); });
+}
+
+function fmtDisplayDate(d) {
+  var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return mo[d.getMonth()]+' '+d.getDate();
+}
+
+function renderSchedule() {
+  var now = new Date();
+  var todayKey = dateKey(now);
+  var plan = PLAN[todayKey];
+
+  // ── Today card ──
+  var tc = document.getElementById('today-card');
+  var dayNames = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var moNames  = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var dateStr  = dayNames[now.getDay()]+', '+moNames[now.getMonth()]+' '+now.getDate();
+
+  if (plan) {
+    var btnClass = plan.type==='rest' ? 'today-btn rest' : plan.type==='soccer' ? 'today-btn soccer' : 'today-btn';
+    var btnLabel = plan.type==='rest' ? 'Rest Day ✓' : plan.type==='soccer' ? 'Game Night ⚽' : 'Start '+plan.label+' →';
+    var btnClick = (plan.workout) ? 'onclick="setScreen(\'workout\');setWorkout(\''+plan.workout+'\')"' : '';
+    var done = isDayDone(todayKey);
+    tc.innerHTML = '<div class="today-card">'
+      +'<div class="today-label">Today\'s Plan</div>'
+      +'<div class="today-date">'+dateStr+'</div>'
+      +'<div class="today-title" style="color:'+(plan.type==='soccer'?'#88aaff':plan.type==='rest'?'var(--dim)':'var(--orange-light)')+'">'+plan.label+'</div>'
+      +'<div class="today-sub">'+plan.detail+'</div>'
+      +(done ? '<div style="text-align:center;font-size:28px;margin-bottom:8px">✅</div><div style="text-align:center;font-size:13px;color:var(--green);margin-bottom:12px">Completed today!</div>' : '')
+      +(plan.type!=='rest' && plan.type!=='soccer' && !done ? '<button class="'+btnClass+'" '+btnClick+'>'+btnLabel+'</button>' : '')
+      +'</div>';
+  } else {
+    tc.innerHTML = '<div class="today-card"><div class="today-label">Today\'s Plan</div><div class="today-date">'+dateStr+'</div>'
+      +'<div class="today-title" style="color:var(--dim)">Free Day</div>'
+      +'<div class="today-sub">No session scheduled. Rest or add a walk if you feel good.</div></div>';
+  }
+
+  // ── Week calendar ──
+  var wc = document.getElementById('week-calendar');
+  // Get start of current week (Sunday)
+  var weekStart = new Date(now);
+  weekStart.setDate(now.getDate() - now.getDay());
+
+  var wHtml = '<div class="card-label" style="margin-bottom:10px">This Week</div><div class="week-grid">';
+  var dayAbbr = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  for (var i=0; i<7; i++) {
+    var d = new Date(weekStart);
+    d.setDate(weekStart.getDate()+i);
+    var dk = dateKey(d);
+    var dp = PLAN[dk];
+    var isToday = isSameDay(d, now);
+    var done2 = isDayDone(dk);
+    var isPast = d < now && !isToday;
+
+    var cls = 'week-day';
+    if (isToday) cls += ' today';
+    else if (done2) cls += ' done';
+    else if (dp && dp.type==='soccer') cls += ' soccer';
+    else if (dp && dp.type==='rest') cls += ' rest';
+
+    var icon = '';
+    if (done2) icon = '✅';
+    else if (dp && dp.type==='soccer') icon = '⚽';
+    else if (dp && dp.type==='rest') icon = '😴';
+    else if (dp && dp.type==='easy') icon = '🚶';
+    else if (dp && dp.type==='cardio') icon = '🔥';
+    else if (dp && dp.type==='A') icon = '💪';
+    else if (dp && dp.type==='B') icon = '⚡';
+    else if (isPast) icon = '—';
+
+    wHtml += '<div class="'+cls+'">'
+      +'<div class="wd-name">'+dayAbbr[d.getDay()]+'</div>'
+      +'<div class="wd-num">'+d.getDate()+'</div>'
+      +'<div class="wd-icon">'+icon+'</div>'
+      +'</div>';
+  }
+  wHtml += '</div>';
+  wc.innerHTML = '<div class="card">'+wHtml+'</div>';
+
+  // ── Upcoming games ──
+  var ug = document.getElementById('upcoming-games');
+  var upcoming = SOCCER_DATES.filter(function(d){ return new Date(d+'T12:00:00') >= now; }).slice(0,3);
+  if (upcoming.length) {
+    var ugHtml = '<div class="card-label" style="margin-bottom:10px">Upcoming Games</div>';
+    upcoming.forEach(function(dk) {
+      var gd = new Date(dk+'T12:00:00');
+      var plan = PLAN[dk];
+      var moN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var dayN = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      var daysLeft = Math.ceil((gd-now)/(1000*60*60*24));
+      ugHtml += '<div class="game-card">'
+        +'<div><div class="game-date">⚽ '+dayN[gd.getDay()]+' '+moN[gd.getMonth()]+' '+gd.getDate()+'</div>'
+        +'<div class="game-time">'+(plan?plan.detail:'')+'</div></div>'
+        +'<div class="game-badge">'+daysLeft+'d</div>'
+        +'</div>';
+    });
+    ug.innerHTML = ugHtml;
+  } else {
+    ug.innerHTML = '';
+  }
+}
 function setScreen(name) {
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
   document.getElementById('screen-'+name).classList.add('active');
-  document.querySelectorAll('.nav-btn')[{track:0,workout:1,history:2}[name]].classList.add('active');
+  document.querySelectorAll('.nav-btn')[{schedule:0,track:1,workout:2,history:3}[name]].classList.add('active');
   var wc = WORKOUTS[currentWorkout].color;
   document.getElementById('header-title').innerHTML = {
-    track:  'Weight <span style="color:var(--orange)">Tracker</span>',
-    workout:'Training <span style="color:'+wc+'">Protocol</span>',
-    history:'Workout <span style="color:var(--green)">History</span>'
+    schedule:"Today's <span style=\"color:var(--orange)\">Plan</span>",
+    track:   'Weight <span style="color:var(--orange)">Tracker</span>',
+    workout: 'Training <span style="color:'+wc+'">Protocol</span>',
+    history: 'Workout <span style="color:var(--green)">History</span>'
   }[name];
   if (name==='history') renderSessionHistory();
+  if (name==='schedule') renderSchedule();
 }
 
 // ── WORKOUT ───────────────────────────────────────────────────────────────────
@@ -736,11 +905,17 @@ async function logCardio() {
 
   // Save to Supabase
   showSync('syncing','↑ Saving cardio...');
+  var cardioMeta = JSON.stringify({type:cardioType,duration:dur,incline:inc||0,speed:spd||0,calories:cal,note:note});
   var ok = await sbUpsert('sessions',[{
-    id: s.id, timestamp: s.timestamp, date: s.date, workout: 'C',
-    warmup: [], completed: [],
-    total: 1, done_count: 1,
-    note: JSON.stringify({type:cardioType,duration:dur,incline:inc||0,speed:spd||0,calories:cal,note:note})
+    id: s.id,
+    timestamp: s.timestamp,
+    date: s.date,
+    workout: 'C',
+    warmup: JSON.stringify([]),
+    completed: JSON.stringify([]),
+    total: 1,
+    done_count: 1,
+    note: cardioMeta
   }]);
   showSync(ok?'synced':'error', ok?'✓ Cardio saved':'⚠ Saved offline');
 }
@@ -784,7 +959,8 @@ async function saveSession() {
   showSync('syncing','↑ Saving session...');
   var ok = await sbUpsert('sessions',[{
     id:s.id, timestamp:s.timestamp, date:s.date, workout:s.workout,
-    warmup:s.warmup, completed:s.completed, total:s.total, done_count:s.doneCount
+    warmup:JSON.stringify(s.warmup), completed:JSON.stringify(s.completed),
+    total:s.total, done_count:s.doneCount, note:''
   }]);
   showSync(ok?'synced':'error', ok?'✓ Session saved':'⚠ Saved offline');
 }
