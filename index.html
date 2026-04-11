@@ -379,6 +379,10 @@
       <div class="complete-banner" id="complete-banner">
         <div class="cb-title">🔥 Session Complete!</div>
         <div class="cb-sub">Saved to your history. Hit that hot tub, Saba.</div>
+        <button id="gfit-btn" onclick="logToGoogleFit()" style="margin-top:12px;width:100%;padding:11px;border-radius:8px;border:none;background:#4285f4;color:#fff;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+          LOG TO GOOGLE FIT
+        </button>
       </div>
       <div id="warmup-list"></div>
       <div id="exercise-list"></div>
@@ -425,6 +429,7 @@
           <input id="c-note" class="field-input" placeholder="e.g. felt strong, hip tight..."/>
         </div>
         <button class="btn-primary" id="btn-log-cardio" onclick="logCardio()">Log Cardio Session</button>
+        <button id="gfit-cardio-btn" onclick="logToGoogleFit()" style="display:none;margin-top:10px;width:100%;padding:11px;border-radius:8px;border:none;background:#4285f4;color:#fff;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer">▶ LOG TO GOOGLE FIT</button>
       </div>
 
       <div class="card" id="cardio-tip-card">
@@ -1023,6 +1028,13 @@ async function logCardio() {
     note: cardioMeta
   }]);
   showSync(ok?'synced':'error', ok?'✓ Cardio saved':'⚠ Saved offline');
+
+  // Show Google Fit button after cardio saved
+  var gfitCardio = document.getElementById('gfit-cardio-btn');
+  if (gfitCardio) {
+    gfitCardio.style.display = 'block';
+    window._lastSession = { workout:'C', cardioType:cardioType, duration:dur };
+  }
 }
 
 function toggleWarmup(i)    { doneWarmup[i]=!doneWarmup[i];      renderWorkout(); checkComplete(); }
@@ -1060,6 +1072,9 @@ async function saveSession() {
   var b=document.getElementById('complete-banner');
   b.classList.add('show'); b.scrollIntoView({behavior:'smooth',block:'nearest'});
 
+  // Store session details for Google Fit logging
+  window._lastSession = s;
+
   // Save to Supabase
   showSync('syncing','↑ Saving session...');
   var ok = await sbUpsert('sessions',[{
@@ -1068,6 +1083,44 @@ async function saveSession() {
     total:s.total, done_count:s.doneCount, note:''
   }]);
   showSync(ok?'synced':'error', ok?'✓ Session saved':'⚠ Saved offline');
+}
+
+function logToGoogleFit() {
+  var s = window._lastSession;
+  var activityType = (s && s.workout === 'B') ? 'running' : 'strength_training';
+  var label = (s && s.workout === 'B') ? 'HIIT / Sprints' : 'Strength & Burn';
+
+  // Try Google Fit deep link first (works on Android)
+  var fitUrl = 'googlefit://history/add?activityType=' + activityType;
+
+  // Fallback: open Google Fit app via intent or web
+  var fallbackUrl = 'https://fit.google.com';
+
+  var btn = document.getElementById('gfit-btn');
+
+  // On Android WebView, try the deep link
+  try {
+    window.location.href = fitUrl;
+    // If deep link fails after 800ms, open web fallback
+    setTimeout(function() {
+      window.open(fallbackUrl, '_blank');
+    }, 800);
+  } catch(e) {
+    window.open(fallbackUrl, '_blank');
+  }
+
+  // Update button to show success
+  if (btn) {
+    btn.textContent = '✓ Opening Google Fit...';
+    btn.style.background = '#2a7a2a';
+    setTimeout(function() {
+      if (btn) {
+        btn.textContent = '✓ Logged to Google Fit';
+        btn.disabled = true;
+        btn.style.opacity = '0.7';
+      }
+    }, 1500);
+  }
 }
 
 function renderWorkout() {
