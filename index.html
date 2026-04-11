@@ -152,10 +152,7 @@
     .game-time { font-size:12px; color:var(--dim); margin-top:2px; }
     .game-badge { font-family:'Bebas Neue',sans-serif; font-size:16px; color:#185FA5; background:rgba(136,170,255,0.15); padding:4px 10px; border-radius:6px; }
     /* ── DAY DETAIL MODAL ── */
-    #day-modal { display:none; position:fixed; inset:0; z-index:500; background:rgba(0,0,0,0.7); align-items:flex-end; justify-content:center; }
-    #day-modal.show { display:flex; }
-    #day-modal-inner { background:var(--surface); border-radius:20px 20px 0 0; padding:24px 20px 40px; width:100%; max-height:80vh; overflow-y:auto; }
-    .modal-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
+
     .modal-date   { font-size:11px; color:var(--dim); letter-spacing:3px; text-transform:uppercase; margin-bottom:6px; }
     .modal-title  { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:1px; margin-bottom:10px; }
     .modal-detail { font-size:15px; color:var(--muted); line-height:1.7; margin-bottom:20px; }
@@ -171,7 +168,7 @@
     #day-modal { display:none; position:fixed; inset:0; z-index:500; background:rgba(0,0,0,0.7); align-items:flex-end; justify-content:center; }
     #day-modal.show { display:flex; }
     .modal-sheet { background:var(--surface); border-radius:20px 20px 0 0; padding:24px 20px 40px; width:100%; max-height:85vh; overflow-y:auto; }
-    .modal-handle { width:40px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
+    .modal-handle { width:48px; height:5px; background:var(--border); border-radius:3px; margin:0 auto 20px; cursor:pointer; touch-action:none; }
     .modal-date  { font-size:11px; letter-spacing:3px; color:var(--dim); text-transform:uppercase; margin-bottom:6px; }
     .modal-title { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:1px; margin-bottom:6px; }
     .modal-desc  { font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:18px; }
@@ -1139,12 +1136,55 @@ function showDayModal(dk) {
     +'<button class="modal-btn secondary" onclick="closeDayModal()">Close</button>';
 
   document.getElementById('day-modal').classList.add('show');
+  setTimeout(initModalSwipe, 50);
 }
 
 function closeDayModal(e) {
   if (!e || e.target === document.getElementById('day-modal')) {
     document.getElementById('day-modal').classList.remove('show');
   }
+}
+
+function initModalSwipe() {
+  var sheet = document.querySelector('.modal-sheet');
+  var handle = document.querySelector('.modal-handle');
+  if (!sheet || !handle) return;
+
+  // Tap the handle to close
+  handle.addEventListener('click', function() {
+    document.getElementById('day-modal').classList.remove('show');
+  });
+
+  // Swipe down to close
+  var startY = 0, startScroll = 0;
+  sheet.addEventListener('touchstart', function(e) {
+    startY = e.touches[0].clientY;
+    startScroll = sheet.scrollTop;
+  }, {passive:true});
+
+  sheet.addEventListener('touchmove', function(e) {
+    var dy = e.touches[0].clientY - startY;
+    // Only drag-to-close when at top of scroll
+    if (dy > 0 && startScroll === 0) {
+      sheet.style.transform = 'translateY(' + Math.min(dy, 200) + 'px)';
+      sheet.style.transition = 'none';
+    }
+  }, {passive:true});
+
+  sheet.addEventListener('touchend', function(e) {
+    var dy = e.changedTouches[0].clientY - startY;
+    sheet.style.transition = 'transform 0.2s ease';
+    if (dy > 80 && startScroll === 0) {
+      sheet.style.transform = 'translateY(100%)';
+      setTimeout(function() {
+        document.getElementById('day-modal').classList.remove('show');
+        sheet.style.transform = '';
+        sheet.style.transition = '';
+      }, 200);
+    } else {
+      sheet.style.transform = '';
+    }
+  }, {passive:true});
 }
 
 function renderSessionHistory() {
