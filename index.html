@@ -15,8 +15,8 @@
   <style>
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     :root {
-      --bg:#0a0a0a; --surface:#141414; --surface2:#1e1e1e;
-      --border:#2a2a2a; --text:#f5f5f5; --muted:#aaa; --dim:#666;
+      --bg:#e8e5e0; --surface:#f5f3f0; --surface2:#e8e5e0;
+      --border:#d5d0c8; --text:#1a1a1a; --muted:#555; --dim:#777;
       --orange:#C8102E; --orange-light:#E8384F;
       --blue:#0a7ae8; --blue-light:#3da8ff; --green:#4caf50;
     }
@@ -44,24 +44,24 @@
 
     /* ── SYNC STATUS ── */
     #sync-bar { position:fixed; top:0; left:0; right:0; z-index:9999; padding:8px 16px; font-size:11px; letter-spacing:2px; text-transform:uppercase; text-align:center; display:none; transition:all 0.3s; }
-    #sync-bar.syncing { display:block; background:#1a2a3a; color:#88aacc; }
-    #sync-bar.synced  { display:block; background:#1a3a12; color:#5a9a4a; }
+    #sync-bar.syncing { display:block; background:#e0dbd4; color:#185FA5; }
+    #sync-bar.synced  { display:block; background:#1a3a12; color:#2a6a2a; }
     #sync-bar.error   { display:block; background:#3a1212; color:#e84a4a; }
 
     /* ── APP ── */
     #app { display:none; }
     #app.show { display:block; }
 
-    #header { position:sticky; top:0; z-index:100; background:#0d0d0d; border-bottom:2px solid var(--surface2); padding:20px 20px 14px; }
+    #header { position:sticky; top:0; z-index:100; background:#111111; border-bottom:2px solid var(--surface2); padding:20px 20px 14px; }
     .eyebrow { font-size:10px; letter-spacing:4px; color:var(--dim); text-transform:uppercase; margin-bottom:4px; }
     #header h1 { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:1px; line-height:1; }
 
-    #bottom-nav { position:fixed; bottom:0; left:0; right:0; z-index:100; background:#0d0d0d; border-top:1px solid var(--surface2); display:flex; }
+    #bottom-nav { position:fixed; bottom:0; left:0; right:0; z-index:100; background:#111111; border-top:1px solid var(--surface2); display:flex; }
     .nav-btn { flex:1; padding:12px 0; background:none; border:none; border-top:2px solid transparent; transition:all 0.2s; }
     .nav-btn.active { border-top-color:var(--orange); }
     .nav-icon  { font-size:20px; display:block; }
     .nav-label { font-size:9px; letter-spacing:2px; color:var(--dim); text-transform:uppercase; margin-top:3px; display:block; }
-    .nav-btn.active .nav-label { color:var(--orange-light); }
+    .nav-btn.active .nav-label { color:#E8384F; }
 
     .screen { display:none; padding:20px 20px 100px; }
     .screen.active { display:block; }
@@ -90,7 +90,7 @@
     .field-input:focus { border-color:var(--orange); }
     .full-width  { grid-column:1/-1; }
     .btn-primary { width:100%; padding:13px; border-radius:8px; border:none; background:var(--orange); color:#fff; font-size:15px; font-weight:700; letter-spacing:1px; transition:all 0.3s; }
-    .btn-primary.saved { background:#2a4a22; color:#5a9a4a; }
+    .btn-primary.saved { background:#2a4a22; color:#2a6a2a; }
 
     .history-row    { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--surface2); }
     .history-row:last-child { border-bottom:none; }
@@ -99,18 +99,18 @@
     .history-weight { font-family:'Bebas Neue',sans-serif; font-size:22px; }
     .history-diff   { font-size:11px; text-align:right; }
     .diff-down { color:var(--green); }
-    .diff-up   { color:var(--orange); }
+    .diff-up   { color:#C8102E; }
     .btn-delete { background:none; border:none; color:#555; font-size:16px; padding:4px 8px; }
 
     .workout-tabs { display:flex; gap:10px; margin-bottom:18px; }
     .tab-btn { flex:1; padding:10px 0; border-radius:8px; border:2px solid var(--border); background:transparent; color:var(--dim); font-size:13px; font-weight:700; letter-spacing:1px; transition:all 0.2s; }
-    .tab-btn.active-a { border-color:var(--orange); background:rgba(200,16,46,0.12); color:var(--orange-light); }
+    .tab-btn.active-a { border-color:var(--orange); background:rgba(200,16,46,0.08); color:var(--orange-light); }
     .tab-btn.active-b { border-color:var(--blue);   background:rgba(10,122,232,0.12); color:var(--blue-light); }
     .tab-sub { font-size:10px; font-weight:400; opacity:0.8; margin-top:2px; display:block; }
 
     .ex-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; margin-bottom:10px; overflow:hidden; }
-    .ex-card.done     { background:#1a2e18; border-color:#2a4a22; }
-    .ex-card.finisher { background:#1a1e30; }
+    .ex-card.done     { background:#e8f0e8; border-color:#a0c8a0; }
+    .ex-card.finisher { background:#eae8f0; }
     .ex-header  { display:flex; align-items:center; gap:14px; padding:15px 18px; cursor:pointer; background:transparent; width:100%; text-align:left; border:none; color:var(--text); }
     .ex-icon    { font-size:22px; width:32px; text-align:center; flex-shrink:0; }
     .ex-name    { font-size:15px; font-weight:700; }
@@ -128,29 +128,29 @@
     .btn-done   { margin-top:14px; width:100%; padding:11px; border-radius:8px; font-size:13px; letter-spacing:1px; font-weight:700; transition:all 0.2s; }
 
     /* ── SCHEDULE ── */
-    .today-card { background:linear-gradient(135deg,#1a0a0a,#221212); border:1px solid var(--orange); border-radius:16px; padding:20px; margin-bottom:14px; }
+    .today-card { background:linear-gradient(135deg,#f0ede8,#e8e4de); border:1px solid var(--orange); border-radius:16px; padding:20px; margin-bottom:14px; }
     .today-label { font-size:10px; letter-spacing:4px; color:var(--orange); text-transform:uppercase; margin-bottom:6px; }
     .today-date  { font-size:13px; color:var(--dim); margin-bottom:12px; }
     .today-title { font-family:'Bebas Neue',sans-serif; font-size:32px; letter-spacing:1px; line-height:1; margin-bottom:8px; }
     .today-sub   { font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:16px; }
     .today-btn   { width:100%; padding:14px; border-radius:10px; border:none; background:var(--orange); color:#fff; font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; cursor:pointer; }
     .today-btn.rest { background:var(--surface2); color:var(--dim); }
-    .today-btn.soccer { background:#2a4a8a; color:#88aaff; }
+    .today-btn.soccer { background:#2a4a8a; color:#185FA5; }
 
     .week-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-bottom:14px; }
     .week-day  { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:8px 4px; text-align:center; }
-    .week-day.today   { border-color:var(--orange); background:rgba(200,16,46,0.12); }
+    .week-day.today   { border-color:var(--orange); background:rgba(200,16,46,0.08); }
     .week-day.done    { border-color:var(--green); background:rgba(76,175,80,0.12); }
-    .week-day.soccer  { border-color:#88aaff; background:rgba(136,170,255,0.1); }
+    .week-day.soccer  { border-color:#185FA5; background:rgba(136,170,255,0.1); }
     .week-day.rest    { opacity:0.5; }
     .wd-name  { font-size:9px; color:var(--dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
     .wd-num   { font-family:'Bebas Neue',sans-serif; font-size:18px; line-height:1; margin-bottom:4px; }
     .wd-icon  { font-size:14px; height:18px; }
 
-    .game-card { background:#1a1e30; border:1px solid #2a3a60; border-radius:12px; padding:14px 18px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; }
-    .game-date { font-size:14px; font-weight:700; color:#88aaff; }
+    .game-card { background:#eae8f0; border:1px solid #c8c3ba; border-radius:12px; padding:14px 18px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; }
+    .game-date { font-size:14px; font-weight:700; color:#185FA5; }
     .game-time { font-size:12px; color:var(--dim); margin-top:2px; }
-    .game-badge { font-family:'Bebas Neue',sans-serif; font-size:16px; color:#88aaff; background:rgba(136,170,255,0.15); padding:4px 10px; border-radius:6px; }
+    .game-badge { font-family:'Bebas Neue',sans-serif; font-size:16px; color:#185FA5; background:rgba(136,170,255,0.15); padding:4px 10px; border-radius:6px; }
     /* ── DAY DETAIL MODAL ── */
     #day-modal { display:none; position:fixed; inset:0; z-index:500; background:rgba(0,0,0,0.7); align-items:flex-end; justify-content:center; }
     #day-modal.show { display:flex; }
@@ -191,17 +191,17 @@
     .modal-btn     { width:100%; padding:14px; border-radius:10px; border:none; background:var(--orange); color:#fff; font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; cursor:pointer; margin-top:16px; display:block; }
     .modal-btn.secondary { background:transparent; border:1px solid var(--border); color:var(--dim); font-family:'Crimson Pro',Georgia,serif; font-size:14px; letter-spacing:0; margin-top:10px; }
     .cardio-type-btn.active-type { border-color:var(--orange); background:rgba(200,16,46,0.15); color:var(--orange-light); }
-    .cardio-saved-banner { background:linear-gradient(135deg,#1a3a12,#0e2a0a); border:1px solid #3a6a22; border-radius:12px; padding:16px 18px; margin-bottom:14px; display:none; text-align:center; }
+    .cardio-saved-banner { background:linear-gradient(135deg,#e8f0e8,#d8eed8); border:1px solid #a0c8a0; border-radius:12px; padding:16px 18px; margin-bottom:14px; display:none; text-align:center; }
     .cardio-saved-banner.show { display:block; }
 
-    .complete-banner { background:linear-gradient(135deg,#1a3a12,#0e2a0a); border:1px solid #3a6a22; border-radius:12px; padding:16px 18px; margin-bottom:14px; display:none; text-align:center; }
+    .complete-banner { background:linear-gradient(135deg,#e8f0e8,#d8eed8); border:1px solid #a0c8a0; border-radius:12px; padding:16px 18px; margin-bottom:14px; display:none; text-align:center; }
     .complete-banner.show { display:block; }
-    .cb-title { font-family:'Bebas Neue',sans-serif; font-size:22px; color:#6abf4a; letter-spacing:1px; }
-    .cb-sub   { font-size:13px; color:#5a8a3a; margin-top:4px; }
+    .cb-title { font-family:'Bebas Neue',sans-serif; font-size:22px; color:#2a6a2a; letter-spacing:1px; }
+    .cb-sub   { font-size:13px; color:#3a7a3a; margin-top:4px; }
 
-    .recovery-card  { background:#1a2a3a; border:1px solid #2a3a55; border-radius:12px; padding:16px 18px; margin-top:8px; display:flex; gap:14px; align-items:center; }
+    .recovery-card  { background:#e0dbd4; border:1px solid #d5d0c8; border-radius:12px; padding:16px 18px; margin-top:8px; display:flex; gap:14px; align-items:center; }
     .rec-icon       { font-size:28px; }
-    .recovery-title { font-size:13px; color:#88aacc; font-weight:700; }
+    .recovery-title { font-size:13px; color:#185FA5; font-weight:700; }
     .recovery-sub   { font-size:12px; color:var(--dim); margin-top:3px; }
 
     .wh-streak  { display:flex; gap:10px; margin-bottom:16px; }
@@ -213,9 +213,9 @@
     .wh-date     { font-size:15px; font-weight:700; color:var(--text); }
     .wh-sub      { font-size:11px; color:var(--dim); margin-top:2px; }
     .wh-badge    { font-family:'Bebas Neue',sans-serif; font-size:18px; padding:3px 10px; border-radius:6px; }
-    .wh-badge-a  { background:rgba(200,16,46,0.2); color:var(--orange-light); }
-    .wh-badge-b  { background:rgba(10,122,232,0.2); color:var(--blue-light); }
-    .wh-badge-c  { background:rgba(76,175,80,0.2);  color:#6abf4a; }
+    .wh-badge-a  { background:rgba(200,16,46,0.12); color:#C8102E; }
+    .wh-badge-b  { background:rgba(24,95,165,0.12); color:var(--blue-light); }
+    .wh-badge-c  { background:rgba(76,175,80,0.2);  color:#2a6a2a; }
     .wh-body     { display:none; padding:0 18px 14px; border-top:1px solid var(--surface2); }
     .wh-body.open { display:block; }
     .wh-ex-row   { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--surface2); }
@@ -1033,8 +1033,8 @@ function renderWorkout() {
   var wuH='<div class="section-label">Warm-Up</div>';
   WARMUP.forEach(function(wu,i){
     var ok=!!doneWarmup[i];
-    var bg=ok?'#1a2e18':'var(--surface)', bd=ok?'#2a4a22':'var(--border)';
-    var bs=ok?'border:1.5px solid #3a6a2a;background:#1e3a16;color:#5a9a4a':'border:1.5px solid #666;background:#66666622;color:#aaa';
+    var bg=ok?'#e8f0e8':'var(--surface)', bd=ok?'#a0c8a0':'var(--border)';
+    var bs=ok?'border:1.5px solid #3a6a2a;background:#d8eed8;color:#2a6a2a':'border:1.5px solid #666;background:#66666622;color:#aaa';
     wuH+='<div style="background:'+bg+';border:1px solid '+bd+';border-radius:12px;margin-bottom:10px;overflow:hidden">'
       +'<button class="ex-header" onclick="toggleExpand(\'wu\','+i+')">'
       +'<span class="ex-icon">'+wu.icon+'</span>'
@@ -1054,7 +1054,7 @@ function renderWorkout() {
     var ok=!!doneExercises[i];
     var cls='ex-card'+(ok?' done':ex.finisher?' finisher':'');
     var badge=ex.finisher?'<span class="fin-badge'+(currentWorkout==='B'?' fin-badge-b':'')+'">Finisher</span>':'';
-    var bs=ok?'border:1.5px solid #3a6a2a;background:#1e3a16;color:#5a9a4a'
+    var bs=ok?'border:1.5px solid #3a6a2a;background:#d8eed8;color:#2a6a2a'
              :'border:1.5px solid '+w.color+';background:'+w.color+'22;color:'+w.accent;
     exH+='<div class="'+cls+'">'
       +'<button class="ex-header" onclick="toggleExpand(\'ex\','+i+')">'
