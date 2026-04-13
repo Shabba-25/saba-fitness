@@ -815,26 +815,42 @@ function getTodayPlan(dateStr) {
   var now = new Date();
   var todayKey = dateKey(now);
 
-  // Check if there are any skipped workouts to show today
-  // A skipped workout from yesterday or earlier should appear today
+  // Check if today was skipped — show rest instead
+  var wasSkipped = skippedDays.some(function(s){ return s.from === dateStr; });
+  if (wasSkipped) {
+    return { type:'rest', label:'Rest Day', detail:'Workout skipped — moved to tomorrow. Hot tub, stretch, water.' };
+  }
+
+  // Check if there's a skipped workout that should appear today
+  // A workout skipped on a previous day should show up today
   if (dateStr === todayKey && skippedDays.length > 0) {
-    // Find most recently skipped workout that hasn't been completed
+    var dToday = new Date(todayKey+'T12:00:00');
     for (var i = skippedDays.length - 1; i >= 0; i--) {
       var skipped = skippedDays[i];
-      // Show skipped workout today if it was skipped before today
-      if (skipped.from < todayKey) {
+      var dSkipped = new Date(skipped.from+'T12:00:00');
+      // If skipped from a day before today, show it today
+      if (dSkipped < dToday) {
         return Object.assign({}, skipped.plan, {
-          skippedFrom: skipped.from,
-          detail: skipped.plan.detail + ' (moved from ' + skipped.from + ')'
+          detail: skipped.plan.detail,
+          skippedNote: true
         });
       }
     }
   }
 
-  // Check if today was skipped — show rest instead
-  var wasSkipped = skippedDays.some(function(s){ return s.from === dateStr; });
-  if (wasSkipped) {
-    return { type:'rest', label:'Rest Day', detail:'Workout skipped — moved to tomorrow. Hot tub, stretch, water.' };
+  // If today is tomorrow relative to a skip — show the skipped workout
+  if (skippedDays.length > 0) {
+    var dCurrent = new Date(dateStr+'T12:00:00');
+    for (var j = 0; j < skippedDays.length; j++) {
+      var sk = skippedDays[j];
+      var dSk = new Date(sk.from+'T12:00:00');
+      var dayAfterSkip = new Date(dSk);
+      dayAfterSkip.setDate(dSk.getDate() + 1);
+      // If this dateStr is the day after a skip, show the skipped workout
+      if (dateKey(dayAfterSkip) === dateStr) {
+        return sk.plan;
+      }
+    }
   }
 
   return PLAN[dateStr];
