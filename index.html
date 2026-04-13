@@ -809,14 +809,22 @@ function resetSkip() {
 
 function getShiftedPlan(dateStr) {
   if (skipOffset === 0) return PLAN[dateStr];
-  // Shift back by skipOffset days to find what was originally planned
-  var d = new Date(dateStr+'T12:00:00');
-  d.setDate(d.getDate() - skipOffset);
-  var shifted = PLAN[dateKey(d)];
-  // Don't shift soccer or rest days — those are fixed
+  // Fixed dates (soccer/rest) never shift
   var original = PLAN[dateStr];
-  if (original && (original.type==='soccer'||original.type==='rest')) return original;
-  return shifted;
+  if (original && (original.type==='soccer' || original.type==='rest')) return original;
+  // For training days: look forward by skipOffset to find what should be shown here
+  // i.e. today shows what was originally planned skipOffset days ahead
+  var d = new Date(dateStr+'T12:00:00');
+  d.setDate(d.getDate() + skipOffset);
+  var shifted = PLAN[dateKey(d)];
+  // If the shifted day is a soccer/rest day, keep looking forward for next training day
+  var attempts = 0;
+  while (shifted && (shifted.type==='soccer'||shifted.type==='rest') && attempts < 7) {
+    d.setDate(d.getDate() + 1);
+    shifted = PLAN[dateKey(d)];
+    attempts++;
+  }
+  return shifted || original;
 }
 
 function renderSchedule() {
