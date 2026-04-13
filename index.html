@@ -787,50 +787,63 @@ function fmtDisplayDate(d) {
   return mo[d.getMonth()]+' '+d.getDate();
 }
 
-// ── SKIP OFFSET ───────────────────────────────────────────────────────────────
-var skipOffset = parseInt(localStorage.getItem('saba_skip_offset')||'0');
+// ── SKIP LOGIC ────────────────────────────────────────────────────────────────
+// Stores array of {from: dateKey, workout: planObj} that were skipped
+var skippedDays = [];
+try { skippedDays = JSON.parse(localStorage.getItem('saba_skipped')||'[]'); } catch(e){ skippedDays=[]; }
+
+function saveSkipped() { try { localStorage.setItem('saba_skipped', JSON.stringify(skippedDays)); } catch(e){} }
 
 function skipToday() {
   var now = new Date();
   var todayKey = dateKey(now);
   var plan = PLAN[todayKey];
-  // Only skip active training days, not rest/soccer
-  if (plan && (plan.type==='rest'||plan.type==='soccer')) return;
-  skipOffset++;
-  try { localStorage.setItem('saba_skip_offset', skipOffset); } catch(e){}
+  if (!plan || plan.type==='rest' || plan.type==='soccer') return;
+  // Store the skipped workout
+  skippedDays.push({ from: todayKey, plan: plan });
+  saveSkipped();
   renderSchedule();
 }
 
 function resetSkip() {
-  skipOffset = 0;
-  try { localStorage.removeItem('saba_skip_offset'); } catch(e){}
+  skippedDays = [];
+  try { localStorage.removeItem('saba_skipped'); } catch(e){}
   renderSchedule();
 }
 
-function getShiftedPlan(dateStr) {
-  if (skipOffset === 0) return PLAN[dateStr];
-  // Fixed dates (soccer/rest) never shift
-  var original = PLAN[dateStr];
-  if (original && (original.type==='soccer' || original.type==='rest')) return original;
-  // For training days: look forward by skipOffset to find what should be shown here
-  // i.e. today shows what was originally planned skipOffset days ahead
-  var d = new Date(dateStr+'T12:00:00');
-  d.setDate(d.getDate() + skipOffset);
-  var shifted = PLAN[dateKey(d)];
-  // If the shifted day is a soccer/rest day, keep looking forward for next training day
-  var attempts = 0;
-  while (shifted && (shifted.type==='soccer'||shifted.type==='rest') && attempts < 7) {
-    d.setDate(d.getDate() + 1);
-    shifted = PLAN[dateKey(d)];
-    attempts++;
+function getTodayPlan(dateStr) {
+  var now = new Date();
+  var todayKey = dateKey(now);
+
+  // Check if there are any skipped workouts to show today
+  // A skipped workout from yesterday or earlier should appear today
+  if (dateStr === todayKey && skippedDays.length > 0) {
+    // Find most recently skipped workout that hasn't been completed
+    for (var i = skippedDays.length - 1; i >= 0; i--) {
+      var skipped = skippedDays[i];
+      // Show skipped workout today if it was skipped before today
+      if (skipped.from < todayKey) {
+        return Object.assign({}, skipped.plan, {
+          skippedFrom: skipped.from,
+          detail: skipped.plan.detail + ' (moved from ' + skipped.from + ')'
+        });
+      }
+    }
   }
-  return shifted || original;
+
+  // Check if today was skipped — show rest instead
+  var wasSkipped = skippedDays.some(function(s){ return s.from === dateStr; });
+  if (wasSkipped) {
+    return { type:'rest', label:'Rest Day', detail:'Workout skipped — moved to tomorrow. Hot tub, stretch, water.' };
+  }
+
+  return PLAN[dateStr];
 }
 
 function renderSchedule() {
   var now = new Date();
   var todayKey = dateKey(now);
-  var plan = getShiftedPlan(todayKey);
+  var plan = getTodayPlan(todayKey);
 
   // ── Today card ──
   var tc = document.getElementById('today-card');
@@ -844,7 +857,7 @@ function renderSchedule() {
     var btnClick = (plan.workout) ? 'onclick="setScreen(\'workout\');setWorkout(\''+plan.workout+'\')"' : '';
     var done = isDayDone(todayKey);
     tc.innerHTML = '<div class="today-card">'
-      +'<div class="today-label">Today\'s Plan'+(skipOffset>0?' <span style="background:#888;color:#fff;font-size:9px;padding:2px 6px;border-radius:4px;letter-spacing:1px">+'+skipOffset+' day'+(skipOffset>1?'s':'')+'</span>':'')+'</div>'
+      +'<div class="today-label">Today\'s Plan'+(skippedDays.length>0?' <span style="background:#888;color:#fff;font-size:9px;padding:2px 6px;border-radius:4px;letter-spacing:1px">moved +1</span>':'')+'</div>'
       +'<div class="today-date">'+dateStr+'</div>'
       +'<div class="today-title" style="color:'+(plan.type==='soccer'?'#88aaff':plan.type==='rest'?'var(--dim)':'var(--orange-light)')+'">'+plan.label+'</div>'
       +'<div class="today-sub">'+plan.detail+'</div>'
@@ -855,7 +868,7 @@ function renderSchedule() {
       +(plan.type!=='rest' && plan.type!=='soccer' && !done
         ? '<div style="display:flex;gap:8px;margin-top:8px">'
           +'<button onclick="skipToday()" style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--dim);font-size:12px;cursor:pointer">⏭ Skip Today</button>'
-          +(skipOffset>0?'<button onclick="resetSkip()" style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--dim);font-size:12px;cursor:pointer">↩ Reset Schedule</button>':'')
+          +(skippedDays.length>0?'<button onclick="resetSkip()" style="flex:1;padding:10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--dim);font-size:12px;cursor:pointer">↩ Reset Schedule</button>':'')
           +'</div>'
         : '');
   } else {
@@ -878,7 +891,7 @@ function renderSchedule() {
       var d = new Date(weekStart);
       d.setDate(weekStart.getDate() + (week*7) + i);
       var dk = dateKey(d);
-      var dp = getShiftedPlan(dk);
+      var dp = getTodayPlan(dk);
       var isToday = isSameDay(d, now);
       var done2 = isDayDone(dk);
       var isPast = d < now && !isToday;
