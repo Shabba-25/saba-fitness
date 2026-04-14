@@ -812,47 +812,24 @@ function resetSkip() {
 }
 
 function getTodayPlan(dateStr) {
-  var now = new Date();
-  var todayKey = dateKey(now);
-
-  // Check if today was skipped — show rest instead
-  var wasSkipped = skippedDays.some(function(s){ return s.from === dateStr; });
-  if (wasSkipped) {
-    return { type:'rest', label:'Rest Day', detail:'Workout skipped — moved to tomorrow. Hot tub, stretch, water.' };
-  }
-
-  // Check if there's a skipped workout that should appear today
-  // A workout skipped on a previous day should show up today
-  if (dateStr === todayKey && skippedDays.length > 0) {
-    var dToday = new Date(todayKey+'T12:00:00');
-    for (var i = skippedDays.length - 1; i >= 0; i--) {
-      var skipped = skippedDays[i];
-      var dSkipped = new Date(skipped.from+'T12:00:00');
-      // If skipped from a day before today, show it today
-      if (dSkipped < dToday) {
-        return Object.assign({}, skipped.plan, {
-          detail: skipped.plan.detail,
-          skippedNote: true
-        });
-      }
+  // 1. If this exact date was skipped — show rest
+  for (var i = 0; i < skippedDays.length; i++) {
+    if (skippedDays[i].from === dateStr) {
+      return { type:'rest', label:'Rest Day', detail:'Workout skipped — moved to tomorrow. Rest up, hot tub, water.' };
     }
   }
 
-  // If today is tomorrow relative to a skip — show the skipped workout
-  if (skippedDays.length > 0) {
-    var dCurrent = new Date(dateStr+'T12:00:00');
-    for (var j = 0; j < skippedDays.length; j++) {
-      var sk = skippedDays[j];
-      var dSk = new Date(sk.from+'T12:00:00');
-      var dayAfterSkip = new Date(dSk);
-      dayAfterSkip.setDate(dSk.getDate() + 1);
-      // If this dateStr is the day after a skip, show the skipped workout
-      if (dateKey(dayAfterSkip) === dateStr) {
-        return sk.plan;
-      }
+  // 2. If a workout was skipped the day before this date — show the skipped workout instead
+  for (var j = 0; j < skippedDays.length; j++) {
+    var sk = skippedDays[j];
+    var skDate = new Date(sk.from + 'T12:00:00');
+    skDate.setDate(skDate.getDate() + 1);
+    if (dateKey(skDate) === dateStr) {
+      return sk.plan;
     }
   }
 
+  // 3. Default — return the original plan
   return PLAN[dateStr];
 }
 
@@ -945,7 +922,7 @@ function renderSchedule() {
     var ugHtml = '<div class="card-label" style="margin-bottom:10px">Upcoming Games</div>';
     upcoming.forEach(function(dk) {
       var gd = new Date(dk+'T12:00:00');
-      var plan = PLAN[dk];
+      var plan = getTodayPlan(dk);
       var moN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       var dayN = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
       var daysLeft = Math.ceil((gd-now)/(1000*60*60*24));
@@ -1269,7 +1246,7 @@ function renderWorkout() {
 // ── SESSION HISTORY ───────────────────────────────────────────────────────────
 function showDayModal(dk) {
   var d    = new Date(dk+'T12:00:00');
-  var plan = PLAN[dk];
+  var plan = getTodayPlan(dk);
   var moN  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   var dayN = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   var dateLabel = dayN[d.getDay()]+', '+moN[d.getMonth()]+' '+d.getDate();
