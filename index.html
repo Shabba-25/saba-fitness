@@ -477,18 +477,21 @@ var WARMUP = [
 ];
 
 var WORKOUTS = {
-  A:{color:'#e8500a',accent:'#ff7a3d',exercises:[
-    {name:'Dead Hang',               sets:'2 sets',     reps:'30–45 sec',             icon:'🏋️',muscles:'Grip · Lats · Spine',           cue:"Grip the power tower bar, let your body hang fully. Relax the shoulders down — this decompresses the spine. Breathe steadily. Don't kip or swing."},
-    {name:'KB Goblet Squat',         sets:'3 sets',     reps:'12 reps',               icon:'🏅',muscles:'Quads · Glutes · Core',          cue:"Hold the 30 lb KB at your chest. Feet shoulder-width, toes slightly out. Descend slowly (3 counts down). Don't force depth if your left hip talks back."},
-    {name:'KB One-Arm Row',          sets:'3 sets',     reps:'12 reps / arm',         icon:'💪',muscles:'Lats · Rhomboids · Biceps',      cue:"Brace your free hand on the bench. Pull the 30 lb KB to your hip — not your shoulder. Keep your back flat. Squeeze at the top for 1 second."},
-    {name:'Power Tower Knee Raises', sets:'3 sets',     reps:'12 reps',               icon:'⬆️',muscles:'Lower Abs · Hip Flexors · Core', cue:"Arms on the pads, back flat against the pad. Raise knees slowly to 90°, hold 1 second, lower slowly. No swinging — if you're swinging, your core isn't working."},
-    {name:'Push-Ups (Tower Handles)',sets:'2 sets',     reps:'To comfortable failure',icon:'🤜',muscles:'Chest · Triceps · Shoulders',    cue:"Body straight from head to heels. Slow descent (3 counts), explosive push up. Stop 1–2 reps before your form breaks."},
-    {name:'Incline Walk Finisher',   sets:'1 round',    reps:'20 mins',               icon:'🚶',muscles:'Glutes · Calves · Cardio',       cue:'Incline: 5.0 | Speed: 3.5 mph. Hands off the rails — this is the fat burner. Stay in it for the full 20.',finisher:true}
+  A:{color:'#C8102E',accent:'#E8384F',exercises:[
+    {name:'DB Flat Chest Press',       sets:'3 sets',     reps:'12 reps @ 25 lbs',      icon:'🏋️',muscles:'Chest · Triceps · Front Delts',  cue:"Lie flat on the bench, feet on the floor. Hold 25 lb dumbbells at chest height, elbows at 45°. Press up explosively, lower slowly (3 counts). At the bottom your elbows should be just below bench level — full stretch on the chest. This is your primary chest builder."},
+    {name:'DB Incline Press',          sets:'3 sets',     reps:'10 reps @ 25 lbs',      icon:'📐',muscles:'Upper Chest · Shoulders',         cue:"Bench set to 30-45°. This targets the upper chest directly — exactly the area you want to tighten. Same motion as flat press but angled. Feel the squeeze at the top, slow descent. 3 counts down, drive up. Upper chest is what lifts and firms the whole area."},
+    {name:'DB Chest Flyes',            sets:'3 sets',     reps:'12 reps @ 25 lbs',      icon:'🦅',muscles:'Inner & Outer Chest · Pecs',      cue:"Flat bench. Arms out wide like you're hugging a barrel — slight bend in the elbows throughout, never straighten fully. Lower until you feel a deep chest stretch, then squeeze the chest to bring them back together. This is the shape exercise. Slow and controlled the whole way — do not go heavy here, feel it."},
+    {name:'DB One-Arm Row',            sets:'3 sets',     reps:'12 reps / arm @ 35 lbs',icon:'💪',muscles:'Lats · Rhomboids · Biceps',      cue:"Brace your free hand on the bench. Pull the 35 lb dumbbell to your hip — not your shoulder. Keep your back flat and parallel to the floor. Squeeze at the top for 1 second. Chest and back work together — this is your balance movement."},
+    {name:'DB Shoulder Press',         sets:'3 sets',     reps:'10 reps @ 25 lbs',      icon:'🔝',muscles:'Shoulders · Triceps · Upper Back', cue:"Seated or standing. Dumbbells at ear height, palms facing forward. Press straight up overhead — don't flare the elbows too wide. Lower slowly. Shoulders frame the chest — building them makes everything look tighter and broader."},
+    {name:'Power Tower Knee Raises',   sets:'3 sets',     reps:'12 reps',               icon:'⬆️',muscles:'Lower Abs · Hip Flexors · Core', cue:"Arms on the pads, back flat against the pad. Raise knees slowly to 90°, hold 1 second, lower slowly. No swinging — if you're swinging, your core isn't working. This hits the lower abs which ties the whole physique together."},
+    {name:'Dead Hang',                 sets:'2 sets',     reps:'30–45 sec',             icon:'🧲',muscles:'Grip · Lats · Spine Decompression',cue:"Grip the power tower bar, let your body hang fully. Relax the shoulders down — this decompresses the spine after all the pressing work. Breathe steadily. Non-negotiable finisher after upper body day."},
+    {name:'Incline Walk Finisher',     sets:'1 round',    reps:'20 mins',               icon:'🚶',muscles:'Glutes · Calves · Fat Burn',      cue:'Incline: 5.0 | Speed: 3.5 mph. Hands off the rails. You just worked the upper body — now burn the fat covering it. Stay in it for the full 20.',finisher:true}
   ]},
   B:{color:'#0a7ae8',accent:'#3da8ff',exercises:[
     {name:'Warm-Up Walk',            sets:'1 round',    reps:'5 mins',                icon:'🚶',muscles:'Full Body Warm-Up',              cue:"Speed: 3.5 mph, flat. This isn't optional — your joints need this before sprinting."},
     {name:'10.5 mph Sprints',        sets:'8–10 rounds',reps:'30s sprint / 90s walk', icon:'⚡',muscles:'Full Body · VO2 Max · Fat Burn',  cue:"30 sec @ 10.5 mph — go hard. Then 90 sec @ 3.0 mph recovery walk. Use all of it.",finisher:true},
     {name:'KB Halos',                sets:'3 sets',     reps:'10 reps each direction',icon:'🔄',muscles:'Shoulders · Core · Mobility',     cue:'Hold the 30 lb KB by the horns at chest height. Circle it slowly around your head — clockwise 10, counter-clockwise 10.'},
+    {name:'DB Goblet Squat',         sets:'3 sets',     reps:'12 reps @ 35 lbs',      icon:'🏅',muscles:'Quads · Glutes · Core',          cue:"Hold the 35 lb dumbbell vertically at your chest. Feet shoulder-width, toes slightly out. Descend slowly 3 counts down. Don't force depth if your left hip talks back — stop at 90° and build from there."},
     {name:'Push-Ups (Tower Handles)',sets:'3 sets',     reps:'To failure',            icon:'🤜',muscles:'Chest · Triceps · Shoulders',    cue:"More fatigued here — that's the point. Keep form tight. The moment your hips sag, the set is done."},
     {name:'Cool Down + Stretch',     sets:'1 round',    reps:'5 mins walk + stretch', icon:'🧘',muscles:'Recovery · Flexibility',          cue:"5 mins slow walk @ 2.5 mph. Hamstring stretch 30 sec each leg, hip flexor lunge 30 sec each side. Don't skip this."}
   ]}
@@ -722,45 +725,45 @@ var SOCCER_DATES = ['2026-04-19','2026-04-26','2026-05-03','2026-05-10','2026-05
 // Full plan: date -> {type, label, detail, workout}
 // type: 'A','B','cardio','rest','soccer','easy'
 var PLAN = {
-  '2026-04-11': {type:'A',    label:'Workout A',         detail:'Strength & Burn — modified for hip recovery. Shallower squats today, listen to your body.', workout:'A'},
+  '2026-04-11': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
   '2026-04-12': {type:'cardio',label:'Fat Burn Walk',    detail:'30 mins · Incline 6.0 · Speed 3.5 mph. Hands off the rails.', workout:'C'},
   '2026-04-13': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Full session — you should be recovered from Saturday.', workout:'B'},
   '2026-04-14': {type:'cardio',label:'Fat Burn Walk',    detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
-  '2026-04-15': {type:'A',    label:'Workout A',         detail:'Strength & Burn — full depth today if hips allow.', workout:'A'},
+  '2026-04-15': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
   '2026-04-16': {type:'rest', label:'Rest Day',          detail:'Hot tub, stretch, water. Let the body consolidate the week.'},
   '2026-04-17': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Strong finish to the week.', workout:'B'},
   '2026-04-18': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph. Legs fresh for tomorrow\'s game.', workout:'C'},
   '2026-04-19': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 10:00pm. No training today — save everything for the pitch.'},
   '2026-04-20': {type:'rest', label:'Rest Day',          detail:'Full recovery. Hot tub if you can. You played late — sleep in.'},
   '2026-04-21': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 3.2 mph. Flush out the match soreness.', workout:'C'},
-  '2026-04-22': {type:'A',    label:'Workout A',         detail:'Strength & Burn. Back to full intensity.', workout:'A'},
+  '2026-04-22': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
   '2026-04-23': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
   '2026-04-24': {type:'B',    label:'Workout B',         detail:'HIIT Engine.', workout:'B'},
   '2026-04-25': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph. Legs fresh for tomorrow.', workout:'C'},
   '2026-04-26': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 10:00pm. No training today.'},
   '2026-04-27': {type:'rest', label:'Rest Day',          detail:'Full recovery. Hot tub, stretch, water.'},
   '2026-04-28': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 3.2 mph.', workout:'C'},
-  '2026-04-29': {type:'A',    label:'Workout A',         detail:'Strength & Burn.', workout:'A'},
+  '2026-04-29': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
   '2026-04-30': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
   '2026-05-01': {type:'B',    label:'Workout B',         detail:'HIIT Engine.', workout:'B'},
   '2026-05-02': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph.', workout:'C'},
   '2026-05-03': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 10:00pm. No training today.'},
   '2026-05-04': {type:'rest', label:'Rest Day',          detail:'Full recovery.'},
   '2026-05-05': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 3.2 mph.', workout:'C'},
-  '2026-05-06': {type:'A',    label:'Workout A',         detail:'Strength & Burn.', workout:'A'},
+  '2026-05-06': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
   '2026-05-07': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
   '2026-05-08': {type:'B',    label:'Workout B',         detail:'HIIT Engine.', workout:'B'},
   '2026-05-09': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph.', workout:'C'},
   '2026-05-10': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 9:00pm. No training today.'},
   '2026-05-11': {type:'rest', label:'Rest Day',          detail:'Full recovery.'},
   '2026-05-12': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 3.2 mph.', workout:'C'},
-  '2026-05-13': {type:'A',    label:'Workout A',         detail:'Strength & Burn.', workout:'A'},
+  '2026-05-13': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
   '2026-05-14': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
   '2026-05-15': {type:'B',    label:'Workout B',         detail:'HIIT Engine.', workout:'B'},
   '2026-05-16': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph.', workout:'C'},
   '2026-05-17': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 9:00pm. No training today.'},
   '2026-05-18': {type:'rest', label:'Rest Day',          detail:'Full recovery.'},
-  '2026-05-19': {type:'A',    label:'Workout A',         detail:'Back to full training block.', workout:'A'}
+  '2026-05-19': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'}
 };
 
 function dateKey(d) {
@@ -1264,12 +1267,14 @@ function showDayModal(dk) {
   if (plan && plan.type==='A') {
     stepsHtml = '<div class="modal-steps">'
       +'<div class="modal-step">🚶 Warm-up: 5 min walk + Hip Circles (15 each direction)</div>'
-      +'<div class="modal-step">🏋️ Dead Hang: 2 sets × 30–45 sec</div>'
-      +'<div class="modal-step">🏅 KB Goblet Squat: 3 sets × 12 reps @ 30 lbs</div>'
-      +'<div class="modal-step">💪 KB One-Arm Row: 3 sets × 12 reps per arm</div>'
+      +'<div class="modal-step">🏋️ DB Flat Chest Press: 3 sets × 12 reps @ 25 lbs</div>'
+      +'<div class="modal-step">📐 DB Incline Press: 3 sets × 10 reps @ 25 lbs</div>'
+      +'<div class="modal-step">🦅 DB Chest Flyes: 3 sets × 12 reps @ 25 lbs</div>'
+      +'<div class="modal-step">💪 DB One-Arm Row: 3 sets × 12 reps @ 35 lbs</div>'
+      +'<div class="modal-step">🔝 DB Shoulder Press: 3 sets × 10 reps @ 25 lbs</div>'
       +'<div class="modal-step">⬆️ Power Tower Knee Raises: 3 sets × 12 reps</div>'
-      +'<div class="modal-step">🤜 Push-Ups (Tower): 2 sets to failure</div>'
-      +'<div class="modal-step">🔥 Incline Walk Finisher: 20 mins · Incline 5.0 · 3.5 mph</div>'
+      +'<div class="modal-step">🧲 Dead Hang: 2 sets × 30–45 sec</div>'
+      +'<div class="modal-step">🚶 Incline Walk Finisher: 20 mins · Incline 5.0 · 3.5 mph</div>'
       +'</div>';
   } else if (plan && plan.type==='B') {
     stepsHtml = '<div class="modal-steps">'
