@@ -378,13 +378,13 @@
             <div class="stepper-unit">%</div>
           </div>
           <div>
-            <div class="field-label">Speed <span id="speed-unit-toggle" onclick="toggleSpeedUnit()" style="cursor:pointer;background:var(--orange);color:#fff;padding:1px 6px;border-radius:4px;font-size:9px;letter-spacing:1px;margin-left:4px" id="spd-unit-badge">KM/H</span></div>
+            <div class="field-label">Speed <span id="speed-unit-toggle" onclick="toggleSpeedUnit()" style="cursor:pointer;background:var(--orange);color:#fff;padding:1px 6px;border-radius:4px;font-size:9px;letter-spacing:1px;margin-left:4px" id="spd-unit-badge">MPH</span></div>
             <div class="stepper-row">
               <button class="stepper-btn" onclick="adjCardio('spd',-0.1)">−</button>
               <div class="stepper-val" id="c-speed-val">3.5</div>
               <button class="stepper-btn" onclick="adjCardio('spd',0.1)">+</button>
             </div>
-            <div class="stepper-unit" id="spd-unit-label">km/h</div>
+            <div class="stepper-unit" id="spd-unit-label">mph</div>
           </div>
           <div>
             <div class="field-label">Est. Calories</div>
@@ -495,10 +495,10 @@ var WORKOUTS = {
 };
 
 var CARDIO_PRESETS = {
-  'Recovery Walk': {duration:25,incline:4.0,speed:5.1,tip:'Easy recovery pace — the goal is blood flow and inflammation flush, not intensity. Hands off the rails. You should be able to hold a full conversation throughout.'},
-  'Fat Burn Walk':  {duration:30,incline:6.0,speed:5.6,tip:'This is your primary fat burner. Higher incline cranks up glute and hamstring engagement and keeps heart rate in the fat-burning zone without beating up the joints. No holding the rails.'},
-  'HIIT Intervals': {duration:25,incline:1.0,speed:16.9,tip:'30 sec sprint @ 16.9 km/h, 90 sec walk @ 4.8 km/h. Repeat 8–10 rounds. The 90 sec recovery is sacred — use all of it. Drop to 9.5 if needed and build up over time.'},
-  'Easy Walk':      {duration:20,incline:2.0,speed:4.8,tip:'Active recovery or warm-up pace. Flat and easy — get the body moving without any real demand. Good for very sore days or as a warm-up before strength work.'}
+  'Recovery Walk': {duration:25,incline:4.0,speed:3.2,tip:'Easy recovery pace — the goal is blood flow and inflammation flush, not intensity. Hands off the rails. You should be able to hold a full conversation throughout.'},
+  'Fat Burn Walk':  {duration:30,incline:6.0,speed:3.5,tip:'This is your primary fat burner. Higher incline cranks up glute and hamstring engagement and keeps heart rate in the fat-burning zone without beating up the joints. No holding the rails.'},
+  'HIIT Intervals': {duration:25,incline:1.0,speed:10.5,tip:'30 sec sprint @ 10.5 mph, 90 sec walk @ 3.0 mph. Repeat 8–10 rounds. The 90 sec recovery is sacred — use all of it. Drop to 9.5 if needed and build up over time.'},
+  'Easy Walk':      {duration:20,incline:2.0,speed:3.0,tip:'Active recovery or warm-up pace. Flat and easy — get the body moving without any real demand. Good for very sore days or as a warm-up before strength work.'}
 };
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
@@ -723,41 +723,41 @@ var SOCCER_DATES = ['2026-04-19','2026-04-26','2026-05-03','2026-05-10','2026-05
 // type: 'A','B','cardio','rest','soccer','easy'
 var PLAN = {
   '2026-04-11': {type:'A',    label:'Workout A',         detail:'Strength & Burn — modified for hip recovery. Shallower squats today, listen to your body.', workout:'A'},
-  '2026-04-12': {type:'cardio',label:'Fat Burn Walk',    detail:'30 mins · Incline 6.0 · Speed 5.6 km/h. Hands off the rails.', workout:'C'},
+  '2026-04-12': {type:'cardio',label:'Fat Burn Walk',    detail:'30 mins · Incline 6.0 · Speed 3.5 mph. Hands off the rails.', workout:'C'},
   '2026-04-13': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Full session — you should be recovered from Saturday.', workout:'B'},
-  '2026-04-14': {type:'cardio',label:'Fat Burn Walk',    detail:'30 mins · Incline 6.0 · Speed 5.6 km/h.', workout:'C'},
+  '2026-04-14': {type:'cardio',label:'Fat Burn Walk',    detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
   '2026-04-15': {type:'A',    label:'Workout A',         detail:'Strength & Burn — full depth today if hips allow.', workout:'A'},
   '2026-04-16': {type:'rest', label:'Rest Day',          detail:'Hot tub, stretch, water. Let the body consolidate the week.'},
   '2026-04-17': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Strong finish to the week.', workout:'B'},
-  '2026-04-18': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 4.8 km/h. Legs fresh for tomorrow\'s game.', workout:'C'},
+  '2026-04-18': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph. Legs fresh for tomorrow\'s game.', workout:'C'},
   '2026-04-19': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 10:00pm. No training today — save everything for the pitch.'},
   '2026-04-20': {type:'rest', label:'Rest Day',          detail:'Full recovery. Hot tub if you can. You played late — sleep in.'},
-  '2026-04-21': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 5.1 km/h. Flush out the match soreness.', workout:'C'},
+  '2026-04-21': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 3.2 mph. Flush out the match soreness.', workout:'C'},
   '2026-04-22': {type:'A',    label:'Workout A',         detail:'Strength & Burn. Back to full intensity.', workout:'A'},
-  '2026-04-23': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 5.6 km/h.', workout:'C'},
+  '2026-04-23': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
   '2026-04-24': {type:'B',    label:'Workout B',         detail:'HIIT Engine.', workout:'B'},
-  '2026-04-25': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 4.8 km/h. Legs fresh for tomorrow.', workout:'C'},
+  '2026-04-25': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph. Legs fresh for tomorrow.', workout:'C'},
   '2026-04-26': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 10:00pm. No training today.'},
   '2026-04-27': {type:'rest', label:'Rest Day',          detail:'Full recovery. Hot tub, stretch, water.'},
-  '2026-04-28': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 5.1 km/h.', workout:'C'},
+  '2026-04-28': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 3.2 mph.', workout:'C'},
   '2026-04-29': {type:'A',    label:'Workout A',         detail:'Strength & Burn.', workout:'A'},
-  '2026-04-30': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 5.6 km/h.', workout:'C'},
+  '2026-04-30': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
   '2026-05-01': {type:'B',    label:'Workout B',         detail:'HIIT Engine.', workout:'B'},
-  '2026-05-02': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 4.8 km/h.', workout:'C'},
+  '2026-05-02': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph.', workout:'C'},
   '2026-05-03': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 10:00pm. No training today.'},
   '2026-05-04': {type:'rest', label:'Rest Day',          detail:'Full recovery.'},
-  '2026-05-05': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 5.1 km/h.', workout:'C'},
+  '2026-05-05': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 3.2 mph.', workout:'C'},
   '2026-05-06': {type:'A',    label:'Workout A',         detail:'Strength & Burn.', workout:'A'},
-  '2026-05-07': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 5.6 km/h.', workout:'C'},
+  '2026-05-07': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
   '2026-05-08': {type:'B',    label:'Workout B',         detail:'HIIT Engine.', workout:'B'},
-  '2026-05-09': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 4.8 km/h.', workout:'C'},
+  '2026-05-09': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph.', workout:'C'},
   '2026-05-10': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 9:00pm. No training today.'},
   '2026-05-11': {type:'rest', label:'Rest Day',          detail:'Full recovery.'},
-  '2026-05-12': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 5.1 km/h.', workout:'C'},
+  '2026-05-12': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 3.2 mph.', workout:'C'},
   '2026-05-13': {type:'A',    label:'Workout A',         detail:'Strength & Burn.', workout:'A'},
-  '2026-05-14': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 5.6 km/h.', workout:'C'},
+  '2026-05-14': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
   '2026-05-15': {type:'B',    label:'Workout B',         detail:'HIIT Engine.', workout:'B'},
-  '2026-05-16': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 4.8 km/h.', workout:'C'},
+  '2026-05-16': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph.', workout:'C'},
   '2026-05-17': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 9:00pm. No training today.'},
   '2026-05-18': {type:'rest', label:'Rest Day',          detail:'Full recovery.'},
   '2026-05-19': {type:'A',    label:'Workout A',         detail:'Back to full training block.', workout:'A'}
@@ -1006,7 +1006,7 @@ var cardioVals = { dur:30, inc:6.0, spd:3.5 };
 var cardioLimits = {
   dur: { min:5,  max:120, dp:0 },
   inc: { min:0,  max:15,  dp:1 },
-  spd: { min:1,  max:25,  dp:1 }
+  spd: { min:1,  max:12,  dp:1 }
 };
 var cardioIds = { dur:'c-duration', inc:'c-incline', spd:'c-speed' };
 var cardioDisplayIds = { dur:'c-duration-val', inc:'c-incline-val', spd:'c-speed-val' };
@@ -1021,7 +1021,7 @@ function adjCardio(key, delta) {
   updateCalcPreview();
 }
 
-var speedUnitMph = false; // true = mph, false = km/h — machine is km/h
+var speedUnitMph = true; // true = mph, false = km/h — Horizon treadmill speed is mph
 
 function toggleSpeedUnit() {
   speedUnitMph = !speedUnitMph;
@@ -1269,21 +1269,21 @@ function showDayModal(dk) {
       +'<div class="modal-step">💪 KB One-Arm Row: 3 sets × 12 reps per arm</div>'
       +'<div class="modal-step">⬆️ Power Tower Knee Raises: 3 sets × 12 reps</div>'
       +'<div class="modal-step">🤜 Push-Ups (Tower): 2 sets to failure</div>'
-      +'<div class="modal-step">🔥 Incline Walk Finisher: 20 mins · Incline 5.0 · 5.6 km/h</div>'
+      +'<div class="modal-step">🔥 Incline Walk Finisher: 20 mins · Incline 5.0 · 3.5 mph</div>'
       +'</div>';
   } else if (plan && plan.type==='B') {
     stepsHtml = '<div class="modal-steps">'
-      +'<div class="modal-step">🚶 Warm-up Walk: 5 mins @ 5.6 km/h flat</div>'
-      +'<div class="modal-step">⚡ Sprints: 8–10 rounds × 30s @ 16.9 km/h / 90s walk</div>'
+      +'<div class="modal-step">🚶 Warm-up Walk: 5 mins @ 3.5 mph flat</div>'
+      +'<div class="modal-step">⚡ Sprints: 8–10 rounds × 30s @ 10.5 mph / 90s walk</div>'
       +'<div class="modal-step">🔄 KB Halos: 3 sets × 10 each direction</div>'
       +'<div class="modal-step">🤜 Push-Ups (Tower): 3 sets to failure</div>'
       +'<div class="modal-step">🧘 Cool Down + Stretch: 5 mins + hip flexor stretch</div>'
       +'</div>';
   } else if (plan && (plan.type==='cardio' || plan.type==='easy')) {
     var presets = {
-      'Recovery Walk':  '25 mins · Incline 4.0 · Speed 5.1 km/h',
-      'Fat Burn Walk':  '30 mins · Incline 6.0 · Speed 5.6 km/h',
-      'Easy Walk':      '20 mins · Incline 2.0 · Speed 4.8 km/h'
+      'Recovery Walk':  '25 mins · Incline 4.0 · Speed 3.2 mph',
+      'Fat Burn Walk':  '30 mins · Incline 6.0 · Speed 3.5 mph',
+      'Easy Walk':      '20 mins · Incline 2.0 · Speed 3.0 mph'
     };
     var pKey = plan.label;
     var pDetail = presets[pKey] || plan.detail;
@@ -1402,7 +1402,7 @@ function renderSessionHistory() {
         +'<span class="wh-check">✓</span></div>';
       if (meta.duration) rows += '<div class="wh-ex-row"><span class="wh-ex-icon">⏱</span><span class="wh-ex-name">'+meta.duration+' mins</span></div>';
       if (meta.incline)  rows += '<div class="wh-ex-row"><span class="wh-ex-icon">📐</span><span class="wh-ex-name">Incline '+meta.incline+'</span></div>';
-      if (meta.speed)    rows += '<div class="wh-ex-row"><span class="wh-ex-icon">💨</span><span class="wh-ex-name">'+meta.speed+' km/h</span></div>';
+      if (meta.speed)    rows += '<div class="wh-ex-row"><span class="wh-ex-icon">💨</span><span class="wh-ex-name">'+meta.speed+' mph</span></div>';
       if (meta.calories) rows += '<div class="wh-ex-row"><span class="wh-ex-icon">🔥</span><span class="wh-ex-name">~'+meta.calories+' cal burned</span></div>';
       if (meta.note)     rows += '<div class="wh-ex-row"><span class="wh-ex-icon">📝</span><span class="wh-ex-name">'+meta.note+'</span></div>';
     } else {
