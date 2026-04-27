@@ -491,6 +491,7 @@ var WORKOUTS = {
     {name:'DB Chest Flyes',            sets:'3 sets',     reps:'12 reps @ 25 lbs',      icon:'🦅',muscles:'Inner & Outer Chest · Pecs',      cue:"Flat bench. Arms out wide like you're hugging a barrel — slight bend in the elbows throughout, never straighten fully. Lower until you feel a deep chest stretch, then squeeze the chest to bring them back together. This is the shape exercise. Slow and controlled the whole way — do not go heavy here, feel it."},
     {name:'DB One-Arm Row',            sets:'3 sets',     reps:'12 reps / arm @ 35 lbs',icon:'💪',muscles:'Lats · Rhomboids · Biceps',      cue:"Brace your free hand on the bench. Pull the 35 lb dumbbell to your hip — not your shoulder. Keep your back flat and parallel to the floor. Squeeze at the top for 1 second. Chest and back work together — this is your balance movement."},
     {name:'DB Shoulder Press',         sets:'3 sets',     reps:'10 reps @ 25 lbs',      icon:'🔝',muscles:'Shoulders · Triceps · Upper Back', cue:"Seated or standing. Dumbbells at ear height, palms facing forward. Press straight up overhead — don't flare the elbows too wide. Lower slowly. Shoulders frame the chest — building them makes everything look tighter and broader."},
+    {name:'KB Chest Halos',            sets:'3 sets',     reps:'10 reps each direction', icon:'⭕',muscles:'Chest · Shoulders · Rotational Core', cue:"Hold the 30 lb KB by the horns at chest height — not overhead like regular halos. Circle it slowly across your chest and around at chest level, clockwise 10 then counter-clockwise 10. Keep your elbows slightly bent throughout. You'll feel the chest, front delts and rotator cuff all working together. Slow and controlled — this is mobility work not cardio."},
     {name:'Power Tower Knee Raises',   sets:'3 sets',     reps:'12 reps',               icon:'⬆️',muscles:'Lower Abs · Hip Flexors · Core', cue:"Arms on the pads, back flat against the pad. Raise knees slowly to 90°, hold 1 second, lower slowly. No swinging — if you're swinging, your core isn't working. This hits the lower abs which ties the whole physique together."},
     {name:'Bicycle Crunches',          sets:'3 sets',     reps:'20 reps',               icon:'🚴',muscles:'Obliques · Upper Abs · Core',    cue:"Lie on your back, hands lightly behind your head. Bring your right elbow to your left knee while extending the right leg, then switch. Slow and controlled — feel the twist and squeeze at each rep. Don't pull your neck, the rotation comes from the torso. This is the highest oblique activation exercise there is."},
     {name:'Russian Twists',            sets:'3 sets',     reps:'15 reps each side',     icon:'🔀',muscles:'Obliques · Rotational Core',      cue:"Sit on the mat, lean back to about 45°, feet slightly raised or flat. Hold a 25 lb dumbbell with both hands. Rotate side to side touching the weight to the floor each time. Slow and controlled — feel the oblique squeeze. This rotational strength is exactly what you need for footy direction changes."},
@@ -1548,16 +1549,21 @@ function renderChart(){
   var W=320,H=120,pl=36,pr=20,pt=12,pb=24,iW=W-pl-pr,iH=H-pt-pb;
   var vals=weights.map(function(d){return d.weight;});
 
-  // ── Calculate trend projection ──
-  // Use last 7 days average rate of loss
-  var recentWeights = weights.slice(-7);
-  var firstDate = new Date('2026 '+recentWeights[0].date);
-  var lastDate  = new Date('2026 '+recentWeights[recentWeights.length-1].date);
-  var daysDiff  = Math.max(1, (lastDate-firstDate)/(1000*60*60*24));
-  var weightDiff = recentWeights[0].weight - recentWeights[recentWeights.length-1].weight;
-  var dailyRate  = weightDiff / daysDiff; // lbs per day
-  var proj4w     = Math.max(GOAL_WEIGHT, weights[weights.length-1].weight - (dailyRate * 28));
-  var projGoal   = dailyRate > 0 ? Math.ceil((weights[weights.length-1].weight - GOAL_WEIGHT) / dailyRate) : 0;
+  // ── Calculate trend using linear regression (ignores daily noise) ──
+  var regWeights = weights.slice(-14); // last 14 entries
+  var n = regWeights.length;
+  var sumX=0, sumY=0, sumXY=0, sumX2=0;
+  regWeights.forEach(function(w,i){
+    sumX+=i; sumY+=w.weight; sumXY+=i*w.weight; sumX2+=i*i;
+  });
+  var slope = (n*sumXY - sumX*sumY) / (n*sumX2 - sumX*sumX); // lbs per entry
+  // Convert slope to daily rate (entries aren't always daily)
+  var firstD = new Date('2026 '+regWeights[0].date);
+  var lastD  = new Date('2026 '+regWeights[n-1].date);
+  var daySpan = Math.max(1,(lastD-firstD)/(1000*60*60*24));
+  var dailyRate = -(slope * (n-1)) / daySpan; // positive = losing weight
+  var proj4w = Math.max(GOAL_WEIGHT, weights[weights.length-1].weight - (dailyRate * 28));
+  var projGoal = dailyRate > 0 ? Math.ceil((weights[weights.length-1].weight - GOAL_WEIGHT) / dailyRate) : 0;
 
   // Extend x-axis to include 4 week projection
   var totalPoints = weights.length + 4; // 4 weekly projection points
