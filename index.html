@@ -303,6 +303,7 @@
     <div class="card">
       <div class="card-label">Progress Chart</div>
       <svg id="chart-svg" viewBox="0 0 320 120"></svg>
+      <div id="trend-projection"></div>
     </div>
     <div class="card">
       <div class="card-label">Log Today's Weight</div>
@@ -1546,22 +1547,71 @@ function renderChart(){
   if(weights.length<2){svg.innerHTML='';return;}
   var W=320,H=120,pl=36,pr=20,pt=12,pb=24,iW=W-pl-pr,iH=H-pt-pb;
   var vals=weights.map(function(d){return d.weight;});
-  var minV=Math.min.apply(null,vals)-2,maxV=Math.max.apply(null,vals)+2;
-  function cx(i){return pl+(i/(weights.length-1))*iW;}
-  function cy(v){return pt+((maxV-v)/(maxV-minV))*iH;}
-  var ticks=[200,195,190,185,180],gY=cy(GOAL_WEIGHT);
+
+  // ── Calculate trend projection ──
+  // Use last 7 days average rate of loss
+  var recentWeights = weights.slice(-7);
+  var firstDate = new Date('2026 '+recentWeights[0].date);
+  var lastDate  = new Date('2026 '+recentWeights[recentWeights.length-1].date);
+  var daysDiff  = Math.max(1, (lastDate-firstDate)/(1000*60*60*24));
+  var weightDiff = recentWeights[0].weight - recentWeights[recentWeights.length-1].weight;
+  var dailyRate  = weightDiff / daysDiff; // lbs per day
+  var proj4w     = Math.max(GOAL_WEIGHT, weights[weights.length-1].weight - (dailyRate * 28));
+  var projGoal   = dailyRate > 0 ? Math.ceil((weights[weights.length-1].weight - GOAL_WEIGHT) / dailyRate) : 0;
+
+  // Extend x-axis to include 4 week projection
+  var totalPoints = weights.length + 4; // 4 weekly projection points
+  var minV=Math.min(Math.min.apply(null,vals)-2, proj4w-1);
+  var maxV=Math.max.apply(null,vals)+2;
+
+  function cx(i){ return pl+(i/(totalPoints-1))*iW; }
+  function cy(v){ return pt+((maxV-v)/(maxV-minV))*iH; }
+
+  var ticks=[200,195,190,185,180];
+  var gY=cy(GOAL_WEIGHT);
   var path=weights.map(function(d,i){return(i?'L':'M')+cx(i).toFixed(1)+','+cy(d.weight).toFixed(1);}).join(' ');
   var area=path+' L'+cx(weights.length-1).toFixed(1)+','+(H-pb)+' L'+pl+','+(H-pb)+' Z';
+
+  // Projection path — dotted line from last point to 4 week estimate
+  var projStartX = cx(weights.length-1);
+  var projStartY = cy(weights[weights.length-1].weight);
+  var projEndX   = cx(totalPoints-1);
+  var projEndY   = cy(proj4w);
+  var projPath   = 'M'+projStartX.toFixed(1)+','+projStartY.toFixed(1)+' L'+projEndX.toFixed(1)+','+projEndY.toFixed(1);
+
+  // Project label
+  var projLabel = proj4w.toFixed(1)+' lbs';
+  var daysToGoal = projGoal > 0 ? ' ('+Math.ceil(projGoal/7)+'wks to goal)' : ' 🎯';
+
   var idxs=[0,Math.floor(weights.length/2),weights.length-1];
-  var xL=idxs.map(function(i){return'<text x="'+cx(i).toFixed(1)+'" y="'+(H-pb+14)+'" text-anchor="middle" fill="#666" font-size="8">'+weights[i].date.replace('Mar ','M').replace('Apr ','A')+'</text>';}).join('');
+  var xL=idxs.map(function(i){return'<text x="'+cx(i).toFixed(1)+'" y="'+(H-pb+14)+'" text-anchor="middle" fill="#666" font-size="8">'+weights[i].date.replace('Mar ','M').replace('Apr ','A').replace('May ','My')+'</text>';}).join('');
+  // Add projection end label
+  xL += '<text x="'+projEndX.toFixed(1)+'" y="'+(H-pb+14)+'" text-anchor="middle" fill="#4caf50" font-size="7">+4wk</text>';
+
   var lx=cx(weights.length-1),ly=cy(weights[weights.length-1].weight);
+
   svg.innerHTML='<defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#C8102E" stop-opacity="0.4"/><stop offset="100%" stop-color="#C8102E" stop-opacity="0.02"/></linearGradient></defs>'
     +ticks.map(function(t){return'<line x1="'+pl+'" y1="'+cy(t).toFixed(1)+'" x2="'+(W-pr)+'" y2="'+cy(t).toFixed(1)+'" stroke="#333" stroke-width="1"/><text x="'+(pl-4)+'" y="'+(cy(t)+4).toFixed(1)+'" text-anchor="end" fill="#555" font-size="9">'+t+'</text>';}).join('')
     +(gY>pt&&gY<H-pb?'<line x1="'+pl+'" y1="'+gY.toFixed(1)+'" x2="'+(W-pr)+'" y2="'+gY.toFixed(1)+'" stroke="#4caf50" stroke-width="1" stroke-dasharray="4,3"/><text x="'+(W-pr+2)+'" y="'+(gY+4).toFixed(1)+'" fill="#4caf50" font-size="8">Goal</text>':'')
     +'<path d="'+area+'" fill="url(#ag)"/>'
     +'<path d="'+path+'" fill="none" stroke="#C8102E" stroke-width="2" stroke-linejoin="round"/>'
+    // Projection dotted line
+    +'<path d="'+projPath+'" fill="none" stroke="#4caf50" stroke-width="1.5" stroke-dasharray="5,4" opacity="0.8"/>'
+    // Projection end dot
+    +'<circle cx="'+projEndX.toFixed(1)+'" cy="'+projEndY.toFixed(1)+'" r="3" fill="#4caf50" opacity="0.7"/>'
+    // Projection label
+    +'<text x="'+(projEndX-2).toFixed(1)+'" y="'+(projEndY-8).toFixed(1)+'" text-anchor="middle" fill="#4caf50" font-size="9" font-weight="bold">'+projLabel+'</text>'
     +weights.map(function(d,i){return'<circle cx="'+cx(i).toFixed(1)+'" cy="'+cy(d.weight).toFixed(1)+'" r="'+(i===weights.length-1?4:3)+'" fill="'+(i===weights.length-1?'#ff7a3d':'#e8500a')+'" stroke="var(--bg)" stroke-width="1.5"/>';}).join('')
     +'<text x="'+(lx>W-60?lx-46:lx+6).toFixed(1)+'" y="'+(ly-7).toFixed(1)+'" fill="#E8384F" font-size="10" font-weight="bold">'+weights[weights.length-1].weight+'</text>'+xL;
+
+  // Update projection summary below chart if element exists
+  var projEl = document.getElementById('trend-projection');
+  if (projEl && dailyRate > 0) {
+    projEl.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--border);margin-top:8px">'
+      +'<div style="font-size:11px;color:var(--dim)">📈 At current rate</div>'
+      +'<div style="font-size:11px;color:#4caf50;font-weight:600">'+proj4w.toFixed(1)+' lbs in 4 weeks · '+Math.ceil(projGoal/7)+' wks to 180</div>'
+      +'</div>';
+  }
 }
 
 function renderWeightHistory(){
