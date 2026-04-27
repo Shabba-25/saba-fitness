@@ -216,9 +216,10 @@
     .wh-date     { font-size:15px; font-weight:700; color:var(--text); }
     .wh-sub      { font-size:11px; color:var(--dim); margin-top:2px; }
     .wh-badge    { font-family:'Bebas Neue',sans-serif; font-size:18px; padding:3px 10px; border-radius:6px; }
-    .wh-badge-a  { background:rgba(200,16,46,0.12); color:#C8102E; }
-    .wh-badge-b  { background:rgba(24,95,165,0.12); color:var(--blue-light); }
-    .wh-badge-c  { background:rgba(76,175,80,0.2);  color:#2a6a2a; }
+    .wh-badge-a      { background:rgba(200,16,46,0.12); color:#C8102E; }
+    .wh-badge-b      { background:rgba(24,95,165,0.12); color:var(--blue-light); }
+    .wh-badge-c      { background:rgba(76,175,80,0.2);  color:#2a6a2a; }
+    .wh-badge-soccer { background:rgba(100,140,255,0.15); color:#5577ee; }
     .wh-body     { display:none; padding:0 18px 14px; border-top:1px solid var(--surface2); }
     .wh-body.open { display:block; }
     .wh-ex-row   { display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px solid var(--surface2); }
@@ -283,7 +284,8 @@
   <!-- SCHEDULE SCREEN -->
   <div id="screen-schedule" class="screen active">
     <div id="today-card"></div>
-    <div id="week-calendar"></div>
+    <div id="streak-today"></div>
+  <div id="week-calendar"></div>
     <div id="upcoming-games"></div>
   </div>
 
@@ -331,7 +333,12 @@
       <div class="complete-banner" id="complete-banner">
         <div class="cb-title">🔥 Session Complete!</div>
         <div class="cb-sub">Saved to your history. Hit that hot tub, Saba.</div>
-        <button id="gfit-btn" onclick="logToGoogleFit()" style="margin-top:12px;width:100%;padding:11px;border-radius:8px;border:none;background:#4285f4;color:#fff;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+        <div style="margin:12px 0 4px">
+          <div class="field-label" style="text-align:left;margin-bottom:6px">Session Note (optional)</div>
+          <input id="session-note-input" class="field-input" placeholder="e.g. bumped incline to 7, hip felt great..." style="width:100%"/>
+          <button onclick="saveSessionNote()" style="margin-top:8px;width:100%;padding:9px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--dim);font-size:13px;cursor:pointer">Save Note</button>
+        </div>
+        <button id="gfit-btn" onclick="logToGoogleFit()" style="margin-top:8px;width:100%;padding:11px;border-radius:8px;border:none;background:#4285f4;color:#fff;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
           LOG TO GOOGLE FIT
         </button>
@@ -492,7 +499,7 @@ var WORKOUTS = {
   ]},
   B:{color:'#0a7ae8',accent:'#3da8ff',exercises:[
     {name:'Warm-Up Walk',            sets:'1 round',    reps:'5 mins',                icon:'🚶',muscles:'Full Body Warm-Up',              cue:"Speed: 3.5 mph, flat. This isn't optional — your joints need this before sprinting."},
-    {name:'10.5 mph Sprints',        sets:'8–10 rounds',reps:'30s sprint / 90s walk', icon:'⚡',muscles:'Full Body · VO2 Max · Fat Burn',  cue:"30 sec @ 10.5 mph — go hard. Then 90 sec @ 3.0 mph recovery walk. Use all of it.",finisher:true},
+    {name:'11.5 mph Sprints',        sets:'8–10 rounds',reps:'30s sprint / 60s walk', icon:'⚡',muscles:'Full Body · VO2 Max · Fat Burn',  cue:"30 sec @ 11.5 mph — go hard. Then 60 sec @ 4.5 mph recovery walk. Use every second of that minute. Builds serious cardiovascular fitness for footy.",finisher:true},
     {name:'KB Halos',                sets:'3 sets',     reps:'10 reps each direction',icon:'🔄',muscles:'Shoulders · Core · Mobility',     cue:'Hold the 30 lb KB by the horns at chest height. Circle it slowly around your head — clockwise 10, counter-clockwise 10.'},
     {name:'DB Goblet Squat',         sets:'3 sets',     reps:'12 reps @ 35 lbs',      icon:'🏅',muscles:'Quads · Glutes · Core',          cue:"Hold the 35 lb dumbbell vertically at your chest. Feet shoulder-width, toes slightly out. Descend slowly 3 counts down. Don't force depth if your left hip talks back — stop at 90° and build from there."},
     {name:'Push-Ups (Tower Handles)',sets:'3 sets',     reps:'To failure',            icon:'🤜',muscles:'Chest · Triceps · Shoulders',    cue:"More fatigued here — that's the point. Keep form tight. The moment your hips sag, the set is done."},
@@ -501,10 +508,10 @@ var WORKOUTS = {
 };
 
 var CARDIO_PRESETS = {
-  'Recovery Walk': {duration:25,incline:4.0,speed:3.2,tip:'Easy recovery pace — the goal is blood flow and inflammation flush, not intensity. Hands off the rails. You should be able to hold a full conversation throughout.'},
-  'Fat Burn Walk':  {duration:30,incline:6.0,speed:3.5,tip:'This is your primary fat burner. Higher incline cranks up glute and hamstring engagement and keeps heart rate in the fat-burning zone without beating up the joints. No holding the rails.'},
-  'HIIT Intervals': {duration:25,incline:1.0,speed:10.5,tip:'30 sec sprint @ 10.5 mph, 90 sec walk @ 3.0 mph. Repeat 8–10 rounds. The 90 sec recovery is sacred — use all of it. Drop to 9.5 if needed and build up over time.'},
-  'Easy Walk':      {duration:20,incline:2.0,speed:3.0,tip:'Active recovery or warm-up pace. Flat and easy — get the body moving without any real demand. Good for very sore days or as a warm-up before strength work.'}
+  'Recovery Walk': {duration:25,incline:5.0,speed:4.0,tip:'Easy recovery pace — the goal is blood flow and inflammation flush, not intensity. Hands off the rails. You should be able to hold a full conversation throughout.'},
+  'Fat Burn Walk':  {duration:30,incline:7.0,speed:4.5,tip:'This is your primary fat burner. Higher incline cranks up glute and hamstring engagement and keeps heart rate in the fat-burning zone without beating up the joints. No holding the rails.'},
+  'HIIT Intervals': {duration:25,incline:1.0,speed:11.5,tip:'30 sec sprint @ 11.5 mph, 60 sec walk @ 4.5 mph. Repeat 8–10 rounds. Go hard on every sprint. Drop to 10.5 if needed and build up over time.'},
+  'Easy Walk':      {duration:20,incline:3.0,speed:4.2,tip:'Active recovery or pre-game pace. Keep it comfortable — legs should feel fresh after this, not tired. Good for the day before soccer or on lighter recovery days.'}
 };
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
@@ -550,6 +557,39 @@ async function sbGet(table) {
   }
 }
 
+// ── PENDING QUEUE — auto retry failed saves when Supabase comes back ──────────
+var pendingQueue = [];
+try { pendingQueue = JSON.parse(localStorage.getItem('saba_pending')||'[]'); } catch(e){ pendingQueue=[]; }
+
+function savePending(table, data) {
+  pendingQueue.push({table:table, data:data, ts:Date.now()});
+  try { localStorage.setItem('saba_pending', JSON.stringify(pendingQueue)); } catch(e){}
+}
+
+function clearPending(table, id) {
+  pendingQueue = pendingQueue.filter(function(p){ return !(p.table===table && p.data[0] && p.data[0].id===id); });
+  try { localStorage.setItem('saba_pending', JSON.stringify(pendingQueue)); } catch(e){}
+}
+
+async function retryPending() {
+  if (pendingQueue.length === 0) return;
+  var toRetry = pendingQueue.slice();
+  var allOk = true;
+  for (var i=0; i<toRetry.length; i++) {
+    var p = toRetry[i];
+    var ok = await sbUpsert(p.table, p.data);
+    if (ok) {
+      clearPending(p.table, p.data[0] && p.data[0].id);
+      showSync('synced','✓ Pending saves synced');
+    } else {
+      allOk = false;
+    }
+  }
+  if (pendingQueue.length > 0) {
+    showSync('error','⚠ '+ pendingQueue.length +' saves still pending');
+  }
+}
+
 async function sbUpsert(table, data) {
   try {
     var r = await fetch(SB_URL+'/rest/v1/'+table, {
@@ -557,8 +597,15 @@ async function sbUpsert(table, data) {
       headers: Object.assign({}, HEADERS, {'Prefer': 'resolution=merge-duplicates,return=minimal'}),
       body: JSON.stringify(data)
     });
-    return r.ok;
-  } catch(e) { return false; }
+    if (r.ok) return true;
+    // Save failed — add to pending queue
+    savePending(table, data);
+    return false;
+  } catch(e) {
+    // Network error — add to pending queue
+    savePending(table, data);
+    return false;
+  }
 }
 
 async function sbDelete(table, col, val) {
@@ -720,6 +767,9 @@ async function syncFromCloud() {
 
   showSync('synced', '✓ Synced');
   try { renderSchedule(); } catch(e) {}
+  try { renderStreakToday(); } catch(e) {}
+  // Retry any failed saves now that we have connectivity
+  await retryPending();
 }
 
 // ── SCHEDULE ──────────────────────────────────────────────────────────────────
@@ -729,41 +779,41 @@ var SOCCER_DATES = ['2026-04-19','2026-04-26','2026-05-03','2026-05-10','2026-05
 // type: 'A','B','cardio','rest','soccer','easy'
 var PLAN = {
   '2026-04-11': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
-  '2026-04-12': {type:'cardio',label:'Fat Burn Walk',    detail:'30 mins · Incline 6.0 · Speed 3.5 mph. Hands off the rails.', workout:'C'},
+  '2026-04-12': {type:'cardio',label:'Fat Burn Walk',    detail:'30 mins · Incline 7.0 · Speed 4.5 mph. Hands off the rails.', workout:'C'},
   '2026-04-13': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Sprints, KB work, push-ups, cool down.', workout:'B'},
-  '2026-04-14': {type:'cardio',label:'Fat Burn Walk',    detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
+  '2026-04-14': {type:'cardio',label:'Fat Burn Walk',    detail:'30 mins · Incline 7.0 · Speed 4.5 mph.', workout:'C'},
   '2026-04-15': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
   '2026-04-16': {type:'rest', label:'Rest Day',          detail:'Hot tub, stretch, water. Let the body consolidate the week.'},
   '2026-04-17': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Sprints, KB work, push-ups, cool down.', workout:'B'},
-  '2026-04-18': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph. Legs fresh for tomorrow\'s game.', workout:'C'},
+  '2026-04-18': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 3.0 · Speed 4.2 mph. Legs fresh for tomorrow\'s game.', workout:'C'},
   '2026-04-19': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 10:00pm. No training today — save everything for the pitch.'},
   '2026-04-20': {type:'rest', label:'Rest Day',          detail:'Full recovery. Hot tub if you can. You played late — sleep in.'},
-  '2026-04-21': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 3.2 mph. Flush out the match soreness.', workout:'C'},
+  '2026-04-21': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 5.0 · Speed 4.0 mph. Flush out the match soreness.', workout:'C'},
   '2026-04-22': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
-  '2026-04-23': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
+  '2026-04-23': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 7.0 · Speed 4.5 mph.', workout:'C'},
   '2026-04-24': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Sprints, KB work, push-ups, cool down.', workout:'B'},
-  '2026-04-25': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph. Legs fresh for tomorrow.', workout:'C'},
+  '2026-04-25': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 3.0 · Speed 4.2 mph. Legs fresh for tomorrow.', workout:'C'},
   '2026-04-26': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 10:00pm. No training today.'},
   '2026-04-27': {type:'rest', label:'Rest Day',          detail:'Full recovery. Hot tub, stretch, water.'},
-  '2026-04-28': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 3.2 mph.', workout:'C'},
+  '2026-04-28': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 5.0 · Speed 4.0 mph.', workout:'C'},
   '2026-04-29': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
-  '2026-04-30': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
+  '2026-04-30': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 7.0 · Speed 4.5 mph.', workout:'C'},
   '2026-05-01': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Sprints, KB work, push-ups, cool down.', workout:'B'},
-  '2026-05-02': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph.', workout:'C'},
+  '2026-05-02': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 3.0 · Speed 4.2 mph.', workout:'C'},
   '2026-05-03': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 10:00pm. No training today.'},
   '2026-05-04': {type:'rest', label:'Rest Day',          detail:'Full recovery.'},
-  '2026-05-05': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 3.2 mph.', workout:'C'},
+  '2026-05-05': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 5.0 · Speed 4.0 mph.', workout:'C'},
   '2026-05-06': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
-  '2026-05-07': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
+  '2026-05-07': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 7.0 · Speed 4.5 mph.', workout:'C'},
   '2026-05-08': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Sprints, KB work, push-ups, cool down.', workout:'B'},
-  '2026-05-09': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph.', workout:'C'},
+  '2026-05-09': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 3.0 · Speed 4.2 mph.', workout:'C'},
   '2026-05-10': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 9:00pm. No training today.'},
   '2026-05-11': {type:'rest', label:'Rest Day',          detail:'Full recovery.'},
-  '2026-05-12': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 4.0 · Speed 3.2 mph.', workout:'C'},
+  '2026-05-12': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 5.0 · Speed 4.0 mph.', workout:'C'},
   '2026-05-13': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
-  '2026-05-14': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 6.0 · Speed 3.5 mph.', workout:'C'},
+  '2026-05-14': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 7.0 · Speed 4.5 mph.', workout:'C'},
   '2026-05-15': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Sprints, KB work, push-ups, cool down.', workout:'B'},
-  '2026-05-16': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 2.0 · Speed 3.0 mph.', workout:'C'},
+  '2026-05-16': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 3.0 · Speed 4.2 mph.', workout:'C'},
   '2026-05-17': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 9:00pm. No training today.'},
   '2026-05-18': {type:'rest', label:'Rest Day',          detail:'Full recovery.'},
   '2026-05-19': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'}
@@ -862,6 +912,7 @@ function renderSchedule() {
       +'<div class="today-sub">'+plan.detail+'</div>'
       +(done ? '<div style="text-align:center;font-size:28px;margin-bottom:8px">✅</div><div style="text-align:center;font-size:13px;color:var(--green);margin-bottom:12px">Completed today!</div>' : '')
       +(plan.type!=='rest' && plan.type!=='soccer' && !done ? '<button class="'+btnClass+'" '+btnClick+'>'+btnLabel+'</button>' : '')
+      +(plan.type==='soccer' ? '<button onclick="openSoccerLogger()" style="width:100%;padding:12px;border-radius:10px;border:none;background:#2a3a6a;color:#88aaff;font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:1px;cursor:pointer;margin-top:8px">📊 Log Game Stats</button>' : '')
       +'</div>'
       // Skip button — only show on active non-completed days
       +(plan.type!=='rest' && plan.type!=='soccer' && !done
@@ -875,6 +926,8 @@ function renderSchedule() {
       +'<div class="today-title" style="color:var(--dim)">Free Day</div>'
       +'<div class="today-sub">No session scheduled. Rest or add a walk if you feel good.</div></div>';
   }
+
+  renderStreakToday();
 
   // ── 2-Week calendar ──
   var wc = document.getElementById('week-calendar');
@@ -1293,16 +1346,16 @@ function showDayModal(dk) {
   } else if (plan && plan.type==='B') {
     stepsHtml = '<div class="modal-steps">'
       +'<div class="modal-step">🚶 Warm-up Walk: 5 mins @ 3.5 mph flat</div>'
-      +'<div class="modal-step">⚡ Sprints: 8–10 rounds × 30s @ 10.5 mph / 90s walk</div>'
+      +'<div class="modal-step">⚡ Sprints: 8–10 rounds × 30s @ 11.5 mph / 60s walk @ 4.5 mph</div>'
       +'<div class="modal-step">🔄 KB Halos: 3 sets × 10 each direction</div>'
       +'<div class="modal-step">🤜 Push-Ups (Tower): 3 sets to failure</div>'
       +'<div class="modal-step">🧘 Cool Down + Stretch: 5 mins + hip flexor stretch</div>'
       +'</div>';
   } else if (plan && (plan.type==='cardio' || plan.type==='easy')) {
     var presets = {
-      'Recovery Walk':  '25 mins · Incline 4.0 · Speed 3.2 mph',
-      'Fat Burn Walk':  '30 mins · Incline 6.0 · Speed 3.5 mph',
-      'Easy Walk':      '20 mins · Incline 2.0 · Speed 3.0 mph'
+      'Recovery Walk':  '25 mins · Incline 5.0 · Speed 4.0 mph',
+      'Fat Burn Walk':  '30 mins · Incline 7.0 · Speed 4.5 mph',
+      'Easy Walk':      '20 mins · Incline 3.0 · Speed 4.2 mph'
     };
     var pKey = plan.label;
     var pDetail = presets[pKey] || plan.detail;
@@ -1409,7 +1462,19 @@ function renderSessionHistory() {
     var rows='';
     var badgeCls, badgeLabel;
 
-    if (s.workout === 'C') {
+    if (s.workout === 'S') {
+      // Soccer session
+      var meta = {};
+      try { meta = JSON.parse(s.note||'{}'); } catch(e) { meta = {}; }
+      badgeCls   = 'wh-badge wh-badge-soccer';
+      badgeLabel = '⚽ Soccer';
+      rows = '<div class="wh-ex-row"><span class="wh-ex-icon">⚽</span><span class="wh-ex-name">Soccer Game</span><span class="wh-check">✓</span></div>';
+      if (meta.duration)   rows += '<div class="wh-ex-row"><span class="wh-ex-icon">⏱</span><span class="wh-ex-name">'+meta.duration+' mins</span></div>';
+      if (meta.calories)   rows += '<div class="wh-ex-row"><span class="wh-ex-icon">🔥</span><span class="wh-ex-name">'+meta.calories+' cal burned</span></div>';
+      if (meta.avgHR)      rows += '<div class="wh-ex-row"><span class="wh-ex-icon">❤️</span><span class="wh-ex-name">'+meta.avgHR+' bpm avg</span></div>';
+      if (meta.cardioLoad) rows += '<div class="wh-ex-row"><span class="wh-ex-icon">⚡</span><span class="wh-ex-name">Cardio load: '+meta.cardioLoad+'</span></div>';
+      if (meta.note)       rows += '<div class="wh-ex-row"><span class="wh-ex-icon">📝</span><span class="wh-ex-name">'+meta.note+'</span></div>';
+    } else if (s.workout === 'C') {
       // Cardio session
       var meta = {};
       try { meta = JSON.parse(s.note||'{}'); } catch(e) { meta = {}; }
@@ -1523,6 +1588,7 @@ async function logWeight(){
   weights.push({date:date,weight:val,note:note});
   weights.sort(function(a,b){return new Date('2026 '+a.date)-new Date('2026 '+b.date);});
   cacheWeights(weights); renderTracker();
+  checkNewLow(val);
 
   document.getElementById('inp-date').value='';
   document.getElementById('inp-weight').value='';
@@ -1551,7 +1617,121 @@ function todayStr(){
   return mo[d.getMonth()]+' '+d.getDate();
 }
 
-// ── BOUNCING RUNNER ───────────────────────────────────────────────────────────
+// ── FEATURE 1: Streak on Today screen ────────────────────────────────────────
+function renderStreakToday() {
+  var el = document.getElementById('streak-today');
+  if (!el) return;
+  var streak = 0;
+  var ds = new Set(sessions.map(function(s){ return new Date(s.timestamp).toDateString(); }));
+  for (var i=0; i<60; i++) {
+    var d = new Date(); d.setDate(d.getDate()-i);
+    if (ds.has(d.toDateString())) streak++;
+    else if (i>0) break;
+  }
+  if (streak === 0) { el.innerHTML=''; return; }
+  var emoji = streak >= 10 ? '🔥' : streak >= 5 ? '⚡' : '✅';
+  el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 0 12px">'
+    +'<div style="background:rgba(200,16,46,0.1);border:1px solid var(--orange);border-radius:10px;padding:8px 20px;text-align:center">'
+    +'<span style="font-family:\'Bebas Neue\',sans-serif;font-size:28px;color:var(--orange)">'+emoji+' '+streak+'</span>'
+    +'<span style="font-size:10px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;display:block;margin-top:2px">Day Streak</span>'
+    +'</div></div>';
+}
+
+// ── FEATURE 2: Session note saving ───────────────────────────────────────────
+function saveSessionNote() {
+  var note = document.getElementById('session-note-input').value.trim();
+  if (!note) return;
+  // Update the most recent session with the note
+  if (sessions.length > 0) {
+    sessions[0].note = note;
+    cacheSessions(sessions);
+    // Update in Supabase
+    sbUpsert('sessions',[{
+      id: sessions[0].id,
+      timestamp: sessions[0].timestamp,
+      date: sessions[0].date,
+      workout: sessions[0].workout,
+      warmup: JSON.stringify(sessions[0].warmup||[]),
+      completed: JSON.stringify(sessions[0].completed||[]),
+      total: sessions[0].total,
+      done_count: sessions[0].doneCount,
+      note: note
+    }]);
+    var btn = document.querySelector('#complete-banner button[onclick="saveSessionNote()"]');
+    if (btn) { btn.textContent = '✓ Note saved!'; btn.style.color = 'var(--green)'; }
+  }
+}
+
+// ── FEATURE 3: New low celebration ───────────────────────────────────────────
+function checkNewLow(newWeight) {
+  if (weights.length < 2) return;
+  var prev = weights.slice(0,-1).map(function(w){ return w.weight; });
+  var prevLow = Math.min.apply(null, prev);
+  if (newWeight < prevLow) {
+    showNewLowCelebration(newWeight, prevLow);
+  }
+}
+
+function showNewLowCelebration(newLow, prevLow) {
+  var diff = (prevLow - newLow).toFixed(1);
+  var el = document.createElement('div');
+  el.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;padding:20px';
+  el.innerHTML = '<div style="background:var(--surface);border-radius:20px;padding:32px 24px;text-align:center;border:2px solid var(--orange);max-width:320px;width:100%">'
+    +'<div style="font-size:48px;margin-bottom:12px">🎉</div>'
+    +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:36px;color:var(--orange);letter-spacing:2px">NEW LOW!</div>'
+    +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:56px;color:var(--text);margin:8px 0">'+newLow+'</div>'
+    +'<div style="font-size:13px;color:var(--dim);margin-bottom:6px">lbs — new all time low</div>'
+    +'<div style="font-size:14px;color:var(--green);font-weight:600;margin-bottom:20px">↓ '+diff+' lbs below previous best</div>'
+    +'<div style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6">يلا Saba — keep going! 🇱🇧💪</div>'
+    +'<button onclick="this.parentElement.parentElement.remove()" style="width:100%;padding:12px;border-radius:10px;border:none;background:var(--orange);color:#fff;font-family:\'Bebas Neue\',sans-serif;font-size:18px;letter-spacing:1px;cursor:pointer">LET\'S GO! 🔴</button>'
+    +'</div>';
+  document.body.appendChild(el);
+}
+
+// ── FEATURE 4: Soccer game logger ────────────────────────────────────────────
+function openSoccerLogger() {
+  var el = document.createElement('div');
+  el.id = 'soccer-logger-modal';
+  el.style.cssText = 'position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.7);display:flex;align-items:flex-end;justify-content:center';
+  el.innerHTML = '<div style="background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%;max-height:80vh;overflow-y:auto">'
+    +'<div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px"></div>'
+    +'<div style="font-size:9px;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin-bottom:4px">Log Game</div>'
+    +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:28px;color:#88aaff;margin-bottom:16px">⚽ Soccer Session</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'
+    +'<div><div class="field-label">Duration (mins)</div><input id="sg-duration" class="field-input" type="number" placeholder="57" value="57"/></div>'
+    +'<div><div class="field-label">Calories</div><input id="sg-calories" class="field-input" type="number" placeholder="864" value=""/></div>'
+    +'<div><div class="field-label">Avg HR (bpm)</div><input id="sg-hr" class="field-input" type="number" placeholder="171" value=""/></div>'
+    +'<div><div class="field-label">Cardio Load</div><input id="sg-load" class="field-input" type="number" placeholder="196" value=""/></div>'
+    +'</div>'
+    +'<div style="margin-bottom:12px"><div class="field-label">Note (optional)</div><input id="sg-note" class="field-input" placeholder="e.g. felt strong, hip held up well..."/></div>'
+    +'<button onclick="saveSoccerSession()" class="btn-primary" style="margin-bottom:10px">Save Game Stats</button>'
+    +'<button onclick="document.getElementById(\'soccer-logger-modal\').remove()" style="width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--dim);font-size:14px;cursor:pointer">Cancel</button>'
+    +'</div>';
+  document.body.appendChild(el);
+}
+
+async function saveSoccerSession() {
+  var dur  = parseInt(document.getElementById('sg-duration').value)||0;
+  var cal  = parseInt(document.getElementById('sg-calories').value)||0;
+  var hr   = parseInt(document.getElementById('sg-hr').value)||0;
+  var load = parseInt(document.getElementById('sg-load').value)||0;
+  var note = document.getElementById('sg-note').value.trim();
+
+  var meta = JSON.stringify({type:'Soccer',duration:dur,calories:cal,avgHR:hr,cardioLoad:load,note:note});
+  var s = { id:Date.now(), timestamp:Date.now(), date:todayStr(), workout:'S',
+    warmup:[], completed:[], total:1, doneCount:1 };
+  sessions = [s].concat(sessions);
+  cacheSessions(sessions);
+
+  showSync('syncing','↑ Saving game...');
+  var ok = await sbUpsert('sessions',[{
+    id:s.id, timestamp:s.timestamp, date:s.date, workout:'S',
+    warmup:'[]', completed:'[]', total:1, done_count:1, note:meta
+  }]);
+  showSync(ok?'synced':'error', ok?'✓ Game saved':'⚠ Saved offline');
+  document.getElementById('soccer-logger-modal').remove();
+  try { renderSchedule(); } catch(e) {}
+}
 function initRunner() {
   var container = document.getElementById('runner-container');
   var canvas    = document.getElementById('runner-canvas');
