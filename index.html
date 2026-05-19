@@ -285,8 +285,26 @@
   <div id="screen-schedule" class="screen active">
     <div id="today-card"></div>
     <div id="streak-today"></div>
-  <div id="week-calendar"></div>
+    <div id="week-calendar"></div>
     <div id="upcoming-games"></div>
+    <div style="padding:0 16px 16px">
+      <button onclick="showAddGameModal()" style="width:100%;padding:12px;border-radius:8px;border:1px dashed var(--border);background:transparent;color:var(--dim);font-size:12px;letter-spacing:1px;cursor:pointer">⚽ ADD GAME NIGHT</button>
+    </div>
+  </div>
+
+  <!-- ADD GAME NIGHT MODAL -->
+  <div id="add-game-modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.5);align-items:flex-end">
+    <div style="background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%">
+      <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px"></div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:6px">Add Game Night ⚽</div>
+      <div style="font-size:13px;color:var(--dim);margin-bottom:16px">Block a date as soccer — no training that day.</div>
+      <div style="margin-bottom:16px">
+        <div class="field-label">Date</div>
+        <input id="game-date-input" class="field-input" placeholder="e.g. May 25"/>
+      </div>
+      <button onclick="addGameNight(document.getElementById('game-date-input').value)" class="btn-primary" style="margin-bottom:10px">Add Game Night</button>
+      <button onclick="hideAddGameModal()" style="width:100%;padding:12px;border-radius:8px;border:none;background:transparent;color:var(--dim);font-size:13px;cursor:pointer">Cancel</button>
+    </div>
   </div>
 
   <!-- WEIGHT SCREEN -->
@@ -402,8 +420,8 @@
         </div>
         <!-- Hidden inputs for logCardio() compatibility -->
         <input id="c-duration" type="hidden" value="30"/>
-        <input id="c-incline"  type="hidden" value="6.0"/>
-        <input id="c-speed"    type="hidden" value="3.5"/>
+        <input id="c-incline"  type="hidden" value="7.0"/>
+        <input id="c-speed"    type="hidden" value="4.7"/>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
           <div>
             <div class="field-label">Date <span style="font-size:9px;color:var(--dim);letter-spacing:0;text-transform:none">(edit to backfill)</span></div>
@@ -439,7 +457,37 @@
   <div id="screen-history" class="screen">
     <div class="wh-streak" id="streak-row"></div>
     <div class="card"><div class="card-label">This Month</div><div id="wh-heatmap"></div></div>
+    <div style="padding:0 16px 12px">
+      <button onclick="showLogPastModal()" style="width:100%;padding:12px;border-radius:8px;border:1px dashed var(--border);background:transparent;color:var(--dim);font-size:12px;letter-spacing:1px;cursor:pointer">+ LOG PAST SESSION</button>
+    </div>
     <div id="session-history-list"></div>
+  </div>
+
+  <!-- LOG PAST SESSION MODAL -->
+  <div id="log-past-modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.5);align-items:flex-end">
+    <div style="background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%;max-height:80vh;overflow-y:auto">
+      <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px"></div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:16px">Log Past Session</div>
+      <div style="margin-bottom:14px">
+        <div class="field-label">Date</div>
+        <input id="past-date" class="field-input" placeholder="e.g. May 8"/>
+      </div>
+      <div style="margin-bottom:14px">
+        <div class="field-label">Session Type</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+          <button onclick="selectPastType('A')" id="past-A" style="padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-size:12px;letter-spacing:1px;cursor:pointer">💪 WORKOUT A</button>
+          <button onclick="selectPastType('B')" id="past-B" style="padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-size:12px;letter-spacing:1px;cursor:pointer">⚡ WORKOUT B</button>
+          <button onclick="selectPastType('C')" id="past-C" style="padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-size:12px;letter-spacing:1px;cursor:pointer">🚶 CARDIO</button>
+          <button onclick="selectPastType('S')" id="past-S" style="padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-size:12px;letter-spacing:1px;cursor:pointer">⚽ SOCCER</button>
+        </div>
+      </div>
+      <div style="margin-bottom:14px">
+        <div class="field-label">Note (optional)</div>
+        <input id="past-note" class="field-input" placeholder="e.g. 10 rounds at 12.0 mph"/>
+      </div>
+      <button onclick="saveLogPast()" class="btn-primary" style="margin-bottom:10px">Save Session</button>
+      <button onclick="hideLogPastModal()" style="width:100%;padding:12px;border-radius:8px;border:none;background:transparent;color:var(--dim);font-size:13px;cursor:pointer">Close</button>
+    </div>
   </div>
 
   <nav id="bottom-nav">
@@ -492,21 +540,21 @@ var WARMUP = [
 
 var WORKOUTS = {
   A:{color:'#C8102E',accent:'#E8384F',exercises:[
-    {name:'DB Flat Chest Press',       sets:'3 sets',     reps:'12 reps @ 25 lbs',      icon:'🏋️',muscles:'Chest · Triceps · Front Delts',  cue:"Lie flat on the bench, feet on the floor. Hold 25 lb dumbbells at chest height, elbows at 45°. Press up explosively, lower slowly (3 counts). At the bottom your elbows should be just below bench level — full stretch on the chest. This is your primary chest builder."},
-    {name:'DB Incline Press',          sets:'3 sets',     reps:'10 reps @ 25 lbs',      icon:'📐',muscles:'Upper Chest · Shoulders',         cue:"Bench set to 30-45°. This targets the upper chest directly — exactly the area you want to tighten. Same motion as flat press but angled. Feel the squeeze at the top, slow descent. 3 counts down, drive up. Upper chest is what lifts and firms the whole area."},
-    {name:'DB Chest Flyes',            sets:'3 sets',     reps:'12 reps @ 25 lbs',      icon:'🦅',muscles:'Inner & Outer Chest · Pecs',      cue:"Flat bench. Arms out wide like you're hugging a barrel — slight bend in the elbows throughout, never straighten fully. Lower until you feel a deep chest stretch, then squeeze the chest to bring them back together. This is the shape exercise. Slow and controlled the whole way — do not go heavy here, feel it."},
+    {name:'DB Flat Chest Press',       sets:'3 sets',     reps:'Set 1: 25 lbs · Sets 2-3: 35 lbs', icon:'🏋️',muscles:'Chest · Triceps · Front Delts',  cue:"Set 1 with 25 lbs as your warm-up — feel the movement, get the chest firing. Sets 2 and 3 go up to 35 lbs. Lie flat on the bench, feet on the floor. Press up explosively, lower slowly (3 counts). At the bottom your elbows should be just below bench level — full stretch on the chest."},
+    {name:'DB Incline Press',          sets:'3 sets',     reps:'Set 1: 25 lbs · Sets 2-3: 35 lbs', icon:'📐',muscles:'Upper Chest · Shoulders',         cue:"Set 1 with 25 lbs to warm up the shoulder joint. Sets 2 and 3 at 35 lbs. Bench set to 30-45°. This targets the upper chest directly — exactly the area you want to tighten. Feel the squeeze at the top, slow descent. Upper chest is what lifts and firms the whole area."},
+    {name:'DB Chest Flyes',            sets:'3 sets',     reps:'Set 1: 25 lbs · Sets 2-3: 35 lbs', icon:'🦅',muscles:'Inner & Outer Chest · Pecs',      cue:"Set 1 at 25 lbs, sets 2-3 at 35 lbs. Flat bench. Arms out wide like you're hugging a barrel — slight bend in the elbows throughout. Lower until you feel a deep chest stretch, then squeeze to bring them back together. This is the shape exercise. Slow and controlled."},
     {name:'DB One-Arm Row',            sets:'3 sets',     reps:'12 reps / arm @ 35 lbs',icon:'💪',muscles:'Lats · Rhomboids · Biceps',      cue:"Brace your free hand on the bench. Pull the 35 lb dumbbell to your hip — not your shoulder. Keep your back flat and parallel to the floor. Squeeze at the top for 1 second. Chest and back work together — this is your balance movement."},
-    {name:'DB Shoulder Press',         sets:'3 sets',     reps:'10 reps @ 25 lbs',      icon:'🔝',muscles:'Shoulders · Triceps · Upper Back', cue:"Seated or standing. Dumbbells at ear height, palms facing forward. Press straight up overhead — don't flare the elbows too wide. Lower slowly. Shoulders frame the chest — building them makes everything look tighter and broader."},
+    {name:'DB Shoulder Press',         sets:'3 sets',     reps:'Set 1: 25 lbs · Sets 2-3: 35 lbs', icon:'🔝',muscles:'Shoulders · Triceps · Upper Back', cue:"Set 1 at 25 lbs to warm the rotator cuff. Sets 2-3 at 35 lbs. Seated or standing. Dumbbells at ear height, palms facing forward. Press straight up overhead — don't flare the elbows too wide. Lower slowly. Shoulders frame the chest — building them makes everything look tighter and broader."},
     {name:'Power Tower Knee Raises',   sets:'3 sets',     reps:'12 reps',               icon:'⬆️',muscles:'Lower Abs · Hip Flexors · Core', cue:"Arms on the pads, back flat against the pad. Raise knees slowly to 90°, hold 1 second, lower slowly. No swinging — if you're swinging, your core isn't working. This hits the lower abs which ties the whole physique together."},
     {name:'Bicycle Crunches',          sets:'3 sets',     reps:'20 reps',               icon:'🚴',muscles:'Obliques · Upper Abs · Core',    cue:"Lie on your back, hands lightly behind your head. Bring your right elbow to your left knee while extending the right leg, then switch. Slow and controlled — feel the twist and squeeze at each rep. Don't pull your neck, the rotation comes from the torso. This is the highest oblique activation exercise there is."},
     {name:'Russian Twists',            sets:'3 sets',     reps:'15 reps each side',     icon:'🔀',muscles:'Obliques · Rotational Core',      cue:"Sit on the mat, lean back to about 45°, feet slightly raised or flat. Hold a 25 lb dumbbell with both hands. Rotate side to side touching the weight to the floor each time. Slow and controlled — feel the oblique squeeze. This rotational strength is exactly what you need for footy direction changes."},
     {name:'Side Plank',                sets:'2 sets',     reps:'30 sec each side',      icon:'📐',muscles:'Obliques · Lateral Core · Glutes', cue:"Lie on your side, prop up on your forearm, feet stacked. Lift your hips so your body forms a straight line from head to feet. Hold it — no sagging at the hips. 30 seconds each side. This is isometric oblique work — no movement but intense. Your left hip will be tested here so ease into it."},
-    {name:'Dead Hang + Scapular Pulls', sets:'2 sets',     reps:'20 sec hang → 5 pulls', icon:'🧲',muscles:'Grip · Lats · Scapula · Spine Decompression',cue:"Grip the power tower bar and hang completely dead — shoulders relaxed up by your ears. Hold 20 seconds. Then WITHOUT bending your elbows, squeeze your shoulder blades DOWN and together — your body will rise 2–3 inches. Hold 2 seconds at the top, lower back to dead hang. That's one scapular pull. Do 5 reps. This is the exact movement that initiates every pull-up. You're building the lat firing pattern that will get you your first unassisted pull-up. Progression ladder: Dead hang → Scapular pulls (you are here) → Flex hangs → Slow negatives → First pull-up."},
+    {name:'Dead Hang + Scapular Pulls', sets:'2 sets',     reps:'20 sec hang → 5 pulls', icon:'🧲',muscles:'Grip · Lats · Scapula · Spine Decompression',cue:"Grip the power tower bar and hang completely dead — shoulders relaxed up by your ears. Hold 20 seconds. Then WITHOUT bending your elbows, squeeze your shoulder blades DOWN and together — your body will rise 2–3 inches. Hold 2 seconds at the top, lower back to dead hang. That's one scapular pull. Do 5 reps. This is the exact movement that initiates every pull-up. Progression: Dead hang → Scapular pulls (you are here) → Flex hangs → Slow negatives → First pull-up."},
     {name:'Incline Walk Finisher',     sets:'1 round',    reps:'20 mins',               icon:'🚶',muscles:'Glutes · Calves · Fat Burn',      cue:'Incline: 6.0 | Speed: 4.7 mph. Hands off the rails. You just worked the upper body — now burn the fat covering it. Stay in it for the full 20.',finisher:true}
   ]},
   B:{color:'#0a7ae8',accent:'#3da8ff',exercises:[
     {name:'Warm-Up Walk',            sets:'1 round',    reps:'5 mins',                icon:'🚶',muscles:'Full Body Warm-Up',              cue:"Speed: 3.5 mph, flat. This isn't optional — your joints need this before sprinting."},
-    {name:'11.5 mph Sprints',        sets:'8–10 rounds',reps:'30s sprint / 60s walk', icon:'⚡',muscles:'Full Body · VO2 Max · Fat Burn',  cue:"30 sec @ 11.5 mph — go hard. Then 60 sec @ 4.5 mph recovery walk. Use every second of that minute. Builds serious cardiovascular fitness for footy.",finisher:true},
+    {name:'12.0 mph Sprints',        sets:'8–10 rounds',reps:'30s sprint / 60s walk', icon:'⚡',muscles:'Full Body · VO2 Max · Fat Burn',  cue:"30 sec @ 12.0 mph — go hard. Then 60 sec @ 4.5 mph recovery walk. Use every second of that minute. You've earned this speed. Builds serious cardiovascular fitness for footy.",finisher:true},
     {name:'KB Halos',                sets:'3 sets',     reps:'10 reps each direction',icon:'🔄',muscles:'Shoulders · Core · Mobility',     cue:'Hold the 30 lb KB by the horns at chest height. Circle it slowly around your head — clockwise 10, counter-clockwise 10.'},
     {name:'KB Chest Halos',          sets:'3 sets',     reps:'10 reps each direction',icon:'⭕',muscles:'Chest · Shoulders · Rotational Core', cue:"Hold the 30 lb KB by the horns at chest height — not overhead like regular halos. Circle it slowly across your chest at chest level, clockwise 10 then counter-clockwise 10. Elbows slightly bent throughout. Chest, front delts and rotator cuff all working together. Slow and controlled."},
     {name:'DB Goblet Squat',         sets:'3 sets',     reps:'12 reps @ 35 lbs',      icon:'🏅',muscles:'Quads · Glutes · Core',          cue:"Hold the 35 lb dumbbell vertically at your chest. Feet shoulder-width, toes slightly out. Descend slowly 3 counts down. Don't force depth if your left hip talks back — stop at 90° and build from there."},
@@ -518,8 +566,8 @@ var WORKOUTS = {
 var CARDIO_PRESETS = {
   'Recovery Walk': {duration:25,incline:5.0,speed:4.0,tip:'Easy recovery pace — the goal is blood flow and inflammation flush, not intensity. Hands off the rails. You should be able to hold a full conversation throughout.'},
   'Fat Burn Walk':  {duration:30,incline:7.0,speed:4.7,tip:'Your primary fat burner. Higher incline cranks up glute and hamstring engagement and keeps heart rate in the fat-burning zone without beating up the joints. No holding the rails.'},
-  'HIIT Intervals': {duration:25,incline:1.0,speed:11.5,tip:'30 sec sprint @ 11.5 mph, 60 sec walk @ 4.5 mph. Repeat 8–10 rounds. Go hard on every sprint. Drop to 10.5 if needed and build up over time.'},
-  'Easy Walk':      {duration:20,incline:3.0,speed:4.2,tip:'Active recovery or pre-game pace. Keep it comfortable — legs should feel fresh after this, not tired. Good for the day before soccer or on lighter recovery days.'}
+  'HIIT Intervals': {duration:25,incline:1.0,speed:12.0,tip:'30 sec sprint @ 12.0 mph, 60 sec walk @ 4.5 mph. Repeat 8–10 rounds. Go hard on every sprint.'},
+  'Easy Walk':      {duration:20,incline:3.0,speed:4.2,tip:'Active recovery or pre-game pace. Keep it comfortable — legs should feel fresh after this, not tired.'}
 };
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
@@ -722,6 +770,8 @@ async function initApp() {
     try { setCardioType(cardioType); } catch(e) {}
     var dateEl = document.getElementById('inp-date');
     if (dateEl) dateEl.value = todayStr();
+    var cDateEl = document.getElementById('c-date');
+    if (cDateEl) cDateEl.value = todayStr();
   });
 
   showSync('syncing', '↑↓ Syncing...');
@@ -796,51 +846,133 @@ async function syncFromCloud() {
 }
 
 // ── SCHEDULE ──────────────────────────────────────────────────────────────────
-var SOCCER_DATES = ['2026-04-19','2026-04-26','2026-05-03','2026-05-10','2026-05-17'];
+// Dynamic soccer dates — loaded from localStorage, can be added by user
+var SOCCER_DATES_FIXED = ['2026-04-19','2026-04-26','2026-05-03','2026-05-10','2026-05-17'];
+var soccerDatesExtra = [];
+try { soccerDatesExtra = JSON.parse(localStorage.getItem('saba_soccer_extra')||'[]'); } catch(e){ soccerDatesExtra=[]; }
+var SOCCER_DATES = SOCCER_DATES_FIXED.concat(soccerDatesExtra);
 
-// Full plan: date -> {type, label, detail, workout}
-// type: 'A','B','cardio','rest','soccer','easy'
-var PLAN = {
-  '2026-04-11': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
-  '2026-04-12': {type:'cardio',label:'Fat Burn Walk',    detail:'30 mins · Incline 7.0 · Speed 4.5 mph. Hands off the rails.', workout:'C'},
-  '2026-04-13': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Sprints, KB work, push-ups, cool down.', workout:'B'},
-  '2026-04-14': {type:'cardio',label:'Fat Burn Walk',    detail:'30 mins · Incline 7.0 · Speed 4.5 mph.', workout:'C'},
-  '2026-04-15': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
-  '2026-04-16': {type:'rest', label:'Rest Day',          detail:'Hot tub, stretch, water. Let the body consolidate the week.'},
-  '2026-04-17': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Sprints, KB work, push-ups, cool down.', workout:'B'},
-  '2026-04-18': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 3.0 · Speed 4.2 mph. Legs fresh for tomorrow\'s game.', workout:'C'},
-  '2026-04-19': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 10:00pm. No training today — save everything for the pitch.'},
-  '2026-04-20': {type:'rest', label:'Rest Day',          detail:'Full recovery. Hot tub if you can. You played late — sleep in.'},
-  '2026-04-21': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 5.0 · Speed 4.0 mph. Flush out the match soreness.', workout:'C'},
-  '2026-04-22': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
-  '2026-04-23': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 7.0 · Speed 4.5 mph.', workout:'C'},
-  '2026-04-24': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Sprints, KB work, push-ups, cool down.', workout:'B'},
-  '2026-04-25': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 3.0 · Speed 4.2 mph. Legs fresh for tomorrow.', workout:'C'},
-  '2026-04-26': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 10:00pm. No training today.'},
-  '2026-04-27': {type:'rest', label:'Rest Day',          detail:'Full recovery. Hot tub, stretch, water.'},
-  '2026-04-28': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 5.0 · Speed 4.0 mph.', workout:'C'},
-  '2026-04-29': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
-  '2026-04-30': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 7.0 · Speed 4.5 mph.', workout:'C'},
-  '2026-05-01': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Sprints, KB work, push-ups, cool down.', workout:'B'},
-  '2026-05-02': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 3.0 · Speed 4.2 mph.', workout:'C'},
-  '2026-05-03': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 10:00pm. No training today.'},
-  '2026-05-04': {type:'rest', label:'Rest Day',          detail:'Full recovery.'},
-  '2026-05-05': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 5.0 · Speed 4.0 mph.', workout:'C'},
-  '2026-05-06': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
-  '2026-05-07': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 7.0 · Speed 4.5 mph.', workout:'C'},
-  '2026-05-08': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Sprints, KB work, push-ups, cool down.', workout:'B'},
-  '2026-05-09': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 3.0 · Speed 4.2 mph.', workout:'C'},
-  '2026-05-10': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 9:00pm. No training today.'},
-  '2026-05-11': {type:'rest', label:'Rest Day',          detail:'Full recovery.'},
-  '2026-05-12': {type:'cardio',label:'Recovery Walk',   detail:'25 mins · Incline 5.0 · Speed 4.0 mph.', workout:'C'},
-  '2026-05-13': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
-  '2026-05-14': {type:'cardio',label:'Fat Burn Walk',   detail:'30 mins · Incline 7.0 · Speed 4.5 mph.', workout:'C'},
-  '2026-05-15': {type:'B',    label:'Workout B',         detail:'HIIT Engine. Sprints, KB work, push-ups, cool down.', workout:'B'},
-  '2026-05-16': {type:'easy', label:'Easy Walk',         detail:'20 mins · Incline 3.0 · Speed 4.2 mph.', workout:'C'},
-  '2026-05-17': {type:'soccer',label:'⚽ Soccer',        detail:'Game night 9:00pm. No training today.'},
-  '2026-05-18': {type:'rest', label:'Rest Day',          detail:'Full recovery.'},
-  '2026-05-19': {type:'A',    label:'Workout A',         detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'}
+function saveSoccerDates() {
+  try { localStorage.setItem('saba_soccer_extra', JSON.stringify(soccerDatesExtra)); } catch(e){}
+  SOCCER_DATES = SOCCER_DATES_FIXED.concat(soccerDatesExtra);
+}
+
+function addGameNight(dateStr) {
+  if (!dateStr) return;
+  // Convert "May 25" style to "2026-05-25"
+  var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var parts = dateStr.trim().split(' ');
+  var moIdx = mo.indexOf(parts[0]);
+  var dy = parseInt(parts[1]);
+  if (moIdx < 0 || isNaN(dy)) { alert('Please enter date as e.g. May 25'); return; }
+  var key = '2026-'+(moIdx+1<10?'0':'')+(moIdx+1)+'-'+(dy<10?'0':'')+dy;
+  if (SOCCER_DATES.indexOf(key) < 0) {
+    soccerDatesExtra.push(key);
+    saveSoccerDates();
+  }
+  hideAddGameModal();
+  renderSchedule();
+}
+
+function removeGameNight(dateStr) {
+  soccerDatesExtra = soccerDatesExtra.filter(function(d){ return d !== dateStr; });
+  saveSoccerDates();
+  renderSchedule();
+}
+
+// Static plan for historical dates
+var PLAN_STATIC = {
+  '2026-04-11': {type:'A',    label:'Workout A',       detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
+  '2026-04-12': {type:'cardio',label:'Fat Burn Walk',  detail:'30 mins · Incline 7.0 · Speed 4.7 mph. Hands off the rails.', workout:'C'},
+  '2026-04-13': {type:'B',    label:'Workout B',       detail:'HIIT Engine. Sprints, KB work, push-ups, cool down.', workout:'B'},
+  '2026-04-14': {type:'cardio',label:'Fat Burn Walk',  detail:'30 mins · Incline 7.0 · Speed 4.7 mph.', workout:'C'},
+  '2026-04-15': {type:'A',    label:'Workout A',       detail:'Upper Body & Chest.', workout:'A'},
+  '2026-04-16': {type:'rest', label:'Rest Day',        detail:'Hot tub, stretch, water.'},
+  '2026-04-17': {type:'B',    label:'Workout B',       detail:'HIIT Engine. Sprints, KB work, push-ups, cool down.', workout:'B'},
+  '2026-04-18': {type:'easy', label:'Easy Walk',       detail:'20 mins · Incline 3.0 · Speed 4.2 mph.', workout:'C'},
+  '2026-04-19': {type:'soccer',label:'⚽ Soccer',      detail:'Game night 10:00pm. No training today.'},
+  '2026-04-20': {type:'rest', label:'Rest Day',        detail:'Full recovery.'},
+  '2026-04-21': {type:'cardio',label:'Recovery Walk',  detail:'25 mins · Incline 5.0 · Speed 4.0 mph.', workout:'C'},
+  '2026-04-22': {type:'A',    label:'Workout A',       detail:'Upper Body & Chest.', workout:'A'},
+  '2026-04-23': {type:'cardio',label:'Fat Burn Walk',  detail:'30 mins · Incline 7.0 · Speed 4.7 mph.', workout:'C'},
+  '2026-04-24': {type:'B',    label:'Workout B',       detail:'HIIT Engine.', workout:'B'},
+  '2026-04-25': {type:'easy', label:'Easy Walk',       detail:'20 mins · Incline 3.0 · Speed 4.2 mph.', workout:'C'},
+  '2026-04-26': {type:'soccer',label:'⚽ Soccer',      detail:'Game night 10:00pm. No training today.'},
+  '2026-04-27': {type:'rest', label:'Rest Day',        detail:'Full recovery.'},
+  '2026-04-28': {type:'cardio',label:'Recovery Walk',  detail:'25 mins · Incline 5.0 · Speed 4.0 mph.', workout:'C'},
+  '2026-04-29': {type:'A',    label:'Workout A',       detail:'Upper Body & Chest.', workout:'A'},
+  '2026-04-30': {type:'cardio',label:'Fat Burn Walk',  detail:'30 mins · Incline 7.0 · Speed 4.7 mph.', workout:'C'},
+  '2026-05-01': {type:'B',    label:'Workout B',       detail:'HIIT Engine.', workout:'B'},
+  '2026-05-02': {type:'easy', label:'Easy Walk',       detail:'20 mins · Incline 3.0 · Speed 4.2 mph.', workout:'C'},
+  '2026-05-03': {type:'soccer',label:'⚽ Soccer',      detail:'Game night 10:00pm. No training today.'},
+  '2026-05-04': {type:'rest', label:'Rest Day',        detail:'Full recovery.'},
+  '2026-05-05': {type:'cardio',label:'Recovery Walk',  detail:'25 mins · Incline 5.0 · Speed 4.0 mph.', workout:'C'},
+  '2026-05-06': {type:'A',    label:'Workout A',       detail:'Upper Body & Chest.', workout:'A'},
+  '2026-05-07': {type:'cardio',label:'Fat Burn Walk',  detail:'30 mins · Incline 7.0 · Speed 4.7 mph.', workout:'C'},
+  '2026-05-08': {type:'B',    label:'Workout B',       detail:'HIIT Engine.', workout:'B'},
+  '2026-05-09': {type:'easy', label:'Easy Walk',       detail:'20 mins · Incline 3.0 · Speed 4.2 mph.', workout:'C'},
+  '2026-05-10': {type:'soccer',label:'⚽ Soccer',      detail:'Game night 9:00pm. No training today.'},
+  '2026-05-11': {type:'rest', label:'Rest Day',        detail:'Full recovery.'},
+  '2026-05-12': {type:'cardio',label:'Recovery Walk',  detail:'25 mins · Incline 5.0 · Speed 4.0 mph.', workout:'C'},
+  '2026-05-13': {type:'A',    label:'Workout A',       detail:'Upper Body & Chest.', workout:'A'},
+  '2026-05-14': {type:'cardio',label:'Fat Burn Walk',  detail:'30 mins · Incline 7.0 · Speed 4.7 mph.', workout:'C'},
+  '2026-05-15': {type:'B',    label:'Workout B',       detail:'HIIT Engine.', workout:'B'},
+  '2026-05-16': {type:'easy', label:'Easy Walk',       detail:'20 mins · Incline 3.0 · Speed 4.2 mph.', workout:'C'},
+  '2026-05-17': {type:'soccer',label:'⚽ Soccer',      detail:'Game night 9:00pm. No training today.'},
+  '2026-05-18': {type:'rest', label:'Rest Day',        detail:'Full recovery.'},
 };
+
+// Dynamic plan generator — continues the A/cardio/B/cardio/A/rest rotation indefinitely
+// Rotation: A, FatBurn, B, FatBurn, A, Rest, Easy (pre-game or repeat)
+var ROTATION = [
+  {type:'A',      label:'Workout A',      detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
+  {type:'cardio', label:'Fat Burn Walk',  detail:'30 mins · Incline 7.0 · Speed 4.7 mph. Hands off the rails.', workout:'C'},
+  {type:'B',      label:'Workout B',      detail:'HIIT Engine. Sprints at 12.0 mph, KB work, push-ups, cool down.', workout:'B'},
+  {type:'cardio', label:'Fat Burn Walk',  detail:'30 mins · Incline 7.0 · Speed 4.7 mph. Hands off the rails.', workout:'C'},
+  {type:'A',      label:'Workout A',      detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
+  {type:'rest',   label:'Rest Day',       detail:'Full recovery. Hot tub, stretch, water. Let the body consolidate the week.'},
+  {type:'easy',   label:'Easy Walk',      detail:'20 mins · Incline 3.0 · Speed 4.2 mph. Active recovery.', workout:'C'},
+];
+
+// Rotation anchor — May 19 2026 = index 0 (Workout A)
+var ROTATION_ANCHOR = new Date('2026-05-19T12:00:00');
+
+function getDynamicPlan(dateStr) {
+  // Check if it's a soccer date
+  if (SOCCER_DATES.indexOf(dateStr) >= 0) {
+    return {type:'soccer', label:'⚽ Soccer', detail:'Game night. No training today — save everything for the pitch.'};
+  }
+  // Check if it's the day after a soccer date — make it rest
+  var d = new Date(dateStr+'T12:00:00');
+  var prevDay = new Date(d); prevDay.setDate(prevDay.getDate()-1);
+  var prevKey = dateKey(prevDay);
+  if (SOCCER_DATES.indexOf(prevKey) >= 0) {
+    return {type:'rest', label:'Rest Day', detail:'Full recovery after last night\'s game. Hot tub, stretch, water.'};
+  }
+  // Calculate rotation index from anchor
+  var diffDays = Math.round((d - ROTATION_ANCHOR) / (1000*60*60*24));
+  // Count non-soccer, non-post-soccer days to find rotation position
+  var rotIdx = 0;
+  var count = 0;
+  for (var i = 0; i <= diffDays; i++) {
+    var checkDate = new Date(ROTATION_ANCHOR);
+    checkDate.setDate(checkDate.getDate() + i);
+    var checkKey = dateKey(checkDate);
+    var prevCheck = new Date(checkDate); prevCheck.setDate(prevCheck.getDate()-1);
+    var prevCheckKey = dateKey(prevCheck);
+    if (SOCCER_DATES.indexOf(checkKey) >= 0 || SOCCER_DATES.indexOf(prevCheckKey) >= 0) continue;
+    if (i === diffDays) { rotIdx = count % ROTATION.length; break; }
+    count++;
+  }
+  return ROTATION[rotIdx % ROTATION.length];
+}
+
+function getPlan(dateStr) {
+  // Static historical plan first
+  if (PLAN_STATIC[dateStr]) return PLAN_STATIC[dateStr];
+  // Dynamic for everything from May 19 onwards
+  return getDynamicPlan(dateStr);
+}
 
 function dateKey(d) {
   var mo = d.getMonth()+1, dy = d.getDate();
@@ -854,12 +986,8 @@ function isSameDay(d1, d2) {
 function isDayDone(dateStr) {
   var targetDate = fmtDisplayDate(new Date(dateStr+'T12:00:00'));
   return sessions.some(function(s) {
-    // Match by stored date string
     var sDate = s.date || '';
-    // Also try matching via timestamp for cloud-synced sessions
-    if (!sDate && s.timestamp) {
-      sDate = fmtDisplayDate(new Date(parseInt(s.timestamp)||s.timestamp));
-    }
+    if (!sDate && s.timestamp) sDate = fmtDisplayDate(new Date(parseInt(s.timestamp)||s.timestamp));
     if (sDate !== targetDate) return false;
     if (s.workout === 'C' || s.workout === 'S') return true;
     var dc = s.doneCount || s.done_count || 0;
@@ -869,13 +997,9 @@ function isDayDone(dateStr) {
 
 function getTodayDoneLabel() {
   var targetDate = fmtDisplayDate(new Date());
-  var s = sessions.find(function(s) { return (s.date || '') === targetDate; });
+  var s = sessions.find(function(s){ return (s.date||'') === targetDate; });
   if (!s) return 'Completed today!';
-  if (s.workout === 'C') {
-    var type = '';
-    try { type = JSON.parse(s.note||'{}').type || ''; } catch(e) {}
-    return type ? type + ' — Done! ✓' : 'Cardio — Done! ✓';
-  }
+  if (s.workout === 'C') { var type=''; try{type=JSON.parse(s.note||'{}').type||'';}catch(e){} return type?type+' — Done! ✓':'Cardio — Done! ✓'; }
   if (s.workout === 'A') return 'Workout A — Done! ✓';
   if (s.workout === 'B') return 'Workout B — Done! ✓';
   if (s.workout === 'S') return 'Soccer — Done! ✓';
@@ -918,7 +1042,6 @@ function getTodayPlan(dateStr) {
       return { type:'rest', label:'Rest Day', detail:'Workout skipped — moved to tomorrow. Rest up, hot tub, water.' };
     }
   }
-
   // 2. If a workout was skipped the day before this date — show the skipped workout instead
   for (var j = 0; j < skippedDays.length; j++) {
     var sk = skippedDays[j];
@@ -928,9 +1051,8 @@ function getTodayPlan(dateStr) {
       return sk.plan;
     }
   }
-
-  // 3. Default — return the original plan
-  return PLAN[dateStr];
+  // 3. Default — return the dynamic plan
+  return getPlan(dateStr);
 }
 
 function renderSchedule() {
@@ -1083,44 +1205,27 @@ function setWorkout(key) {
 function setCardioType(type) {
   cardioType = type;
   var map = {'Recovery Walk':'ct-rw','Fat Burn Walk':'ct-fb','HIIT Intervals':'ct-hi','Easy Walk':'ct-ew'};
-  Object.values(map).forEach(function(id){ var el=document.getElementById(id); if(el) el.classList.remove('active-type'); });
-  var activeEl = document.getElementById(map[type]);
-  if (activeEl) activeEl.classList.add('active-type');
+  Object.values(map).forEach(function(id){ document.getElementById(id).classList.remove('active-type'); });
+  document.getElementById(map[type]).classList.add('active-type');
 
   var p = CARDIO_PRESETS[type];
-  if (!p) return;
-
-  // Sync cardioVals state
-  cardioVals.dur = p.duration;
-  cardioVals.inc = p.incline;
-  cardioVals.spd = p.speed;
-
-  // Sync hidden inputs (what logCardio reads)
-  var durEl = document.getElementById('c-duration');
-  var incEl = document.getElementById('c-incline');
-  var spdEl = document.getElementById('c-speed');
-  if (durEl) durEl.value = p.duration;
-  if (incEl) incEl.value = p.incline;
-  if (spdEl) spdEl.value = p.speed;
-
-  // Sync display values
-  var durDisp = document.getElementById('c-duration-val');
-  var incDisp = document.getElementById('c-incline-val');
-  var spdDisp = document.getElementById('c-speed-val');
-  if (durDisp) durDisp.textContent = p.duration;
-  if (incDisp) incDisp.textContent = p.incline.toFixed(1);
-  if (spdDisp) spdDisp.textContent = p.speed.toFixed(1);
+  // Update hidden inputs and stepper displays
+  document.getElementById('c-duration').value = p.duration;
+  document.getElementById('c-incline').value  = p.incline;
+  document.getElementById('c-speed').value    = p.speed;
+  document.getElementById('c-duration-val').textContent = p.duration;
+  document.getElementById('c-incline-val').textContent  = p.incline.toFixed(1);
+  document.getElementById('c-speed-val').textContent    = p.speed.toFixed(1);
+  cardioVals.dur = p.duration; cardioVals.inc = p.incline; cardioVals.spd = p.speed;
 
   var tipCard = document.getElementById('cardio-tip-card');
-  if (tipCard) {
-    tipCard.innerHTML = '<div class="card-label">Coaching Tip</div>'
-      + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;margin-bottom:12px">'
-      + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.incline+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">INCLINE</div></div>'
-      + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.speed+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MPH</div></div>'
-      + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.duration+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MINS</div></div>'
-      + '</div>'
-      + '<div style="font-size:13px;color:var(--dim);line-height:1.6">'+p.tip+'</div>';
-  }
+  tipCard.innerHTML = '<div class="card-label">Coaching Tip</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;margin-bottom:12px">'
+    + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.incline+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">INCLINE</div></div>'
+    + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.speed+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MPH</div></div>'
+    + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.duration+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MINS</div></div>'
+    + '</div>'
+    + '<div style="font-size:13px;color:var(--dim);line-height:1.6">'+p.tip+'</div>';
 
   updateCalcPreview();
 }
@@ -1137,7 +1242,7 @@ var cardioDisplayIds = { dur:'c-duration-val', inc:'c-incline-val', spd:'c-speed
 function adjCardio(key, delta) {
   var l = cardioLimits[key];
   cardioVals[key] = Math.round((cardioVals[key] + delta) * 100) / 100;
-  cardioVals[key] = Math.max(l.min, Math.min(l.max||120, cardioVals[key]));
+  cardioVals[key] = Math.max(l.min, Math.min(cardioLimits[key].max||120, cardioVals[key]));
   var disp = cardioVals[key].toFixed(l.dp);
   document.getElementById(cardioDisplayIds[key]).textContent = disp;
   document.getElementById(cardioIds[key]).value = disp;
@@ -1176,13 +1281,11 @@ async function logCardio() {
   var dateVal = dateEl && dateEl.value.trim() ? dateEl.value.trim() : todayStr();
   if (!dur || isNaN(dur)) { alert('Please enter a duration'); return; }
 
-  var cal  = parseInt(document.getElementById('cal-preview').textContent) || 0;
-  // Use actual timestamp for today, or a noon timestamp for backfill dates
+  var cal = parseInt(document.getElementById('cal-preview').textContent) || 0;
   var ts;
   if (dateVal === todayStr()) {
     ts = Date.now();
   } else {
-    // Parse backfill date — format "May 7"
     var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     var parts = dateVal.split(' ');
     var moIdx = mo.indexOf(parts[0]);
@@ -1207,14 +1310,13 @@ async function logCardio() {
   document.getElementById('c-speed').value    = '';
   document.getElementById('c-note').value     = '';
   document.getElementById('cal-preview').textContent = '—';
-  var cDateEl = document.getElementById('c-date');
-  if (cDateEl) cDateEl.value = todayStr();
+  if (dateEl) dateEl.value = todayStr();
 
   var btn = document.getElementById('btn-log-cardio');
   btn.textContent = '✓ Logged!'; btn.classList.add('saved');
   setTimeout(function(){ btn.textContent='Log Cardio Session'; btn.classList.remove('saved'); }, 2500);
 
-  // Re-render schedule and streak immediately so today card shows ✅
+  // Re-render schedule so today card updates immediately
   try { renderSchedule(); } catch(e) {}
   try { renderStreakToday(); } catch(e) {}
 
@@ -1631,12 +1733,12 @@ function renderChart(){
   var W=320,H=120,pl=36,pr=20,pt=12,pb=24,iW=W-pl-pr,iH=H-pt-pb;
   var vals=weights.map(function(d){return d.weight;});
 
-  // ── Calculate trend using weighted recent average (last 7 entries weighted heavier) ──
+  // ── Calculate trend using weighted recent average ──
   var regWeights = weights.slice(-14);
   var n = regWeights.length;
   var sumX=0, sumY=0, sumXY=0, sumX2=0, wSum=0;
   regWeights.forEach(function(w,i){
-    var wt = i < n/2 ? 1 : 2; // weight recent entries 2x
+    var wt = i < n/2 ? 1 : 2;
     sumX+=i*wt; sumY+=w.weight*wt; sumXY+=i*w.weight*wt; sumX2+=i*i*wt; wSum+=wt;
   });
   var slope = (wSum*sumXY - sumX*sumY) / (wSum*sumX2 - sumX*sumX);
@@ -1644,8 +1746,6 @@ function renderChart(){
   var lastD  = new Date('2026 '+regWeights[n-1].date);
   var daySpan = Math.max(1,(lastD-firstD)/(1000*60*60*24));
   var dailyRate = -(slope * (n-1)) / daySpan;
-
-  // Clamp to realistic range: 0.05 to 0.5 lbs/day
   var clampedRate = Math.min(0.5, Math.max(0.05, dailyRate));
   var currentWeight = weights[weights.length-1].weight;
   var proj4w = Math.max(GOAL_WEIGHT, currentWeight - (clampedRate * 28));
@@ -1752,6 +1852,78 @@ async function deleteWeight(date){
   showSync('syncing','↑ Deleting...');
   var ok = await sbDelete('weights','date',date);
   showSync(ok?'synced':'error', ok?'✓ Deleted':'⚠ Delete failed');
+}
+
+function showAddGameModal() {
+  var modal = document.getElementById('add-game-modal');
+  modal.style.display = 'flex';
+  document.getElementById('game-date-input').value = '';
+}
+
+function hideAddGameModal() {
+  document.getElementById('add-game-modal').style.display = 'none';
+}
+
+// ── LOG PAST SESSION ──────────────────────────────────────────────────────────
+var selectedPastType = 'B';
+
+function showLogPastModal() {
+  var modal = document.getElementById('log-past-modal');
+  modal.style.display = 'flex';
+  var yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+  var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('past-date').value = mo[yesterday.getMonth()]+' '+yesterday.getDate();
+  document.getElementById('past-note').value = '';
+  selectPastType('B');
+}
+
+function hideLogPastModal() {
+  document.getElementById('log-past-modal').style.display = 'none';
+}
+
+function selectPastType(type) {
+  selectedPastType = type;
+  ['A','B','C','S'].forEach(function(t) {
+    var btn = document.getElementById('past-'+t);
+    if (btn) {
+      btn.style.background = t === type ? 'var(--orange)' : 'var(--surface2)';
+      btn.style.color = t === type ? '#fff' : 'var(--text)';
+      btn.style.borderColor = t === type ? 'var(--orange)' : 'var(--border)';
+    }
+  });
+}
+
+async function saveLogPast() {
+  var dateVal = document.getElementById('past-date').value.trim();
+  var note    = document.getElementById('past-note').value.trim();
+  if (!dateVal) { alert('Please enter a date'); return; }
+  var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var parts = dateVal.split(' ');
+  var moIdx = mo.indexOf(parts[0]);
+  var dy = parseInt(parts[1]);
+  var ts = (moIdx >= 0 && dy) ? new Date(2026, moIdx, dy, 12, 0, 0).getTime() : Date.now();
+  var w = selectedPastType === 'A' ? WORKOUTS['A'] : selectedPastType === 'B' ? WORKOUTS['B'] : null;
+  var totalEx = w ? WARMUP.length + w.exercises.length : 1;
+  var doneEx  = w ? w.exercises.map(function(){ return true; }) : [];
+  var doneWu  = w ? WARMUP.map(function(){ return true; }) : [];
+  var s = {
+    id: ts, timestamp: ts, date: dateVal, workout: selectedPastType,
+    warmup: doneWu, completed: doneEx,
+    total: totalEx, doneCount: totalEx, note: note
+  };
+  sessions = [s].concat(sessions.filter(function(x){ return x.date !== dateVal || x.workout !== selectedPastType; }));
+  cacheSessions(sessions);
+  showSync('syncing','↑ Saving past session...');
+  var ok = await sbUpsert('sessions',[{
+    id: s.id, timestamp: s.timestamp, date: s.date, workout: s.workout,
+    warmup: JSON.stringify(s.warmup), completed: JSON.stringify(s.completed),
+    total: s.total, done_count: s.doneCount, note: note
+  }]);
+  showSync(ok?'synced':'error', ok?'✓ Past session saved':'⚠ Saved offline');
+  hideLogPastModal();
+  try { renderSessionHistory(); } catch(e) {}
+  try { renderSchedule(); } catch(e) {}
+  try { renderStreakToday(); } catch(e) {}
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
