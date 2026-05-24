@@ -540,11 +540,11 @@ var WARMUP = [
 
 var WORKOUTS = {
   A:{color:'#C8102E',accent:'#E8384F',exercises:[
-    {name:'DB Flat Chest Press',       sets:'3 sets',     reps:'Set 1: 25 lbs · Sets 2-3: 35 lbs', icon:'🏋️',muscles:'Chest · Triceps · Front Delts',  cue:"Set 1 with 25 lbs as your warm-up — feel the movement, get the chest firing. Sets 2 and 3 go up to 35 lbs. Lie flat on the bench, feet on the floor. Press up explosively, lower slowly (3 counts). At the bottom your elbows should be just below bench level — full stretch on the chest."},
-    {name:'DB Incline Press',          sets:'3 sets',     reps:'Set 1: 25 lbs · Sets 2-3: 35 lbs', icon:'📐',muscles:'Upper Chest · Shoulders',         cue:"Set 1 with 25 lbs to warm up the shoulder joint. Sets 2 and 3 at 35 lbs. Bench set to 30-45°. This targets the upper chest directly — exactly the area you want to tighten. Feel the squeeze at the top, slow descent. Upper chest is what lifts and firms the whole area."},
-    {name:'DB Chest Flyes',            sets:'3 sets',     reps:'Set 1: 25 lbs · Sets 2-3: 35 lbs', icon:'🦅',muscles:'Inner & Outer Chest · Pecs',      cue:"Set 1 at 25 lbs, sets 2-3 at 35 lbs. Flat bench. Arms out wide like you're hugging a barrel — slight bend in the elbows throughout. Lower until you feel a deep chest stretch, then squeeze to bring them back together. This is the shape exercise. Slow and controlled."},
-    {name:'DB One-Arm Row',            sets:'3 sets',     reps:'12 reps / arm @ 35 lbs',icon:'💪',muscles:'Lats · Rhomboids · Biceps',      cue:"Brace your free hand on the bench. Pull the 35 lb dumbbell to your hip — not your shoulder. Keep your back flat and parallel to the floor. Squeeze at the top for 1 second. Chest and back work together — this is your balance movement."},
-    {name:'DB Shoulder Press',         sets:'3 sets',     reps:'Set 1: 25 lbs · Sets 2-3: 35 lbs', icon:'🔝',muscles:'Shoulders · Triceps · Upper Back', cue:"Set 1 at 25 lbs to warm the rotator cuff. Sets 2-3 at 35 lbs. Seated or standing. Dumbbells at ear height, palms facing forward. Press straight up overhead — don't flare the elbows too wide. Lower slowly. Shoulders frame the chest — building them makes everything look tighter and broader."},
+    {name:'DB Flat Chest Press',       sets:'3 sets',     reps:'12 reps @ 35 lbs', icon:'🏋️',muscles:'Chest · Triceps · Front Delts',  cue:"Lie flat on the bench, feet on the floor. Hold 35 lb dumbbells at chest height, elbows at 45°. Press up explosively, lower slowly (3 counts). At the bottom your elbows should be just below bench level — full stretch on the chest. This is your primary chest builder."},
+    {name:'DB Incline Press',          sets:'3 sets',     reps:'10 reps @ 35 lbs', icon:'📐',muscles:'Upper Chest · Shoulders',         cue:"Bench set to 30-45°. This targets the upper chest directly — exactly the area you want to tighten. Same motion as flat press but angled. Feel the squeeze at the top, slow descent. 3 counts down, drive up. Upper chest is what lifts and firms the whole area."},
+    {name:'DB Chest Flyes',            sets:'3 sets',     reps:'12 reps @ 35 lbs', icon:'🦅',muscles:'Inner & Outer Chest · Pecs',      cue:"Flat bench. Arms out wide like you're hugging a barrel — slight bend in the elbows throughout, never straighten fully. Lower until you feel a deep chest stretch, then squeeze the chest to bring them back together. This is the shape exercise. Slow and controlled the whole way."},
+    {name:'DB One-Arm Row',            sets:'3 sets',     reps:'12 reps @ 35 lbs', icon:'💪',muscles:'Lats · Rhomboids · Biceps',      cue:"Brace your free hand on the bench. Pull the 35 lb dumbbell to your hip — not your shoulder. Keep your back flat and parallel to the floor. Squeeze at the top for 1 second. Chest and back work together — this is your balance movement."},
+    {name:'DB Shoulder Press',         sets:'3 sets',     reps:'10 reps @ 35 lbs', icon:'🔝',muscles:'Shoulders · Triceps · Upper Back', cue:"Seated or standing. Dumbbells at ear height, palms facing forward. Press straight up overhead — don't flare the elbows too wide. Lower slowly. Shoulders frame the chest — building them makes everything look tighter and broader."},
     {name:'Power Tower Knee Raises',   sets:'3 sets',     reps:'12 reps',               icon:'⬆️',muscles:'Lower Abs · Hip Flexors · Core', cue:"Arms on the pads, back flat against the pad. Raise knees slowly to 90°, hold 1 second, lower slowly. No swinging — if you're swinging, your core isn't working. This hits the lower abs which ties the whole physique together."},
     {name:'Bicycle Crunches',          sets:'3 sets',     reps:'20 reps',               icon:'🚴',muscles:'Obliques · Upper Abs · Core',    cue:"Lie on your back, hands lightly behind your head. Bring your right elbow to your left knee while extending the right leg, then switch. Slow and controlled — feel the twist and squeeze at each rep. Don't pull your neck, the rotation comes from the torso. This is the highest oblique activation exercise there is."},
     {name:'Russian Twists',            sets:'3 sets',     reps:'15 reps each side',     icon:'🔀',muscles:'Obliques · Rotational Core',      cue:"Sit on the mat, lean back to about 45°, feet slightly raised or flat. Hold a 25 lb dumbbell with both hands. Rotate side to side touching the weight to the floor each time. Slow and controlled — feel the oblique squeeze. This rotational strength is exactly what you need for footy direction changes."},
@@ -942,29 +942,42 @@ function getDynamicPlan(dateStr) {
   if (SOCCER_DATES.indexOf(dateStr) >= 0) {
     return {type:'soccer', label:'⚽ Soccer', detail:'Game night. No training today — save everything for the pitch.'};
   }
-  // Check if it's the day after a soccer date — make it rest
+
   var d = new Date(dateStr+'T12:00:00');
+
+  // Day AFTER a soccer date — rest
   var prevDay = new Date(d); prevDay.setDate(prevDay.getDate()-1);
   var prevKey = dateKey(prevDay);
   if (SOCCER_DATES.indexOf(prevKey) >= 0) {
     return {type:'rest', label:'Rest Day', detail:'Full recovery after last night\'s game. Hot tub, stretch, water.'};
   }
-  // Calculate rotation index from anchor
+
+  // Day BEFORE a soccer date — easy walk
+  var nextDay = new Date(d); nextDay.setDate(nextDay.getDate()+1);
+  var nextKey = dateKey(nextDay);
+  if (SOCCER_DATES.indexOf(nextKey) >= 0) {
+    return {type:'easy', label:'Easy Walk', detail:'20 mins · Incline 3.0 · Speed 4.2 mph. Legs fresh for tonight\'s game.', workout:'C'};
+  }
+
+  // Calculate rotation — skip soccer days, day-before, and day-after from count
   var diffDays = Math.round((d - ROTATION_ANCHOR) / (1000*60*60*24));
-  // Count non-soccer, non-post-soccer days to find rotation position
-  var rotIdx = 0;
   var count = 0;
   for (var i = 0; i <= diffDays; i++) {
     var checkDate = new Date(ROTATION_ANCHOR);
     checkDate.setDate(checkDate.getDate() + i);
     var checkKey = dateKey(checkDate);
-    var prevCheck = new Date(checkDate); prevCheck.setDate(prevCheck.getDate()-1);
-    var prevCheckKey = dateKey(prevCheck);
-    if (SOCCER_DATES.indexOf(checkKey) >= 0 || SOCCER_DATES.indexOf(prevCheckKey) >= 0) continue;
-    if (i === diffDays) { rotIdx = count % ROTATION.length; break; }
+    var checkPrev = new Date(checkDate); checkPrev.setDate(checkPrev.getDate()-1);
+    var checkNext = new Date(checkDate); checkNext.setDate(checkNext.getDate()+1);
+    var checkPrevKey = dateKey(checkPrev);
+    var checkNextKey = dateKey(checkNext);
+    // Skip soccer, day-after-soccer, day-before-soccer from rotation count
+    if (SOCCER_DATES.indexOf(checkKey) >= 0) continue;
+    if (SOCCER_DATES.indexOf(checkPrevKey) >= 0) continue;
+    if (SOCCER_DATES.indexOf(checkNextKey) >= 0) continue;
+    if (i === diffDays) { return ROTATION[count % ROTATION.length]; }
     count++;
   }
-  return ROTATION[rotIdx % ROTATION.length];
+  return ROTATION[0];
 }
 
 function getPlan(dateStr) {
