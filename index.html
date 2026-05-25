@@ -379,6 +379,7 @@
           <button class="cardio-type-btn"             onclick="setCardioType('Fat Burn Walk')"    id="ct-fb">🔥 Fat Burn Walk</button>
           <button class="cardio-type-btn"             onclick="setCardioType('HIIT Intervals')"   id="ct-hi">⚡ HIIT Intervals</button>
           <button class="cardio-type-btn"             onclick="setCardioType('Easy Walk')"        id="ct-ew">😌 Easy Walk</button>
+          <button class="cardio-type-btn"             onclick="setCardioType('5K Training')"      id="ct-5k">🏃 5K Training</button>
         </div>
       </div>
 
@@ -563,11 +564,52 @@ var WORKOUTS = {
   ]}
 };
 
+// ── 5K TRAINING PHASES ────────────────────────────────────────────────────────
+var RUN5K_PHASE = 1;
+try { RUN5K_PHASE = parseInt(localStorage.getItem('saba_5k_phase')||'1'); } catch(e){}
+
+var RUN5K_SESSIONS = 0; // sessions completed in current phase
+try { RUN5K_SESSIONS = parseInt(localStorage.getItem('saba_5k_sessions')||'0'); } catch(e){}
+
+var RUN5K_PHASES = {
+  1: { label:'5K Training — Phase 1', weeks:'Weeks 1-3', detail:'1 min run @ 6.0 mph / 2 min walk × 8 rounds. Building the base.', tip:'1 min @ 6.0 mph then 2 min walk @ 3.5 mph. Repeat 8 rounds. This is your introduction to sustained running. Keep it comfortable — you should be able to talk during the walk portions. Total ~24 mins.', sessions:6 },
+  2: { label:'5K Training — Phase 2', weeks:'Weeks 4-6', detail:'2 min run @ 6.5 mph / 1 min walk × 6 rounds. Building endurance.', tip:'2 min @ 6.5 mph then 1 min walk @ 3.5 mph. Repeat 6 rounds. Your body is adapting — the runs feel longer but you can handle it. Total ~18 mins.', sessions:6 },
+  3: { label:'5K Training — Phase 3', weeks:'Weeks 7-9', detail:'5 min run @ 7.0 mph / 1 min walk × 4 rounds. Building distance.', tip:'5 min @ 7.0 mph then 1 min walk. Repeat 4 rounds. You are now running more than walking. Focus on breathing rhythm. Total ~24 mins.', sessions:6 },
+  4: { label:'5K Training — Phase 4', weeks:'Weeks 10-12', detail:'Continuous 25-30 min run @ 7.0-7.5 mph. 5K ready!', tip:'Run continuously for 25-30 minutes at a comfortable pace. No walk breaks. This is your 5K simulation. You have earned this. Total ~5K distance.', sessions:6 }
+};
+
+function get5KPlan() {
+  var phase = RUN5K_PHASES[RUN5K_PHASE] || RUN5K_PHASES[4];
+  return {
+    type:'5k', label: phase.label, detail: phase.detail,
+    workout:'C', phase: RUN5K_PHASE, tip: phase.tip
+  };
+}
+
+function complete5KSession() {
+  RUN5K_SESSIONS++;
+  var phase = RUN5K_PHASES[RUN5K_PHASE];
+  if (phase && RUN5K_SESSIONS >= phase.sessions && RUN5K_PHASE < 4) {
+    RUN5K_PHASE++;
+    RUN5K_SESSIONS = 0;
+    try { localStorage.setItem('saba_5k_phase', RUN5K_PHASE); } catch(e){}
+    try { localStorage.setItem('saba_5k_sessions', '0'); } catch(e){}
+    // Show phase advancement notification
+    setTimeout(function(){
+      alert('🏃 Phase ' + (RUN5K_PHASE-1) + ' complete! You\'ve advanced to Phase ' + RUN5K_PHASE + '. ' + (RUN5K_PHASES[RUN5K_PHASE]||{}).weeks + '!');
+    }, 500);
+  } else {
+    try { localStorage.setItem('saba_5k_sessions', RUN5K_SESSIONS); } catch(e){}
+  }
+}
+
+// ── CARDIO PRESETS ────────────────────────────────────────────────────────────
 var CARDIO_PRESETS = {
   'Recovery Walk': {duration:25,incline:5.0,speed:4.0,tip:'Easy recovery pace — the goal is blood flow and inflammation flush, not intensity. Hands off the rails. You should be able to hold a full conversation throughout.'},
   'Fat Burn Walk':  {duration:30,incline:7.0,speed:4.7,tip:'Your primary fat burner. Higher incline cranks up glute and hamstring engagement and keeps heart rate in the fat-burning zone without beating up the joints. No holding the rails.'},
   'HIIT Intervals': {duration:25,incline:1.0,speed:12.0,tip:'30 sec sprint @ 12.0 mph, 60 sec walk @ 4.5 mph. Repeat 8–10 rounds. Go hard on every sprint.'},
-  'Easy Walk':      {duration:20,incline:3.0,speed:4.2,tip:'Active recovery or pre-game pace. Keep it comfortable — legs should feel fresh after this, not tired.'}
+  'Easy Walk':      {duration:20,incline:3.0,speed:4.2,tip:'Active recovery or pre-game pace. Keep it comfortable — legs should feel fresh after this, not tired.'},
+  '5K Training':    {duration:24,incline:1.0,speed:6.0,tip:'Phase 1: 1 min @ 6.0 mph then 2 min walk @ 3.5 mph. Repeat 8 rounds. Building your running base toward 5K.'}
 };
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
@@ -923,12 +965,12 @@ var PLAN_STATIC = {
 };
 
 // Dynamic plan generator — continues the A/cardio/B/cardio/A/rest rotation indefinitely
-// Rotation: A, FatBurn, B, FatBurn, A, Rest, Easy (pre-game or repeat)
+// Rotation: A, FatBurn, B, 5K Training, A, Rest, Easy (pre-game or repeat)
 var ROTATION = [
   {type:'A',      label:'Workout A',      detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
   {type:'cardio', label:'Fat Burn Walk',  detail:'30 mins · Incline 7.0 · Speed 4.7 mph. Hands off the rails.', workout:'C'},
   {type:'B',      label:'Workout B',      detail:'HIIT Engine. Sprints at 12.0 mph, KB work, push-ups, cool down.', workout:'B'},
-  {type:'cardio', label:'Fat Burn Walk',  detail:'30 mins · Incline 7.0 · Speed 4.7 mph. Hands off the rails.', workout:'C'},
+  {type:'5k',     label:'5K Training',    detail:'Run/walk intervals building toward your first 5K.', workout:'C'},
   {type:'A',      label:'Workout A',      detail:'Upper Body & Chest — DB Press, Flyes, Rows, Shoulder Press + Incline Walk finisher.', workout:'A'},
   {type:'rest',   label:'Rest Day',       detail:'Full recovery. Hot tub, stretch, water. Let the body consolidate the week.'},
   {type:'easy',   label:'Easy Walk',      detail:'20 mins · Incline 3.0 · Speed 4.2 mph. Active recovery.', workout:'C'},
@@ -1034,9 +1076,8 @@ function saveSkipped() { try { localStorage.setItem('saba_skipped', JSON.stringi
 function skipToday() {
   var now = new Date();
   var todayKey = dateKey(now);
-  var plan = PLAN[todayKey];
+  var plan = getPlan(todayKey);
   if (!plan || plan.type==='rest' || plan.type==='soccer') return;
-  // Store the skipped workout
   skippedDays.push({ from: todayKey, plan: plan });
   saveSkipped();
   renderSchedule();
@@ -1157,8 +1198,9 @@ function renderSchedule() {
   // ── Upcoming games ──
   var ug = document.getElementById('upcoming-games');
   var upcoming = SOCCER_DATES.filter(function(d){ return new Date(d+'T12:00:00') >= now; }).slice(0,3);
+  var ugHtml = '';
   if (upcoming.length) {
-    var ugHtml = '<div class="card-label" style="margin-bottom:10px">Upcoming Games</div>';
+    ugHtml += '<div class="card-label" style="margin-bottom:10px">Upcoming Games</div>';
     upcoming.forEach(function(dk) {
       var gd = new Date(dk+'T12:00:00');
       var plan = getTodayPlan(dk);
@@ -1171,11 +1213,20 @@ function renderSchedule() {
         +'<div class="game-badge">'+daysLeft+'d</div>'
         +'</div>';
     });
-    ug.innerHTML = ugHtml;
-  } else {
-    ug.innerHTML = '';
   }
-}
+  // 5K progress card
+  var phaseData = RUN5K_PHASES[RUN5K_PHASE] || RUN5K_PHASES[4];
+  var pct = Math.round((RUN5K_SESSIONS / phaseData.sessions) * 100);
+  ugHtml += '<div class="card" style="margin-top:12px">'
+    +'<div class="card-label">🏃 5K Training Progress</div>'
+    +'<div style="font-size:13px;font-weight:600;margin-bottom:4px">Phase '+RUN5K_PHASE+' · '+phaseData.weeks+'</div>'
+    +'<div style="font-size:12px;color:var(--dim);margin-bottom:8px">'+phaseData.detail+'</div>'
+    +'<div style="background:var(--surface2);border-radius:4px;height:6px;overflow:hidden">'
+    +'<div style="background:var(--orange);height:100%;width:'+pct+'%;border-radius:4px;transition:width 0.3s"></div>'
+    +'</div>'
+    +'<div style="font-size:11px;color:var(--dim);margin-top:4px;text-align:right">'+RUN5K_SESSIONS+' / '+phaseData.sessions+' sessions</div>'
+    +'</div>';
+  ug.innerHTML = ugHtml;
 function setScreen(name) {
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
@@ -1217,28 +1268,59 @@ function setWorkout(key) {
 
 function setCardioType(type) {
   cardioType = type;
-  var map = {'Recovery Walk':'ct-rw','Fat Burn Walk':'ct-fb','HIIT Intervals':'ct-hi','Easy Walk':'ct-ew'};
-  Object.values(map).forEach(function(id){ document.getElementById(id).classList.remove('active-type'); });
-  document.getElementById(map[type]).classList.add('active-type');
+  var map = {'Recovery Walk':'ct-rw','Fat Burn Walk':'ct-fb','HIIT Intervals':'ct-hi','Easy Walk':'ct-ew','5K Training':'ct-5k'};
+  Object.keys(map).forEach(function(k){ var el=document.getElementById(map[k]); if(el) el.classList.remove('active-type'); });
+  var activeEl = document.getElementById(map[type]);
+  if (activeEl) activeEl.classList.add('active-type');
 
+  // For 5K Training use current phase settings
   var p = CARDIO_PRESETS[type];
-  // Update hidden inputs and stepper displays
-  document.getElementById('c-duration').value = p.duration;
-  document.getElementById('c-incline').value  = p.incline;
-  document.getElementById('c-speed').value    = p.speed;
-  document.getElementById('c-duration-val').textContent = p.duration;
-  document.getElementById('c-incline-val').textContent  = p.incline.toFixed(1);
-  document.getElementById('c-speed-val').textContent    = p.speed.toFixed(1);
-  cardioVals.dur = p.duration; cardioVals.inc = p.incline; cardioVals.spd = p.speed;
+  if (!p) return;
+
+  // If 5K Training — update tip with current phase info
+  if (type === '5K Training') {
+    var phaseData = RUN5K_PHASES[RUN5K_PHASE] || RUN5K_PHASES[1];
+    p = Object.assign({}, p, {
+      tip: '🏃 ' + phaseData.label + ' · ' + phaseData.weeks + '<br><br>' + phaseData.tip
+        + '<br><br>Sessions completed in this phase: ' + RUN5K_SESSIONS + ' / ' + phaseData.sessions
+    });
+    // Update speed based on phase
+    if (RUN5K_PHASE === 1) p.speed = 6.0;
+    else if (RUN5K_PHASE === 2) p.speed = 6.5;
+    else p.speed = 7.0;
+  }
+
+  // Sync cardioVals state
+  cardioVals.dur = p.duration;
+  cardioVals.inc = p.incline;
+  cardioVals.spd = p.speed;
+
+  // Sync hidden inputs
+  var durEl = document.getElementById('c-duration');
+  var incEl = document.getElementById('c-incline');
+  var spdEl = document.getElementById('c-speed');
+  if (durEl) durEl.value = p.duration;
+  if (incEl) incEl.value = p.incline;
+  if (spdEl) spdEl.value = p.speed;
+
+  // Sync display values
+  var durDisp = document.getElementById('c-duration-val');
+  var incDisp = document.getElementById('c-incline-val');
+  var spdDisp = document.getElementById('c-speed-val');
+  if (durDisp) durDisp.textContent = p.duration;
+  if (incDisp) incDisp.textContent = p.incline.toFixed(1);
+  if (spdDisp) spdDisp.textContent = p.speed.toFixed(1);
 
   var tipCard = document.getElementById('cardio-tip-card');
-  tipCard.innerHTML = '<div class="card-label">Coaching Tip</div>'
-    + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;margin-bottom:12px">'
-    + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.incline+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">INCLINE</div></div>'
-    + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.speed+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MPH</div></div>'
-    + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.duration+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MINS</div></div>'
-    + '</div>'
-    + '<div style="font-size:13px;color:var(--dim);line-height:1.6">'+p.tip+'</div>';
+  if (tipCard) {
+    tipCard.innerHTML = '<div class="card-label">Coaching Tip</div>'
+      + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;margin-bottom:12px">'
+      + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.incline+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">INCLINE</div></div>'
+      + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.speed+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MPH</div></div>'
+      + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.duration+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MINS</div></div>'
+      + '</div>'
+      + '<div style="font-size:13px;color:var(--dim);line-height:1.6">'+p.tip+'</div>';
+  }
 
   updateCalcPreview();
 }
@@ -1332,6 +1414,9 @@ async function logCardio() {
   // Re-render schedule so today card updates immediately
   try { renderSchedule(); } catch(e) {}
   try { renderStreakToday(); } catch(e) {}
+
+  // If 5K Training — advance phase tracker
+  if (cardioType === '5K Training') complete5KSession();
 
   // Save to Supabase
   showSync('syncing','↑ Saving cardio...');
