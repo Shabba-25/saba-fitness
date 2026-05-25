@@ -1240,6 +1240,8 @@ function renderSchedule() {
     +'<div style="font-size:11px;color:var(--dim);margin-top:4px;text-align:right">'+RUN5K_SESSIONS+' / '+phaseData.sessions+' sessions</div>'
     +'</div>';
   ug.innerHTML = ugHtml;
+}
+
 function setScreen(name) {
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
