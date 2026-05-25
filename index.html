@@ -1194,8 +1194,10 @@ function renderSchedule() {
       else if (dp && dp.type==='rest') icon = '😴';
       else if (dp && dp.type==='easy') icon = '🚶';
       else if (dp && dp.type==='cardio') icon = '🔥';
+      else if (dp && dp.type==='5k') icon = '🏃';
       else if (dp && dp.type==='A') icon = '💪';
       else if (dp && dp.type==='B') icon = '⚡';
+      else if (dp && dp.type==='5k') icon = '🏃';
       else if (isPast) icon = '—';
 
       wHtml += '<div class="'+cls+'" onclick="showDayModal(\''+dk+'\')">'
