@@ -566,10 +566,12 @@ var WORKOUTS = {
 
 // ── 5K TRAINING PHASES ────────────────────────────────────────────────────────
 var RUN5K_PHASE = 1;
-try { RUN5K_PHASE = parseInt(localStorage.getItem('saba_5k_phase')||'1'); } catch(e){}
+var RUN5K_SESSIONS = 0;
 
-var RUN5K_SESSIONS = 0; // sessions completed in current phase
-try { RUN5K_SESSIONS = parseInt(localStorage.getItem('saba_5k_sessions')||'0'); } catch(e){}
+function load5KProgress() {
+  try { RUN5K_PHASE = parseInt(localStorage.getItem('saba_5k_phase')||'1') || 1; } catch(e){ RUN5K_PHASE = 1; }
+  try { RUN5K_SESSIONS = parseInt(localStorage.getItem('saba_5k_sessions')||'0') || 0; } catch(e){ RUN5K_SESSIONS = 0; }
+}
 
 var RUN5K_PHASES = {
   1: { label:'5K Training — Phase 1', weeks:'Weeks 1-3', detail:'1 min run @ 6.0 mph / 2 min walk × 8 rounds. Building the base.', tip:'1 min @ 6.0 mph then 2 min walk @ 3.5 mph. Repeat 8 rounds. This is your introduction to sustained running. Keep it comfortable — you should be able to talk during the walk portions. Total ~24 mins.', sessions:6 },
@@ -799,6 +801,11 @@ function cacheSessions(d){ try{if(Array.isArray(d))localStorage.setItem(LOCAL_S,
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 async function initApp() {
+  // Load all localStorage-dependent state first
+  try { loadSoccerDates(); } catch(e) {}
+  try { load5KProgress(); } catch(e) {}
+  try { loadSkipped(); } catch(e) {}
+
   var cached = localWeights();
   weights = cached || SEED.map(function(x){return Object.assign({},x);});
   var cachedS = localSessions();
@@ -891,8 +898,12 @@ async function syncFromCloud() {
 // Dynamic soccer dates — loaded from localStorage, can be added by user
 var SOCCER_DATES_FIXED = ['2026-04-19','2026-04-26','2026-05-03','2026-05-10','2026-05-17'];
 var soccerDatesExtra = [];
-try { soccerDatesExtra = JSON.parse(localStorage.getItem('saba_soccer_extra')||'[]'); } catch(e){ soccerDatesExtra=[]; }
-var SOCCER_DATES = SOCCER_DATES_FIXED.concat(soccerDatesExtra);
+var SOCCER_DATES = SOCCER_DATES_FIXED.slice();
+
+function loadSoccerDates() {
+  try { soccerDatesExtra = JSON.parse(localStorage.getItem('saba_soccer_extra')||'[]'); } catch(e){ soccerDatesExtra=[]; }
+  SOCCER_DATES = SOCCER_DATES_FIXED.concat(soccerDatesExtra);
+}
 
 function saveSoccerDates() {
   try { localStorage.setItem('saba_soccer_extra', JSON.stringify(soccerDatesExtra)); } catch(e){}
@@ -1069,7 +1080,9 @@ function fmtDisplayDate(d) {
 // ── SKIP LOGIC ────────────────────────────────────────────────────────────────
 // Stores array of {from: dateKey, workout: planObj} that were skipped
 var skippedDays = [];
-try { skippedDays = JSON.parse(localStorage.getItem('saba_skipped')||'[]'); } catch(e){ skippedDays=[]; }
+function loadSkipped() {
+  try { skippedDays = JSON.parse(localStorage.getItem('saba_skipped')||'[]'); } catch(e){ skippedDays=[]; }
+}
 
 function saveSkipped() { try { localStorage.setItem('saba_skipped', JSON.stringify(skippedDays)); } catch(e){} }
 
