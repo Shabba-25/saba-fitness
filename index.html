@@ -718,6 +718,15 @@ async function sbDelete(table, col, val) {
   } catch(e) { return false; }
 }
 
+async function sbGetSettings() {
+  try {
+    var r = await fetch(SB_URL+'/rest/v1/settings?select=*', {headers: HEADERS});
+    if (!r.ok) return null;
+    var data = await r.json();
+    return Array.isArray(data) ? data : null;
+  } catch(e) { return null; }
+}
+
 async function sbGetSessions() {
   try {
     var r = await fetch(SB_URL+'/rest/v1/sessions?select=*&order=timestamp.desc', {headers: HEADERS});
@@ -893,7 +902,7 @@ async function syncFromCloud() {
 
   // Load game nights from Supabase settings
   try {
-    var cloudSettings = await sbGet('settings');
+    var cloudSettings = await sbGetSettings();
     if (cloudSettings && Array.isArray(cloudSettings)) {
       var soccerSetting = cloudSettings.find(function(r){ return r.key === 'soccer_dates_extra'; });
       if (soccerSetting && soccerSetting.value) {
