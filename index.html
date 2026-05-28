@@ -890,6 +890,24 @@ async function syncFromCloud() {
   showSync('synced', '✓ Synced');
   try { renderSchedule(); } catch(e) {}
   try { renderStreakToday(); } catch(e) {}
+
+  // Load game nights from Supabase settings
+  try {
+    var cloudSettings = await sbGet('settings');
+    if (cloudSettings && Array.isArray(cloudSettings)) {
+      var soccerSetting = cloudSettings.find(function(r){ return r.key === 'soccer_dates_extra'; });
+      if (soccerSetting && soccerSetting.value) {
+        var cloudDates = JSON.parse(soccerSetting.value);
+        if (Array.isArray(cloudDates) && cloudDates.length > 0) {
+          soccerDatesExtra = cloudDates;
+          try { localStorage.setItem('saba_soccer_extra', JSON.stringify(soccerDatesExtra)); } catch(e){}
+          SOCCER_DATES = SOCCER_DATES_FIXED.concat(soccerDatesExtra);
+          try { renderSchedule(); } catch(e) {}
+        }
+      }
+    }
+  } catch(e) {}
+
   // Retry any failed saves now that we have connectivity
   await retryPending();
 }
@@ -905,32 +923,41 @@ function loadSoccerDates() {
   SOCCER_DATES = SOCCER_DATES_FIXED.concat(soccerDatesExtra);
 }
 
-function saveSoccerDates() {
+async function saveSoccerDates() {
+  // Save to localStorage first (fast)
   try { localStorage.setItem('saba_soccer_extra', JSON.stringify(soccerDatesExtra)); } catch(e){}
   SOCCER_DATES = SOCCER_DATES_FIXED.concat(soccerDatesExtra);
+  // Also persist to Supabase so it survives app restarts
+  try {
+    await sbUpsert('settings', [{key:'soccer_dates_extra', value: JSON.stringify(soccerDatesExtra)}]);
+  } catch(e) {}
+  renderSchedule();
 }
 
-function addGameNight(dateStr) {
+async function addGameNight(dateStr) {
   if (!dateStr) return;
-  // Convert "May 25" style to "2026-05-25"
-  var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  // Accept both "Jun 2" and "June 2" style
+  var moFull = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var moAbbr = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   var parts = dateStr.trim().split(' ');
-  var moIdx = mo.indexOf(parts[0]);
+  if (parts.length < 2) { alert('Please enter date as e.g. Jun 2'); return; }
+  var moStr = parts[0];
+  var moIdx = moAbbr.indexOf(moStr);
+  if (moIdx < 0) moIdx = moFull.findIndex(function(m){ return m.toLowerCase() === moStr.toLowerCase(); });
+  if (moIdx < 0) moIdx = moAbbr.findIndex(function(m){ return m.toLowerCase() === moStr.toLowerCase(); });
   var dy = parseInt(parts[1]);
-  if (moIdx < 0 || isNaN(dy)) { alert('Please enter date as e.g. May 25'); return; }
+  if (moIdx < 0 || isNaN(dy)) { alert('Please enter date as e.g. Jun 2'); return; }
   var key = '2026-'+(moIdx+1<10?'0':'')+(moIdx+1)+'-'+(dy<10?'0':'')+dy;
   if (SOCCER_DATES.indexOf(key) < 0) {
     soccerDatesExtra.push(key);
-    saveSoccerDates();
+    await saveSoccerDates();
   }
   hideAddGameModal();
-  renderSchedule();
 }
 
-function removeGameNight(dateStr) {
+async function removeGameNight(dateStr) {
   soccerDatesExtra = soccerDatesExtra.filter(function(d){ return d !== dateStr; });
-  saveSoccerDates();
-  renderSchedule();
+  await saveSoccerDates();
 }
 
 // Static plan for historical dates
@@ -987,8 +1014,8 @@ var ROTATION = [
   {type:'easy',   label:'Easy Walk',      detail:'20 mins · Incline 3.0 · Speed 4.2 mph. Active recovery.', workout:'C'},
 ];
 
-// Rotation anchor — May 19 2026 = index 0 (Workout A)
-var ROTATION_ANCHOR = new Date('2026-05-19T12:00:00');
+// Rotation anchor — May 28 2026 = index 3 (5K Training) so Thu May 28 shows 5K
+var ROTATION_ANCHOR = new Date('2026-05-25T12:00:00'); // Mon May 25 = index 0 (Workout A)
 
 function getDynamicPlan(dateStr) {
   // Check if it's a soccer date
@@ -1012,7 +1039,7 @@ function getDynamicPlan(dateStr) {
     return {type:'easy', label:'Easy Walk', detail:'20 mins · Incline 3.0 · Speed 4.2 mph. Legs fresh for tonight\'s game.', workout:'C'};
   }
 
-  // Calculate rotation — skip soccer days, day-before, and day-after from count
+  // Calculate rotation — skip soccer, day-before, day-after from count
   var diffDays = Math.round((d - ROTATION_ANCHOR) / (1000*60*60*24));
   var count = 0;
   for (var i = 0; i <= diffDays; i++) {
@@ -1023,7 +1050,6 @@ function getDynamicPlan(dateStr) {
     var checkNext = new Date(checkDate); checkNext.setDate(checkNext.getDate()+1);
     var checkPrevKey = dateKey(checkPrev);
     var checkNextKey = dateKey(checkNext);
-    // Skip soccer, day-after-soccer, day-before-soccer from rotation count
     if (SOCCER_DATES.indexOf(checkKey) >= 0) continue;
     if (SOCCER_DATES.indexOf(checkPrevKey) >= 0) continue;
     if (SOCCER_DATES.indexOf(checkNextKey) >= 0) continue;
