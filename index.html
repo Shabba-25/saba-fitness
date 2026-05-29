@@ -1485,7 +1485,8 @@ function renderDashboard() {
   var cardioMonth       = sessions.filter(function(s){ return s.workout==='C' && isThisMonth(s); }).length;
   var fiveKMonth        = sessions.filter(function(s){ return s.workout==='C' && s.cardioType==='5K Training' && isThisMonth(s); }).length;
   var totalMonth        = sessions.filter(function(s){ return isThisMonth(s); }).length;
-  var totalGames = soccerSessions.length;
+  var soccerSessions    = sessions.filter(function(s){ return s.workout==='S'; });
+  var totalGames        = soccerSessions.length;
 
   // ── Week strip ──
   var dayNames = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
