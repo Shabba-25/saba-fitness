@@ -60,24 +60,24 @@
     .nav-btn { flex:1; padding:12px 0; background:none; border:none; border-top:2px solid transparent; transition:all 0.2s; }
     .nav-btn.active { border-top-color:var(--orange); }
     .nav-icon  { font-size:20px; display:block; }
-    .nav-label { font-size:9px; letter-spacing:2px; color:var(--dim); text-transform:uppercase; margin-top:3px; display:block; }
+    .nav-label { font-size:11px; letter-spacing:2px; color:var(--dim); text-transform:uppercase; margin-top:3px; display:block; }
     .nav-btn.active .nav-label { color:#E8384F; }
 
     .screen { display:none; padding:20px 20px 100px; }
     .screen.active { display:block; }
 
     .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 18px; margin-bottom:14px; }
-    .card-label    { font-size:10px; letter-spacing:3px; color:var(--dim); text-transform:uppercase; margin-bottom:12px; }
-    .section-label { font-size:10px; letter-spacing:3px; color:var(--dim); text-transform:uppercase; margin-bottom:10px; padding:0 2px; }
+    .card-label { font-size:13px; letter-spacing:3px; color:var(--dim); text-transform:uppercase; margin-bottom:12px; }
+    .section-label { font-size:12px; letter-spacing:3px; color:var(--dim); text-transform:uppercase; margin-bottom:10px; padding:0 2px; }
 
     .stats-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:16px; }
     .stat-card  { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 8px; text-align:center; }
-    .stat-label { font-size:9px; color:var(--dim); letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
-    .stat-value { font-family:'Nunito',sans-serif; font-size:30px; font-weight:800; line-height:1; letter-spacing:-1px; }
+    .stat-label { font-size:11px; color:var(--dim); letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
+    .stat-value { font-family:'Nunito',sans-serif; font-size:36px; font-weight:900; line-height:1; letter-spacing:-1px; }
     .stat-unit  { font-size:10px; color:var(--dim); margin-left:2px; }
 
     .progress-wrap  { margin-bottom:18px; }
-    .progress-meta  { display:flex; justify-content:space-between; font-size:10px; color:var(--dim); letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
+    .progress-meta { display:flex; justify-content:space-between; font-size:13px; color:var(--dim); letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
     .p-accent { color:var(--orange); }
     .progress-track { height:6px; background:var(--surface2); border-radius:4px; overflow:hidden; }
     .progress-fill  { height:100%; background:linear-gradient(90deg,var(--orange),var(--orange-light)); border-radius:4px; transition:width 0.5s ease; }
@@ -85,19 +85,19 @@
     #chart-svg { display:block; width:100%; }
 
     .form-grid   { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
-    .field-label { font-size:10px; color:var(--dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:5px; }
-    .field-input { width:100%; padding:10px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:15px; transition:border-color 0.2s; }
+    .field-label { font-size:12px; color:var(--dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:5px; }
+    .field-input { width:100%; padding:12px 14px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:16px; transition:border-color 0.2s; }
     .field-input:focus { border-color:var(--orange); }
     .full-width  { grid-column:1/-1; }
-    .btn-primary { width:100%; padding:13px; border-radius:8px; border:none; background:var(--orange); color:#fff; font-size:15px; font-weight:700; letter-spacing:1px; transition:all 0.3s; }
+    .btn-primary { width:100%; padding:15px; border-radius:12px; border:none; background:var(--orange); color:#fff; font-size:17px; font-weight:700; letter-spacing:1px; transition:all 0.3s; }
     .btn-primary.saved { background:#2a4a22; color:#2a6a2a; }
 
     .history-row    { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--surface2); }
     .history-row:last-child { border-bottom:none; }
-    .history-date   { font-size:14px; color:#ccc; }
-    .history-note   { font-size:11px; color:var(--dim); margin-top:2px; }
-    .history-weight { font-family:'Nunito',sans-serif; font-size:26px; font-weight:800; letter-spacing:-1px; }
-    .history-diff   { font-size:11px; text-align:right; }
+    .history-date { font-size:16px; font-weight:600; color:#ccc; }
+    .history-note { font-size:13px; color:var(--dim); margin-top:2px; }
+    .history-weight { font-family:'Nunito',sans-serif; font-size:30px; font-weight:900; letter-spacing:-1px; }
+    .history-diff { font-size:13px; font-weight:700; text-align:right; }
     .diff-down { color:var(--green); }
     .diff-up   { color:#C8102E; }
     .btn-delete { background:none; border:none; color:#555; font-size:16px; padding:4px 8px; }
@@ -129,8 +129,8 @@
 
     /* ── RUNNER — canvas bouncing animation, see initRunner() ── */
     .today-card { background:linear-gradient(135deg,#f0ede8,#e8e4de); border:1px solid var(--orange); border-radius:16px; padding:20px; margin-bottom:14px; }
-    .today-label { font-size:10px; letter-spacing:4px; color:var(--orange); text-transform:uppercase; margin-bottom:6px; }
-    .today-date  { font-size:13px; color:var(--dim); margin-bottom:12px; }
+    .today-label { font-size:13px; letter-spacing:4px; color:var(--orange); text-transform:uppercase; margin-bottom:6px; }
+    .today-date { font-size:15px; color:var(--dim); margin-bottom:12px; }
     .today-title { font-family:'Nunito',sans-serif; font-size:34px; font-weight:900; letter-spacing:-1px; line-height:1; margin-bottom:8px; }
     .today-sub   { font-size:15px; font-weight:500; color:var(--muted); line-height:1.6; margin-bottom:16px; }
     .today-btn   { width:100%; padding:15px; border-radius:12px; border:none; background:var(--orange); color:#fff; font-family:'Nunito',sans-serif; font-size:17px; font-weight:800; cursor:pointer; }
