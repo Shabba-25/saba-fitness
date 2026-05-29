@@ -230,6 +230,60 @@
     .wh-skip     { font-size:13px; color:#444; }
     .wh-empty    { text-align:center; padding:40px 20px; color:var(--dim); font-size:15px; line-height:1.6; }
 
+    /* ── DASHBOARD ── */
+    .db-hero { background:linear-gradient(135deg,#C8102E,#a00d25); border-radius:18px; padding:18px; margin-bottom:12px; position:relative; overflow:hidden; }
+    .db-hero::before { content:''; position:absolute; top:-20px; right:-20px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.07); }
+    .db-hero-label { font-size:10px; color:rgba(255,255,255,0.6); letter-spacing:2px; margin-bottom:4px; }
+    .db-hero-val { font-family:'Bebas Neue',sans-serif; font-size:56px; color:#fff; line-height:1; }
+    .db-hero-sub { font-size:12px; color:rgba(255,255,255,0.7); margin-bottom:14px; }
+    .db-prog { background:rgba(255,255,255,0.25); height:5px; border-radius:3px; overflow:hidden; }
+    .db-prog-fill { height:100%; background:#fff; border-radius:3px; transition:width 0.6s ease; }
+    .db-prog-lbls { display:flex; justify-content:space-between; margin-top:5px; }
+    .db-prog-lbls span { font-size:10px; color:rgba(255,255,255,0.5); }
+    .db-counter-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px; }
+    .db-counter { background:var(--surface); border-radius:14px; padding:12px; text-align:center; border:1px solid var(--border); }
+    .db-counter-val { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--orange); }
+    .db-counter-lbl { font-size:9px; color:var(--dim); letter-spacing:1px; margin-top:2px; }
+    .db-card { background:var(--surface); border-radius:16px; padding:16px; margin-bottom:12px; border:1px solid var(--border); }
+    .db-card-label { font-size:10px; color:var(--dim); letter-spacing:2px; margin-bottom:12px; }
+    .db-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+    .db-mc { background:var(--surface); border-radius:14px; padding:14px; border:1px solid var(--border); }
+    .db-mc-icon { font-size:20px; margin-bottom:6px; }
+    .db-mc-val { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--text); }
+    .db-mc-lbl { font-size:9px; color:var(--dim); letter-spacing:1px; }
+    .db-mc-sub { font-size:10px; margin-top:3px; }
+    .db-mc.db-warn .db-mc-val { color:#e87020; }
+    .db-mc.db-warn .db-mc-sub { color:#e87020; }
+    .db-mc.db-good .db-mc-val { color:var(--green); }
+    .db-mc.db-good .db-mc-sub { color:var(--green); }
+    .db-readiness { background:var(--surface); border-radius:16px; padding:16px; display:flex; align-items:center; gap:14px; margin-bottom:12px; border:1px solid var(--border); }
+    .db-r-score { font-family:'Bebas Neue',sans-serif; font-size:52px; color:var(--orange); line-height:1; flex-shrink:0; }
+    .db-r-lbl { font-size:10px; color:var(--dim); letter-spacing:2px; margin-bottom:3px; }
+    .db-r-msg { font-size:12px; color:var(--text); margin-bottom:10px; }
+    .db-brow { display:flex; align-items:center; gap:8px; margin-bottom:5px; }
+    .db-blbl { font-size:9px; color:var(--dim); width:54px; }
+    .db-btrk { flex:1; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+    .db-bfil { height:100%; border-radius:2px; }
+    .db-week-days { display:flex; gap:6px; margin-top:10px; }
+    .db-wd { flex:1; aspect-ratio:1; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; background:var(--surface2); }
+    .db-wd-name { font-size:8px; color:var(--dim); }
+    .db-wd-icon { font-size:11px; }
+    .db-insight { background:rgba(200,16,46,0.08); border:1px solid rgba(200,16,46,0.2); border-radius:12px; padding:12px 14px; margin-bottom:8px; }
+    .db-insight-title { font-size:12px; color:var(--orange); font-weight:600; margin-bottom:3px; }
+    .db-insight-body { font-size:12px; color:var(--muted); line-height:1.5; }
+    .db-insight.good { background:rgba(76,175,80,0.08); border-color:rgba(76,175,80,0.2); }
+    .db-insight.good .db-insight-title { color:var(--green); }
+    .db-insight.info { background:rgba(66,133,244,0.08); border-color:rgba(66,133,244,0.2); }
+    .db-insight.info .db-insight-title { color:#4285f4; }
+    .db-fi { display:flex; align-items:center; gap:12px; padding:9px 0; border-bottom:1px solid var(--border); }
+    .db-fi:last-child { border:none; padding-bottom:0; }
+    .db-fi-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0; background:var(--surface2); }
+    .db-fi-title { font-size:13px; color:var(--text); }
+    .db-fi-sub { font-size:11px; color:var(--dim); margin-top:1px; }
+    .db-fi-val { font-family:'Bebas Neue',sans-serif; font-size:15px; color:var(--orange); }
+    .db-sbars { display:flex; gap:4px; align-items:flex-end; height:48px; margin-top:10px; }
+    .db-sbar { flex:1; border-radius:3px 3px 0 0; }
+
     #install-banner { display:none; position:fixed; bottom:70px; left:16px; right:16px; z-index:200; background:var(--surface); border:1px solid var(--orange); border-radius:12px; padding:14px 16px; align-items:center; gap:12px; }
     #install-banner.show { display:flex; }
     #install-banner p { font-size:13px; color:#ccc; flex:1; line-height:1.4; }
@@ -282,7 +336,7 @@
   </div>
 
   <!-- SCHEDULE SCREEN -->
-  <div id="screen-schedule" class="screen active">
+  <div id="screen-schedule" class="screen">
     <div id="today-card"></div>
     <div id="streak-today"></div>
     <div id="week-calendar"></div>
@@ -390,7 +444,10 @@
             <div class="field-label">Duration</div>
             <div class="stepper-row">
               <button class="stepper-btn" onclick="adjCardio('dur',-5)">−</button>
-              <div class="stepper-val" id="c-duration-val">30</div>
+              <input type="number" class="stepper-val" id="c-duration-val" value="30" min="5" max="120"
+                style="border:none;background:transparent;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:22px;width:60px;color:var(--text)"
+                oninput="cardioVals.dur=parseFloat(this.value)||0;document.getElementById('c-duration').value=this.value;updateCalcPreview()"
+                onblur="this.value=Math.max(5,Math.min(120,parseFloat(this.value)||30))"/>
               <button class="stepper-btn" onclick="adjCardio('dur',5)">+</button>
             </div>
             <div class="stepper-unit">mins</div>
@@ -399,7 +456,10 @@
             <div class="field-label">Incline</div>
             <div class="stepper-row">
               <button class="stepper-btn" onclick="adjCardio('inc',-0.5)">−</button>
-              <div class="stepper-val" id="c-incline-val">6.0</div>
+              <input type="number" class="stepper-val" id="c-incline-val" value="6.0" min="0" max="15" step="0.5"
+                style="border:none;background:transparent;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:22px;width:60px;color:var(--text)"
+                oninput="cardioVals.inc=parseFloat(this.value)||0;document.getElementById('c-incline').value=this.value;updateCalcPreview()"
+                onblur="this.value=Math.max(0,Math.min(15,parseFloat(this.value)||0)).toFixed(1)"/>
               <button class="stepper-btn" onclick="adjCardio('inc',0.5)">+</button>
             </div>
             <div class="stepper-unit">%</div>
@@ -408,7 +468,10 @@
             <div class="field-label">Speed <span id="speed-unit-toggle" onclick="toggleSpeedUnit()" style="cursor:pointer;background:var(--orange);color:#fff;padding:1px 6px;border-radius:4px;font-size:9px;letter-spacing:1px;margin-left:4px" id="spd-unit-badge">MPH</span></div>
             <div class="stepper-row">
               <button class="stepper-btn" onclick="adjCardio('spd',-0.1)">−</button>
-              <div class="stepper-val" id="c-speed-val">3.5</div>
+              <input type="number" class="stepper-val" id="c-speed-val" value="3.5" min="1" max="15" step="0.1"
+                style="border:none;background:transparent;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:22px;width:60px;color:var(--text)"
+                oninput="cardioVals.spd=parseFloat(this.value)||0;document.getElementById('c-speed').value=this.value;updateCalcPreview()"
+                onblur="this.value=Math.max(1,Math.min(15,parseFloat(this.value)||1)).toFixed(1)"/>
               <button class="stepper-btn" onclick="adjCardio('spd',0.1)">+</button>
             </div>
             <div class="stepper-unit" id="spd-unit-label">mph</div>
@@ -491,11 +554,32 @@
     </div>
   </div>
 
+  <!-- DASHBOARD SCREEN -->
+  <div id="screen-dashboard" class="screen active">
+    <div id="dashboard-content" style="padding:16px"></div>
+  </div>
+
+  <!-- DAILY WEIGHT PROMPT MODAL -->
+  <div id="weight-prompt-modal" style="display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;padding:24px">
+    <div style="background:var(--surface);border-radius:24px;padding:28px 24px;width:100%;max-width:360px;text-align:center">
+      <div style="font-size:32px;margin-bottom:12px">⚖️</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;margin-bottom:6px">Morning Weigh-In</div>
+      <div style="font-size:13px;color:var(--dim);margin-bottom:20px;line-height:1.5">Log today's weight to keep your dashboard accurate and track your progress toward 180 lbs.</div>
+      <input id="weight-prompt-input" type="number" step="0.1" min="150" max="250"
+        placeholder="e.g. 187.3"
+        style="width:100%;padding:14px;border-radius:12px;border:2px solid var(--border);background:var(--surface2);font-size:22px;text-align:center;font-family:'Bebas Neue',sans-serif;color:var(--text);margin-bottom:14px"
+        onkeydown="if(event.key==='Enter')saveWeightPrompt()"/>
+      <button onclick="saveWeightPrompt()" class="btn-primary" style="margin-bottom:10px">Log Weight</button>
+      <button onclick="skipWeightPrompt()" style="width:100%;padding:12px;border-radius:10px;border:none;background:transparent;color:var(--dim);font-size:13px;cursor:pointer;letter-spacing:1px">Skip for later →</button>
+    </div>
+  </div>
+
   <nav id="bottom-nav">
-    <button class="nav-btn active" onclick="setScreen('schedule')"><span class="nav-icon">📅</span><span class="nav-label">Today</span></button>
+    <button class="nav-btn"        onclick="setScreen('schedule')"><span class="nav-icon">📅</span><span class="nav-label">Today</span></button>
     <button class="nav-btn"        onclick="setScreen('track')"><span class="nav-icon">⚖️</span><span class="nav-label">Weight</span></button>
     <button class="nav-btn"        onclick="setScreen('workout')"><span class="nav-icon">💪</span><span class="nav-label">Workout</span></button>
     <button class="nav-btn"        onclick="setScreen('history')"><span class="nav-icon">📋</span><span class="nav-label">History</span></button>
+    <button class="nav-btn active" onclick="setScreen('dashboard')"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></button>
   </nav>
 </div>
 
@@ -565,19 +649,19 @@ var WORKOUTS = {
 };
 
 // ── 5K TRAINING PHASES ────────────────────────────────────────────────────────
-var RUN5K_PHASE = 1;
+var RUN5K_PHASE = 3;
 var RUN5K_SESSIONS = 0;
 
 function load5KProgress() {
-  try { RUN5K_PHASE = parseInt(localStorage.getItem('saba_5k_phase')||'1') || 1; } catch(e){ RUN5K_PHASE = 1; }
+  try { RUN5K_PHASE = parseInt(localStorage.getItem('saba_5k_phase')||'3') || 3; } catch(e){ RUN5K_PHASE = 3; }
   try { RUN5K_SESSIONS = parseInt(localStorage.getItem('saba_5k_sessions')||'0') || 0; } catch(e){ RUN5K_SESSIONS = 0; }
 }
 
 var RUN5K_PHASES = {
-  1: { label:'5K Training — Phase 1', weeks:'Weeks 1-3', detail:'1 min run @ 6.0 mph / 2 min walk × 8 rounds. Building the base.', tip:'1 min @ 6.0 mph then 2 min walk @ 3.5 mph. Repeat 8 rounds. This is your introduction to sustained running. Keep it comfortable — you should be able to talk during the walk portions. Total ~24 mins.', sessions:6 },
-  2: { label:'5K Training — Phase 2', weeks:'Weeks 4-6', detail:'2 min run @ 6.5 mph / 1 min walk × 6 rounds. Building endurance.', tip:'2 min @ 6.5 mph then 1 min walk @ 3.5 mph. Repeat 6 rounds. Your body is adapting — the runs feel longer but you can handle it. Total ~18 mins.', sessions:6 },
-  3: { label:'5K Training — Phase 3', weeks:'Weeks 7-9', detail:'5 min run @ 7.0 mph / 1 min walk × 4 rounds. Building distance.', tip:'5 min @ 7.0 mph then 1 min walk. Repeat 4 rounds. You are now running more than walking. Focus on breathing rhythm. Total ~24 mins.', sessions:6 },
-  4: { label:'5K Training — Phase 4', weeks:'Weeks 10-12', detail:'Continuous 25-30 min run @ 7.0-7.5 mph. 5K ready!', tip:'Run continuously for 25-30 minutes at a comfortable pace. No walk breaks. This is your 5K simulation. You have earned this. Total ~5K distance.', sessions:6 }
+  1: { label:'5K Training — Phase 1', weeks:'Weeks 1-3', detail:'1 min run @ 6.5 mph / 2 min walk × 8-12 rounds. Building the base.', tip:'1 min @ 6.5 mph then 2 min walk @ 4.0 mph. Repeat 8-12 rounds. Keep it comfortable — you should be able to talk during the walk portions.', sessions:6 },
+  2: { label:'5K Training — Phase 2', weeks:'Weeks 4-6', detail:'2 min run @ 6.5 mph / 1 min walk × 6 rounds. Building endurance.', tip:'2 min @ 6.5 mph then 1 min walk @ 3.5 mph. Repeat 6 rounds. Your body is adapting — the runs feel longer but you can handle it.', sessions:6 },
+  3: { label:'5K Training — Phase 3', weeks:'Weeks 7-9', detail:'5 min run @ 7.0 mph / 1 min walk × 4 rounds. Building distance.', tip:'5 min @ 7.0 mph then 1 min walk @ 3.5 mph. Repeat 4 rounds. You are now running more than walking. Focus on breathing rhythm — in through nose, out through mouth. Total ~24 mins. This is serious running territory.', sessions:6 },
+  4: { label:'5K Training — Phase 4', weeks:'Weeks 10-12', detail:'Continuous 25-30 min run @ 7.0-7.5 mph. 5K ready!', tip:'Run continuously for 25-30 minutes at a comfortable pace. No walk breaks. This is your 5K simulation. You have earned this.', sessions:6 }
 };
 
 function get5KPlan() {
@@ -611,7 +695,7 @@ var CARDIO_PRESETS = {
   'Fat Burn Walk':  {duration:30,incline:7.0,speed:4.7,tip:'Your primary fat burner. Higher incline cranks up glute and hamstring engagement and keeps heart rate in the fat-burning zone without beating up the joints. No holding the rails.'},
   'HIIT Intervals': {duration:25,incline:1.0,speed:12.0,tip:'30 sec sprint @ 12.0 mph, 60 sec walk @ 4.5 mph. Repeat 8–10 rounds. Go hard on every sprint.'},
   'Easy Walk':      {duration:20,incline:3.0,speed:4.2,tip:'Active recovery or pre-game pace. Keep it comfortable — legs should feel fresh after this, not tired.'},
-  '5K Training':    {duration:24,incline:1.0,speed:6.0,tip:'Phase 1: 1 min @ 6.0 mph then 2 min walk @ 3.5 mph. Repeat 8 rounds. Building your running base toward 5K.'}
+  '5K Training':    {duration:24,incline:1.0,speed:7.0,tip:'Phase 3: 5 min @ 7.0 mph then 1 min walk @ 3.5 mph. Repeat 4 rounds. Focus on breathing rhythm — in through nose, out through mouth. Total ~24 mins.'}
 };
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
@@ -822,6 +906,7 @@ async function initApp() {
 
   // Defer renders until after browser paint so DOM elements are accessible
   requestAnimationFrame(function() {
+    try { setScreen('dashboard'); } catch(e) {}
     try { renderSchedule(); } catch(e) {}
     try { renderTracker(); } catch(e) {}
     try { renderWorkout(); } catch(e) {}
@@ -830,6 +915,8 @@ async function initApp() {
     if (dateEl) dateEl.value = todayStr();
     var cDateEl = document.getElementById('c-date');
     if (cDateEl) cDateEl.value = todayStr();
+    // Check if we need to prompt for today's weight
+    setTimeout(checkWeightPrompt, 800);
   });
 
   showSync('syncing', '↑↓ Syncing...');
@@ -1284,16 +1371,329 @@ function renderSchedule() {
 function setScreen(name) {
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
-  document.getElementById('screen-'+name).classList.add('active');
-  document.querySelectorAll('.nav-btn')[{schedule:0,track:1,workout:2,history:3}[name]].classList.add('active');
-  var wc = WORKOUTS[currentWorkout].color;
-  // header stays fixed as SABA'S FITNESS TRACKER
+  var screenEl = document.getElementById('screen-'+name);
+  if (screenEl) screenEl.classList.add('active');
+  var navIdx = {schedule:0,track:1,workout:2,history:3,dashboard:4}[name];
+  var navBtns = document.querySelectorAll('.nav-btn');
+  if (navBtns[navIdx] !== undefined) navBtns[navIdx].classList.add('active');
   if (name==='history') renderSessionHistory();
   if (name==='schedule') renderSchedule();
+  if (name==='dashboard') renderDashboard();
   if (name==='track') {
     var dateEl = document.getElementById('inp-date');
     if (dateEl && !dateEl.value) dateEl.value = todayStr();
   }
+}
+
+// ── DAILY WEIGHT PROMPT ───────────────────────────────────────────────────────
+function checkWeightPrompt() {
+  var today = todayStr();
+  // Check if already logged today
+  var alreadyLogged = weights.some(function(w){ return w.date === today; });
+  if (alreadyLogged) return;
+  // Check if skipped today
+  var skippedToday = '';
+  try { skippedToday = localStorage.getItem('saba_weight_skip_date') || ''; } catch(e){}
+  if (skippedToday === today) return;
+  // Show prompt
+  var modal = document.getElementById('weight-prompt-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+    setTimeout(function(){
+      var inp = document.getElementById('weight-prompt-input');
+      if (inp) inp.focus();
+    }, 300);
+  }
+}
+
+async function saveWeightPrompt() {
+  var inp = document.getElementById('weight-prompt-input');
+  var val = parseFloat(inp ? inp.value : '');
+  if (!val || isNaN(val) || val < 100 || val > 300) {
+    inp.style.borderColor = '#e84a4a';
+    setTimeout(function(){ inp.style.borderColor = 'var(--border)'; }, 1000);
+    return;
+  }
+  // Close modal
+  document.getElementById('weight-prompt-modal').style.display = 'none';
+  // Log the weight using existing logWeight logic
+  var today = todayStr();
+  var existing = weights.findIndex(function(w){ return w.date === today; });
+  var entry = { date: today, weight: val, note: 'Morning weigh-in' };
+  if (existing >= 0) weights[existing] = entry;
+  else weights.push(entry);
+  weights.sort(function(a,b){ return new Date('2026 '+a.date) - new Date('2026 '+b.date); });
+  cacheWeights(weights);
+  // Check for new low
+  var prevLow = Math.min.apply(null, weights.slice(0,-1).map(function(w){ return w.weight; }));
+  if (val < prevLow) {
+    setTimeout(function(){ showNewLow(val); }, 400);
+  }
+  try { renderTracker(); } catch(e) {}
+  try { renderDashboard(); } catch(e) {}
+  // Save to Supabase
+  showSync('syncing','↑ Saving weight...');
+  var ok = await sbUpsert('weights',[{date:today,weight:val,note:'Morning weigh-in'}]);
+  showSync(ok?'synced':'error', ok?'✓ Weight saved':'⚠ Saved offline');
+}
+
+function skipWeightPrompt() {
+  document.getElementById('weight-prompt-modal').style.display = 'none';
+  try { localStorage.setItem('saba_weight_skip_date', todayStr()); } catch(e){}
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────────────────
+function renderDashboard() {
+  var el = document.getElementById('dashboard-content');
+  if (!el) return;
+
+  // ── Core stats ──
+  var START_DATE = new Date('2026-03-10T12:00:00');
+  var GOAL_DATE  = new Date(START_DATE.getTime() + 90*24*60*60*1000); // 90 day goal
+  var now        = new Date();
+  var daysSince  = Math.floor((now - START_DATE) / (1000*60*60*24));
+  var daysLeft   = Math.max(0, 90 - daysSince);
+  var daysToGoal = Math.ceil((GOAL_DATE - now) / (1000*60*60*24));
+
+  var currentW   = weights.length ? weights[weights.length-1].weight : 200;
+  var lostLbs    = (200 - currentW).toFixed(1);
+  var toGoal     = (currentW - 180).toFixed(1);
+  var pct        = Math.min(100, Math.round(((200 - currentW) / 20) * 100));
+
+  // ── Weekly sessions ──
+  var weekSessions = sessions.filter(function(s){ return (Date.now()-parseInt(s.timestamp||0)) < 7*86400000; });
+  var thisWeekCount = weekSessions.length;
+  var totalSessions = sessions.length;
+
+  // ── Activity breakdown counters — this month vs all time ──
+  var thisMonth = new Date().getMonth();
+  var thisYear  = new Date().getFullYear();
+  function isThisMonth(s) {
+    var ts = parseInt(s.timestamp)||0;
+    var d = new Date(ts);
+    return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
+  }
+  var workoutASessions  = sessions.filter(function(s){ return s.workout==='A'; }).length;
+  var workoutBSessions  = sessions.filter(function(s){ return s.workout==='B'; }).length;
+  var cardioSessions    = sessions.filter(function(s){ return s.workout==='C'; }).length;
+  var fiveKCount        = sessions.filter(function(s){ return s.workout==='C' && s.cardioType==='5K Training'; }).length;
+  var workoutAMonth     = sessions.filter(function(s){ return s.workout==='A' && isThisMonth(s); }).length;
+  var workoutBMonth     = sessions.filter(function(s){ return s.workout==='B' && isThisMonth(s); }).length;
+  var soccerMonth       = sessions.filter(function(s){ return s.workout==='S' && isThisMonth(s); }).length;
+  var cardioMonth       = sessions.filter(function(s){ return s.workout==='C' && isThisMonth(s); }).length;
+  var fiveKMonth        = sessions.filter(function(s){ return s.workout==='C' && s.cardioType==='5K Training' && isThisMonth(s); }).length;
+  var totalMonth        = sessions.filter(function(s){ return isThisMonth(s); }).length;
+  var totalGames = soccerSessions.length;
+
+  // ── Week strip ──
+  var dayNames = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  var today = new Date();
+  var weekStart = new Date(today);
+  weekStart.setDate(today.getDate() - today.getDay());
+  var weekDots = '';
+  for (var d=0; d<7; d++) {
+    var day = new Date(weekStart);
+    day.setDate(weekStart.getDate() + d);
+    var dk = dateKey(day);
+    var plan = getPlan(dk);
+    var isDone = isDayDone(dk);
+    var isToday = dk === dateKey(today);
+    var icon = '—';
+    var bg = 'var(--surface2)';
+    var border = isToday ? 'border:1.5px solid var(--orange)' : '';
+    if (isDone) { bg='rgba(76,175,80,0.15)'; icon='✓'; }
+    else if (plan) {
+      if (plan.type==='soccer') icon='⚽';
+      else if (plan.type==='A') icon='💪';
+      else if (plan.type==='B') icon='⚡';
+      else if (plan.type==='5k') icon='🏃';
+      else if (plan.type==='cardio') icon='🔥';
+      else if (plan.type==='rest') icon='😴';
+      else if (plan.type==='easy') icon='🚶';
+    }
+    weekDots += '<div class="db-wd" style="background:'+bg+';'+border+'">'
+      +'<div class="db-wd-name">'+dayNames[d]+'</div>'
+      +'<div class="db-wd-icon" style="'+(icon==='—'?'color:var(--dim)':'')+'">'+icon+'</div>'
+      +'</div>';
+  }
+
+  // ── Recent activity feed (last 5) ──
+  var recentSessions = sessions.slice(0, 5);
+  var feedHtml = recentSessions.map(function(s) {
+    var icon = s.workout==='A'?'💪':s.workout==='B'?'⚡':s.workout==='S'?'⚽':s.workout==='C'?'🔥':'🏃';
+    var title = s.workout==='A'?'Workout A':s.workout==='B'?'Workout B':s.workout==='S'?'Soccer Night':s.workout==='C'?(s.cardioType||'Cardio'):'Session';
+    var cal = s.calories ? s.calories+' cal' : (s.doneCount&&s.workout!=='C' ? s.doneCount+'/'+s.total : '');
+    return '<div class="db-fi">'
+      +'<div class="db-fi-icon">'+icon+'</div>'
+      +'<div style="flex:1"><div class="db-fi-title">'+title+'</div>'
+      +'<div class="db-fi-sub">'+s.date+'</div></div>'
+      +(cal?'<div class="db-fi-val">'+cal+'</div>':'')
+      +'</div>';
+  }).join('');
+
+  // ── Smart insights engine ──
+  var insights = [];
+
+  // Weight trend
+  if (weights.length >= 7) {
+    var recent7 = weights.slice(-7);
+    var first = recent7[0].weight;
+    var last  = recent7[recent7.length-1].weight;
+    var weekDrop = (first - last).toFixed(1);
+    if (weekDrop > 0) {
+      insights.push({type:'good', title:'📉 Losing '+weekDrop+' lbs this week', body:'Your weight trend is heading in the right direction. Keep the consistency going.'});
+    } else if (weekDrop < -0.5) {
+      insights.push({type:'warn', title:'⚠ Weight up slightly this week', body:'Normal fluctuations happen — check sodium intake and ensure you\'re hitting 3 Owala bottles daily.'});
+    }
+  }
+
+  // Approaching personal best
+  if (currentW <= 188.5 && currentW > 187.3) {
+    insights.push({type:'info', title:'🎯 Close to personal best', body:'You\'re within striking distance of your 187.3 lb record. One clean day could set a new low.'});
+  }
+
+  // 90 day goal check
+  if (daysLeft <= 10 && toGoal > 0) {
+    insights.push({type:'warn', title:'⏰ '+daysLeft+' days left in 90-day challenge', body:'Still '+toGoal+' lbs to goal. Push the training and tighten the eating window to make it happen.'});
+  } else if (daysLeft > 10 && toGoal <= 5) {
+    insights.push({type:'good', title:'🏁 So close to 180!', body:'Only '+toGoal+' lbs to your goal weight. You\'re going to get there — keep going.'});
+  }
+
+  // Training frequency
+  if (thisWeekCount >= 4) {
+    insights.push({type:'good', title:'🔥 Excellent week — '+thisWeekCount+' sessions', body:'You\'re training consistently. This is exactly what drives results.'});
+  } else if (thisWeekCount <= 1 && daysSince % 7 > 3) {
+    insights.push({type:'warn', title:'💪 Light training week so far', body:'Only '+thisWeekCount+' session this week. Try to get Workout A or B in before the weekend.'});
+  }
+
+  // Sprint progression
+  var sprintSessions = sessions.filter(function(s){ return s.workout==='B'; });
+  if (sprintSessions.length >= 2) {
+    insights.push({type:'info', title:'⚡ Sprint progression on track', body:'Currently at 12.0 mph. Complete 2 more sessions at 10 rounds to unlock 12.5 mph.'});
+  }
+
+  // 5K progress
+  var fiveKSessions = sessions.filter(function(s){ return s.workout==='C' && s.cardioType==='5K Training'; });
+  if (fiveKSessions.length > 0) {
+    insights.push({type:'info', title:'🏃 5K Training — Phase '+RUN5K_PHASE, body:fiveKSessions.length+' sessions completed. Phase '+RUN5K_PHASE+' target: '+RUN5K_PHASES[RUN5K_PHASE].sessions+' sessions. Keep building that aerobic base for soccer endurance.'});
+  }
+
+  // Soccer form
+  if (totalGames >= 3) {
+    insights.push({type:'good', title:'⚽ '+totalGames+' games this season', body:'Your soccer fitness is clearly improving — the sprint training and 5K program are translating directly to the pitch.'});
+  }
+
+  var insightsHtml = insights.slice(0,4).map(function(i){
+    return '<div class="db-insight '+(i.type==='good'?'good':i.type==='info'?'info':'')+'">'
+      +'<div class="db-insight-title">'+i.title+'</div>'
+      +'<div class="db-insight-body">'+i.body+'</div>'
+      +'</div>';
+  }).join('');
+
+  // ── 5K progress bar ──
+  var phaseData = RUN5K_PHASES[RUN5K_PHASE] || RUN5K_PHASES[3];
+  var fiveKPct = Math.round((RUN5K_SESSIONS / phaseData.sessions) * 100);
+
+  // ── Render ──
+  el.innerHTML =
+
+    // Journey counter row
+    '<div class="db-counter-row">'
+      +'<div class="db-counter"><div class="db-counter-val">'+daysSince+'</div><div class="db-counter-lbl">DAYS IN</div></div>'
+      +'<div class="db-counter"><div class="db-counter-val" style="color:'+(daysLeft<=10?'#e87020':'var(--orange)')+'">'+daysLeft+'</div><div class="db-counter-lbl">DAYS LEFT</div></div>'
+      +'<div class="db-counter"><div class="db-counter-val" style="color:var(--green)">'+totalSessions+'</div><div class="db-counter-lbl">SESSIONS</div></div>'
+    +'</div>'
+
+    // Weight hero
+    +'<div class="db-hero">'
+      +'<div class="db-hero-label">CURRENT WEIGHT</div>'
+      +'<div class="db-hero-val">'+currentW.toFixed(1)+'</div>'
+      +'<div class="db-hero-sub">lbs · -'+lostLbs+' from start · '+toGoal+' lbs to goal 🎯</div>'
+      +'<div class="db-prog"><div class="db-prog-fill" style="width:'+pct+'%"></div></div>'
+      +'<div class="db-prog-lbls"><span>200 lbs start</span><span>'+pct+'% to goal</span><span>180 lbs goal</span></div>'
+    +'</div>'
+
+    // Week strip
+    +'<div class="db-card">'
+      +'<div class="db-card-label">THIS WEEK</div>'
+      +'<div class="db-week-days">'+weekDots+'</div>'
+    +'</div>'
+
+    // Stats grid
+    +'<div class="db-grid">'
+      +'<div class="db-mc '+(thisWeekCount>=4?'db-good':'')+'">'
+        +'<div class="db-mc-icon">🏋️</div>'
+        +'<div class="db-mc-val">'+thisWeekCount+'</div>'
+        +'<div class="db-mc-lbl">THIS WEEK</div>'
+        +'<div class="db-mc-sub '+(thisWeekCount>=4?'':'')+'">'+totalSessions+' total sessions</div>'
+      +'</div>'
+      +'<div class="db-mc">'
+        +'<div class="db-mc-icon">⚽</div>'
+        +'<div class="db-mc-val">'+totalGames+'</div>'
+        +'<div class="db-mc-lbl">GAMES PLAYED</div>'
+        +'<div class="db-mc-sub" style="color:var(--dim)">This season</div>'
+      +'</div>'
+      +'<div class="db-mc '+(parseFloat(lostLbs)>=10?'db-good':'')+'">'
+        +'<div class="db-mc-icon">📉</div>'
+        +'<div class="db-mc-val">'+lostLbs+' lbs</div>'
+        +'<div class="db-mc-lbl">TOTAL LOST</div>'
+        +'<div class="db-mc-sub">In '+daysSince+' days</div>'
+      +'</div>'
+      +'<div class="db-mc">'
+        +'<div class="db-mc-icon">🏃</div>'
+        +'<div class="db-mc-val">Phase '+RUN5K_PHASE+'</div>'
+        +'<div class="db-mc-lbl">5K TRAINING</div>'
+        +'<div class="db-mc-sub" style="color:var(--dim)">'+RUN5K_SESSIONS+'/'+phaseData.sessions+' sessions</div>'
+      +'</div>'
+    +'</div>'
+
+    // Activity breakdown counters — this month / all time
+    +'<div class="db-card">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'
+        +'<div class="db-card-label" style="margin:0">ACTIVITY BREAKDOWN</div>'
+        +'<div style="display:flex;gap:10px">'
+          +'<div style="display:flex;align-items:center;gap:3px"><div style="width:7px;height:7px;border-radius:2px;background:var(--orange)"></div><div style="font-size:8px;color:var(--dim);letter-spacing:1px">MONTH</div></div>'
+          +'<div style="display:flex;align-items:center;gap:3px"><div style="width:7px;height:7px;border-radius:2px;background:var(--border)"></div><div style="font-size:8px;color:var(--dim);letter-spacing:1px">ALL TIME</div></div>'
+        +'</div>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">'
+        +['💪 WORKOUT A|'+workoutAMonth+'|'+workoutASessions,
+          '⚡ WORKOUT B|'+workoutBMonth+'|'+workoutBSessions,
+          '⚽ SOCCER|'+soccerMonth+'|'+totalGames,
+          '🔥 CARDIO|'+cardioMonth+'|'+cardioSessions,
+          '🏃 5K RUNS|'+fiveKMonth+'|'+fiveKCount,
+          '📊 TOTAL|'+totalMonth+'|'+totalSessions
+        ].map(function(s,i){
+          var parts = s.split('|');
+          var isTotal = i===5;
+          return '<div style="background:var(--surface2);border-radius:12px;padding:10px;text-align:center;border:'+(isTotal?'2px solid var(--orange)':'1px solid var(--border)')+'">'
+            +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:36px;color:var(--orange);line-height:1;text-shadow:0 2px 6px rgba(200,16,46,0.15)">'+parts[1]+'</div>'
+            +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:13px;color:'+(isTotal?'var(--green)':'var(--dim)')+';line-height:1;margin:2px 0">/ '+parts[2]+'</div>'
+            +'<div style="font-size:8px;color:var(--dim);letter-spacing:1px;margin-top:4px">'+parts[0]+'</div>'
+            +'</div>';
+        }).join('')
+      +'</div>'
+    +'</div>'
+
+    // 5K Progress
+    +'<div class="db-card">'
+      +'<div class="db-card-label">🏃 5K TRAINING PROGRESS</div>'
+      +'<div style="font-size:13px;font-weight:600;margin-bottom:4px">Phase '+RUN5K_PHASE+' · '+phaseData.weeks+'</div>'
+      +'<div style="font-size:12px;color:var(--dim);margin-bottom:10px">'+phaseData.detail+'</div>'
+      +'<div style="background:var(--border);border-radius:3px;height:6px;overflow:hidden">'
+        +'<div style="background:linear-gradient(90deg,var(--orange),#ff6644);height:100%;width:'+fiveKPct+'%;border-radius:3px;transition:width 0.4s"></div>'
+      +'</div>'
+      +'<div style="font-size:11px;color:var(--dim);text-align:right;margin-top:4px">'+RUN5K_SESSIONS+' / '+phaseData.sessions+' sessions</div>'
+    +'</div>'
+
+    // Smart insights
+    +(insightsHtml ? '<div class="db-card"><div class="db-card-label">💡 COACH INSIGHTS</div>'+insightsHtml+'</div>' : '')
+
+    // Activity feed
+    +(feedHtml ? '<div class="db-card"><div class="db-card-label">RECENT ACTIVITY</div>'+feedHtml+'</div>' : '')
+
+    // Bottom padding
+    +'<div style="height:20px"></div>';
 }
 
 // ── WORKOUT ───────────────────────────────────────────────────────────────────
@@ -1357,13 +1757,13 @@ function setCardioType(type) {
   if (incEl) incEl.value = p.incline;
   if (spdEl) spdEl.value = p.speed;
 
-  // Sync display values
+  // Sync display values (now inputs not divs)
   var durDisp = document.getElementById('c-duration-val');
   var incDisp = document.getElementById('c-incline-val');
   var spdDisp = document.getElementById('c-speed-val');
-  if (durDisp) durDisp.textContent = p.duration;
-  if (incDisp) incDisp.textContent = p.incline.toFixed(1);
-  if (spdDisp) spdDisp.textContent = p.speed.toFixed(1);
+  if (durDisp) durDisp.value = p.duration;
+  if (incDisp) incDisp.value = p.incline.toFixed(1);
+  if (spdDisp) spdDisp.value = p.speed.toFixed(1);
 
   var tipCard = document.getElementById('cardio-tip-card');
   if (tipCard) {
@@ -1393,7 +1793,8 @@ function adjCardio(key, delta) {
   cardioVals[key] = Math.round((cardioVals[key] + delta) * 100) / 100;
   cardioVals[key] = Math.max(l.min, Math.min(cardioLimits[key].max||120, cardioVals[key]));
   var disp = cardioVals[key].toFixed(l.dp);
-  document.getElementById(cardioDisplayIds[key]).textContent = disp;
+  var dispEl = document.getElementById(cardioDisplayIds[key]);
+  if (dispEl) { if (dispEl.tagName === 'INPUT') dispEl.value = disp; else dispEl.textContent = disp; }
   document.getElementById(cardioIds[key]).value = disp;
   updateCalcPreview();
 }
@@ -2141,18 +2542,89 @@ function checkNewLow(newWeight) {
 
 function showNewLowCelebration(newLow, prevLow) {
   var diff = (prevLow - newLow).toFixed(1);
+  var totalLost = (200 - newLow).toFixed(1);
   var el = document.createElement('div');
-  el.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;padding:20px';
-  el.innerHTML = '<div style="background:var(--surface);border-radius:20px;padding:32px 24px;text-align:center;border:2px solid var(--orange);max-width:320px;width:100%">'
-    +'<div style="font-size:48px;margin-bottom:12px">🎉</div>'
-    +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:36px;color:var(--orange);letter-spacing:2px">NEW LOW!</div>'
-    +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:56px;color:var(--text);margin:8px 0">'+newLow+'</div>'
-    +'<div style="font-size:13px;color:var(--dim);margin-bottom:6px">lbs — new all time low</div>'
-    +'<div style="font-size:14px;color:var(--green);font-weight:600;margin-bottom:20px">↓ '+diff+' lbs below previous best</div>'
-    +'<div style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6">يلا Saba — keep going! 🇱🇧💪</div>'
-    +'<button onclick="this.parentElement.parentElement.remove()" style="width:100%;padding:12px;border-radius:10px;border:none;background:var(--orange);color:#fff;font-family:\'Bebas Neue\',sans-serif;font-size:18px;letter-spacing:1px;cursor:pointer">LET\'S GO! 🔴</button>'
+  el.id = 'new-low-celebration';
+  el.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#0d0d0d;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;overflow:hidden';
+
+  // Confetti canvas
+  el.innerHTML = '<canvas id="confetti-canvas" style="position:absolute;inset:0;pointer-events:none"></canvas>'
+    // Glow effect
+    +'<div style="position:absolute;inset:0;background:radial-gradient(circle at center,rgba(200,16,46,0.15) 0%,transparent 70%);pointer-events:none"></div>'
+    // Content
+    +'<div style="position:relative;z-index:2;width:100%">'
+      +'<div style="font-size:72px;margin-bottom:8px;animation:bounceIn 0.6s ease">🎉</div>'
+      +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:20px;letter-spacing:6px;color:#C8102E;margin-bottom:4px">NEW PERSONAL BEST</div>'
+      +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:88px;color:#fff;line-height:1;letter-spacing:-2px;margin:8px 0;text-shadow:0 0 40px rgba(200,16,46,0.5)">'+newLow+'</div>'
+      +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:18px;color:#888;letter-spacing:3px;margin-bottom:20px">LBS</div>'
+      +'<div style="background:rgba(200,16,46,0.15);border:1px solid rgba(200,16,46,0.3);border-radius:16px;padding:16px 20px;margin-bottom:16px;display:inline-block">'
+        +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:28px;color:#4caf50;letter-spacing:1px">↓ '+diff+' lbs below previous best</div>'
+        +'<div style="font-size:13px;color:#888;margin-top:4px">'+totalLost+' lbs lost since March 10 · 12.7 to go</div>'
+      +'</div>'
+      +'<div style="font-size:14px;color:#666;margin-bottom:32px;line-height:1.6">The 180s are right there.<br>Keep going — you\'re doing this.</div>'
+      +'<button onclick="document.getElementById(\'new-low-celebration\').remove()" '
+        +'style="padding:16px 48px;border-radius:14px;border:none;background:#C8102E;color:#fff;font-family:\'Bebas Neue\',sans-serif;font-size:22px;letter-spacing:2px;cursor:pointer;box-shadow:0 8px 30px rgba(200,16,46,0.5)">'
+        +'LET\'S GO! 🔴'
+      +'</button>'
     +'</div>';
+
   document.body.appendChild(el);
+
+  // Add bounce animation
+  var style = document.createElement('style');
+  style.textContent = '@keyframes bounceIn{0%{transform:scale(0);opacity:0}60%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}';
+  document.head.appendChild(style);
+
+  // Confetti
+  var canvas = document.getElementById('confetti-canvas');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  var ctx = canvas.getContext('2d');
+  var pieces = [];
+  var colors = ['#C8102E','#fff','#4caf50','#4285f4','#ffcc00','#ff6644'];
+  for (var i = 0; i < 120; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      w: Math.random() * 10 + 6,
+      h: Math.random() * 6 + 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * Math.PI * 2,
+      vx: (Math.random() - 0.5) * 3,
+      vy: Math.random() * 4 + 2,
+      vr: (Math.random() - 0.5) * 0.2
+    });
+  }
+  var animFrame;
+  function drawConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    var allGone = true;
+    pieces.forEach(function(p) {
+      if (p.y < canvas.height + 20) allGone = false;
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = Math.max(0, 1 - (p.y / canvas.height));
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    });
+    if (!allGone) animFrame = requestAnimationFrame(drawConfetti);
+  }
+  drawConfetti();
+
+  // Stop confetti when dismissed
+  el.querySelector('button').addEventListener('click', function(){
+    if (animFrame) cancelAnimationFrame(animFrame);
+  });
+}
+
+// Alias for weight prompt
+function showNewLow(val) {
+  var prev = weights.slice(0,-1).map(function(w){ return w.weight; });
+  var prevLow = prev.length ? Math.min.apply(null, prev) : 999;
+  showNewLowCelebration(val, prevLow);
 }
 
 // ── FEATURE 4: Soccer game logger ────────────────────────────────────────────
