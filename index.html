@@ -1416,7 +1416,7 @@ async function saveWeightPrompt() {
   }
   // Close modal
   document.getElementById('weight-prompt-modal').style.display = 'none';
-  // Log the weight using existing logWeight logic
+  // Log the weight
   var today = todayStr();
   var existing = weights.findIndex(function(w){ return w.date === today; });
   var entry = { date: today, weight: val, note: 'Morning weigh-in' };
@@ -1426,11 +1426,12 @@ async function saveWeightPrompt() {
   cacheWeights(weights);
   // Check for new low
   var prevLow = Math.min.apply(null, weights.slice(0,-1).map(function(w){ return w.weight; }));
-  if (val < prevLow) {
-    setTimeout(function(){ showNewLow(val); }, 400);
-  }
+  var isNewLow = val < prevLow;
+  // Make sure dashboard screen is active and rendered
+  try { setScreen('dashboard'); } catch(e) {}
   try { renderTracker(); } catch(e) {}
-  try { renderDashboard(); } catch(e) {}
+  // Trigger celebration after dashboard renders
+  if (isNewLow) setTimeout(function(){ showNewLow(val); }, 500);
   // Save to Supabase
   showSync('syncing','↑ Saving weight...');
   var ok = await sbUpsert('weights',[{date:today,weight:val,note:'Morning weigh-in'}]);
@@ -1440,6 +1441,7 @@ async function saveWeightPrompt() {
 function skipWeightPrompt() {
   document.getElementById('weight-prompt-modal').style.display = 'none';
   try { localStorage.setItem('saba_weight_skip_date', todayStr()); } catch(e){}
+  try { setScreen('dashboard'); } catch(e) {}
 }
 
 // ── DASHBOARD ─────────────────────────────────────────────────────────────────
