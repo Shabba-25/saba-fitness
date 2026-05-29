@@ -575,11 +575,11 @@
   </div>
 
   <nav id="bottom-nav">
+    <button class="nav-btn active" onclick="setScreen('dashboard')"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></button>
     <button class="nav-btn"        onclick="setScreen('schedule')"><span class="nav-icon">📅</span><span class="nav-label">Today</span></button>
     <button class="nav-btn"        onclick="setScreen('track')"><span class="nav-icon">⚖️</span><span class="nav-label">Weight</span></button>
     <button class="nav-btn"        onclick="setScreen('workout')"><span class="nav-icon">💪</span><span class="nav-label">Workout</span></button>
     <button class="nav-btn"        onclick="setScreen('history')"><span class="nav-icon">📋</span><span class="nav-label">History</span></button>
-    <button class="nav-btn active" onclick="setScreen('dashboard')"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></button>
   </nav>
 </div>
 
@@ -1373,7 +1373,7 @@ function setScreen(name) {
   document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
   var screenEl = document.getElementById('screen-'+name);
   if (screenEl) screenEl.classList.add('active');
-  var navIdx = {schedule:0,track:1,workout:2,history:3,dashboard:4}[name];
+  var navIdx = {dashboard:0,schedule:1,track:2,workout:3,history:4}[name];
   var navBtns = document.querySelectorAll('.nav-btn');
   if (navBtns[navIdx] !== undefined) navBtns[navIdx].classList.add('active');
   if (name==='history') renderSessionHistory();
@@ -1488,37 +1488,48 @@ function renderDashboard() {
   var soccerSessions    = sessions.filter(function(s){ return s.workout==='S'; });
   var totalGames        = soccerSessions.length;
 
-  // ── Week strip ──
+  // ── 2-week strip ──
   var dayNames = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
   var today = new Date();
   var weekStart = new Date(today);
-  weekStart.setDate(today.getDate() - today.getDay());
-  var weekDots = '';
-  for (var d=0; d<7; d++) {
-    var day = new Date(weekStart);
-    day.setDate(weekStart.getDate() + d);
-    var dk = dateKey(day);
-    var plan = getPlan(dk);
-    var isDone = isDayDone(dk);
-    var isToday = dk === dateKey(today);
-    var icon = '—';
-    var bg = 'var(--surface2)';
-    var border = isToday ? 'border:1.5px solid var(--orange)' : '';
-    if (isDone) { bg='rgba(76,175,80,0.15)'; icon='✓'; }
-    else if (plan) {
-      if (plan.type==='soccer') icon='⚽';
-      else if (plan.type==='A') icon='💪';
-      else if (plan.type==='B') icon='⚡';
-      else if (plan.type==='5k') icon='🏃';
-      else if (plan.type==='cardio') icon='🔥';
-      else if (plan.type==='rest') icon='😴';
-      else if (plan.type==='easy') icon='🚶';
+  weekStart.setDate(today.getDate() - today.getDay()); // start of this week
+
+  function buildWeekRow(startDate, label) {
+    var row = '';
+    for (var d=0; d<7; d++) {
+      var day = new Date(startDate);
+      day.setDate(startDate.getDate() + d);
+      var dk = dateKey(day);
+      var plan = getPlan(dk);
+      var isDone = isDayDone(dk);
+      var isToday2 = dk === dateKey(today);
+      var icon = '—';
+      var bg = 'var(--surface2)';
+      var border = isToday2 ? 'border:1.5px solid var(--orange)' : '';
+      if (isDone) { bg='rgba(76,175,80,0.15)'; icon='✓'; }
+      else if (plan) {
+        if (plan.type==='soccer') icon='⚽';
+        else if (plan.type==='A') icon='💪';
+        else if (plan.type==='B') icon='⚡';
+        else if (plan.type==='5k') icon='🏃';
+        else if (plan.type==='cardio') icon='🔥';
+        else if (plan.type==='rest') icon='😴';
+        else if (plan.type==='easy') icon='🚶';
+      }
+      row += '<div class="db-wd" style="background:'+bg+';'+border+'">'
+        +'<div class="db-wd-name">'+dayNames[d]+'</div>'
+        +'<div style="font-size:9px;color:var(--dim);margin-bottom:1px">'+day.getDate()+'</div>'
+        +'<div class="db-wd-icon" style="'+(icon==='—'?'color:var(--dim)':'')+'">'+icon+'</div>'
+        +'</div>';
     }
-    weekDots += '<div class="db-wd" style="background:'+bg+';'+border+'">'
-      +'<div class="db-wd-name">'+dayNames[d]+'</div>'
-      +'<div class="db-wd-icon" style="'+(icon==='—'?'color:var(--dim)':'')+'">'+icon+'</div>'
-      +'</div>';
+    return '<div style="margin-bottom:6px;font-size:9px;color:var(--dim);letter-spacing:1px">'+label+'</div>'
+      +'<div class="db-week-days" style="margin-bottom:10px">'+row+'</div>';
   }
+
+  var nextWeekStart = new Date(weekStart);
+  nextWeekStart.setDate(weekStart.getDate() + 7);
+
+  var weekHtml = buildWeekRow(weekStart, 'THIS WEEK') + buildWeekRow(nextWeekStart, 'NEXT WEEK');
 
   // ── Recent activity feed (last 5) ──
   var recentSessions = sessions.slice(0, 5);
@@ -1616,10 +1627,10 @@ function renderDashboard() {
       +'<div class="db-prog-lbls"><span>200 lbs start</span><span>'+pct+'% to goal</span><span>180 lbs goal</span></div>'
     +'</div>'
 
-    // Week strip
+    // 2-week schedule strip
     +'<div class="db-card">'
-      +'<div class="db-card-label">THIS WEEK</div>'
-      +'<div class="db-week-days">'+weekDots+'</div>'
+      +'<div class="db-card-label">2-WEEK SCHEDULE</div>'
+      +weekHtml
     +'</div>'
 
     // Stats grid
