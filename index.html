@@ -11,7 +11,7 @@
   <title>Saba Fitness</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Crimson+Pro:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     :root {
@@ -20,15 +20,15 @@
       --orange:#C8102E; --orange-light:#E8384F;
       --blue:#0a7ae8; --blue-light:#3da8ff; --green:#4caf50;
     }
-    html,body { height:100%; background:var(--bg); color:var(--text); font-family:'Crimson Pro',Georgia,serif; overflow-x:hidden; }
-    button { font-family:'Crimson Pro',Georgia,serif; cursor:pointer; }
-    input  { font-family:'Crimson Pro',Georgia,serif; }
+    html,body { height:100%; background:var(--bg); color:var(--text); font-family:'Nunito',sans-serif; overflow-x:hidden; }
+    button { font-family:'Nunito',sans-serif; cursor:pointer; }
+    input  { font-family:'Nunito',sans-serif; }
     input:focus { outline:none; }
 
     /* ── PIN ── */
     #pin-screen { position:fixed; inset:0; z-index:999; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 20px; }
     #pin-screen.gone { display:none; }
-    .pin-logo    { font-family:'Bebas Neue',sans-serif; font-size:48px; letter-spacing:2px; margin-bottom:6px; }
+    .pin-logo    { font-family:'Nunito',sans-serif; font-size:52px; font-weight:900; letter-spacing:0; margin-bottom:6px; letter-spacing:2px; margin-bottom:6px; }
     .pin-logo span { color:var(--orange); }
     .pin-tagline { font-size:11px; color:var(--dim); letter-spacing:4px; text-transform:uppercase; margin-bottom:52px; }
     .pin-dots    { display:flex; gap:18px; margin-bottom:44px; }
@@ -36,9 +36,9 @@
     .pin-dot.filled { background:var(--orange); border-color:var(--orange); }
     .pin-dot.error  { background:#e84a4a; border-color:#e84a4a; }
     .pin-pad  { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; width:264px; }
-    .pin-btn  { padding:18px 0; border-radius:14px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:1px; transition:all 0.1s; }
+    .pin-btn  { padding:18px 0; border-radius:14px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-family:'Nunito',sans-serif; font-size:28px; letter-spacing:1px; transition:all 0.1s; }
     .pin-btn:active { background:var(--surface2); transform:scale(0.94); }
-    .pin-del   { font-family:'Crimson Pro',Georgia,serif !important; font-size:20px !important; color:var(--dim) !important; }
+    .pin-del   { font-family:'Nunito',sans-serif !important; font-size:20px !important; color:var(--dim) !important; }
     .pin-empty { background:transparent !important; border-color:transparent !important; cursor:default; }
     .pin-err   { margin-top:22px; font-size:13px; color:#e84a4a; letter-spacing:1px; height:18px; }
 
@@ -54,26 +54,26 @@
 
     #header { position:sticky; top:0; z-index:100; background:#111111; border-bottom:2px solid var(--surface2); padding:12px 20px; }
     .eyebrow { font-size:10px; letter-spacing:4px; color:#888; text-transform:uppercase; margin-bottom:4px; }
-    #header h1 { font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:1px; line-height:1; color:#f5f5f5; }
+    #header h1 { font-family:'Nunito',sans-serif; font-size:30px; font-weight:900; letter-spacing:0; line-height:1; color:#f5f5f5; letter-spacing:1px; line-height:1; color:#f5f5f5; }
 
     #bottom-nav { position:fixed; bottom:0; left:0; right:0; z-index:100; background:#111111; border-top:1px solid var(--surface2); display:flex; }
     .nav-btn { flex:1; padding:12px 0; background:none; border:none; border-top:2px solid transparent; transition:all 0.2s; }
     .nav-btn.active { border-top-color:var(--orange); }
     .nav-icon  { font-size:20px; display:block; }
-    .nav-label { font-size:9px; letter-spacing:2px; color:var(--dim); text-transform:uppercase; margin-top:3px; display:block; }
+    .nav-label { font-size:11px; letter-spacing:2px; color:var(--dim); text-transform:uppercase; margin-top:3px; display:block; }
     .nav-btn.active .nav-label { color:#E8384F; }
 
     .screen { display:none; padding:20px 20px 100px; }
     .screen.active { display:block; }
 
     .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 18px; margin-bottom:14px; }
-    .card-label    { font-size:10px; letter-spacing:3px; color:var(--dim); text-transform:uppercase; margin-bottom:12px; }
+    .card-label    { font-size:13px; letter-spacing:3px; color:var(--dim); text-transform:uppercase; margin-bottom:12px; }
     .section-label { font-size:10px; letter-spacing:3px; color:var(--dim); text-transform:uppercase; margin-bottom:10px; padding:0 2px; }
 
     .stats-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:16px; }
     .stat-card  { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 8px; text-align:center; }
-    .stat-label { font-size:9px; color:var(--dim); letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
-    .stat-value { font-family:'Bebas Neue',sans-serif; font-size:26px; line-height:1; }
+    .stat-label { font-size:11px; color:var(--dim); letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
+    .stat-value { font-family:'Nunito',sans-serif; font-size:34px; font-weight:900; line-height:1; letter-spacing:-1px; line-height:1; }
     .stat-unit  { font-size:10px; color:var(--dim); margin-left:2px; }
 
     .progress-wrap  { margin-bottom:18px; }
@@ -85,18 +85,18 @@
     #chart-svg { display:block; width:100%; }
 
     .form-grid   { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
-    .field-label { font-size:10px; color:var(--dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:5px; }
+    .field-label { font-size:12px; color:var(--dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:5px; }
     .field-input { width:100%; padding:10px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:15px; transition:border-color 0.2s; }
     .field-input:focus { border-color:var(--orange); }
     .full-width  { grid-column:1/-1; }
-    .btn-primary { width:100%; padding:13px; border-radius:8px; border:none; background:var(--orange); color:#fff; font-size:15px; font-weight:700; letter-spacing:1px; transition:all 0.3s; }
+    .btn-primary { width:100%; padding:15px; border-radius:12px; border:none; background:var(--orange); color:#fff; font-size:17px; font-weight:800; letter-spacing:1px; transition:all 0.3s; }
     .btn-primary.saved { background:#2a4a22; color:#2a6a2a; }
 
     .history-row    { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--surface2); }
     .history-row:last-child { border-bottom:none; }
-    .history-date   { font-size:14px; color:#ccc; }
-    .history-note   { font-size:11px; color:var(--dim); margin-top:2px; }
-    .history-weight { font-family:'Bebas Neue',sans-serif; font-size:22px; }
+    .history-date   { font-size:16px; font-weight:600; color:#ccc; }
+    .history-note   { font-size:13px; color:var(--dim); margin-top:2px; }
+    .history-weight { font-family:'Nunito',sans-serif; font-size:28px; font-weight:900; letter-spacing:-1px; }
     .history-diff   { font-size:11px; text-align:right; }
     .diff-down { color:var(--green); }
     .diff-up   { color:#C8102E; }
@@ -131,9 +131,9 @@
     .today-card { background:linear-gradient(135deg,#f0ede8,#e8e4de); border:1px solid var(--orange); border-radius:16px; padding:20px; margin-bottom:14px; }
     .today-label { font-size:10px; letter-spacing:4px; color:var(--orange); text-transform:uppercase; margin-bottom:6px; }
     .today-date  { font-size:13px; color:var(--dim); margin-bottom:12px; }
-    .today-title { font-family:'Bebas Neue',sans-serif; font-size:32px; letter-spacing:1px; line-height:1; margin-bottom:8px; }
-    .today-sub   { font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:16px; }
-    .today-btn   { width:100%; padding:14px; border-radius:10px; border:none; background:var(--orange); color:#fff; font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; cursor:pointer; }
+    .today-title { font-family:'Nunito',sans-serif; font-size:36px; font-weight:900; letter-spacing:-1px; line-height:1; margin-bottom:8px; letter-spacing:1px; line-height:1; margin-bottom:8px; }
+    .today-sub   { font-size:16px; font-weight:500; color:var(--muted); line-height:1.6; margin-bottom:16px; }
+    .today-btn   { width:100%; padding:15px; border-radius:12px; border:none; background:var(--orange); color:#fff; font-family:'Nunito',sans-serif; font-size:17px; font-weight:800; cursor:pointer; }
     .today-btn.rest { background:var(--surface2); color:var(--dim); }
     .today-btn.soccer { background:#2a4a8a; color:#185FA5; }
 
@@ -143,24 +143,24 @@
     .week-day.done    { border-color:var(--green); background:rgba(76,175,80,0.12); }
     .week-day.soccer  { border-color:#185FA5; background:rgba(136,170,255,0.1); }
     .week-day.rest    { opacity:0.5; }
-    .wd-name  { font-size:9px; color:var(--dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
-    .wd-num   { font-family:'Bebas Neue',sans-serif; font-size:18px; line-height:1; margin-bottom:4px; }
-    .wd-icon  { font-size:14px; height:18px; }
+    .wd-name  { font-size:11px; font-weight:700; color:var(--dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+    .wd-num   { font-family:'Nunito',sans-serif; font-size:22px; font-weight:900; letter-spacing:-1px; line-height:1; margin-bottom:4px; }
+    .wd-icon  { font-size:18px; height:18px; }
 
     .game-card { background:#eae8f0; border:1px solid #c8c3ba; border-radius:12px; padding:14px 18px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; }
     .game-date { font-size:14px; font-weight:700; color:#185FA5; }
     .game-time { font-size:12px; color:var(--dim); margin-top:2px; }
-    .game-badge { font-family:'Bebas Neue',sans-serif; font-size:16px; color:#185FA5; background:rgba(136,170,255,0.15); padding:4px 10px; border-radius:6px; }
+    .game-badge { font-family:'Nunito',sans-serif; font-size:16px; color:#185FA5; background:rgba(136,170,255,0.15); padding:4px 10px; border-radius:6px; }
     /* ── DAY DETAIL MODAL ── */
 
     .modal-date   { font-size:11px; color:var(--dim); letter-spacing:3px; text-transform:uppercase; margin-bottom:6px; }
-    .modal-title  { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:1px; margin-bottom:10px; }
+    .modal-title  { font-family:'Nunito',sans-serif; font-size:30px; letter-spacing:1px; margin-bottom:10px; }
     .modal-detail { font-size:15px; color:var(--muted); line-height:1.7; margin-bottom:20px; }
     .modal-steps  { background:var(--surface2); border-radius:10px; padding:14px 16px; margin-bottom:20px; }
     .modal-step   { font-size:13px; color:#ccc; line-height:1.8; border-bottom:1px solid var(--border); padding:8px 0; }
     .modal-step:last-child { border-bottom:none; }
-    .modal-btn    { width:100%; padding:14px; border-radius:10px; border:none; background:var(--orange); color:#fff; font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; cursor:pointer; margin-bottom:10px; }
-    .modal-btn.secondary { background:var(--surface2); color:var(--dim); font-size:15px; font-family:'Crimson Pro',Georgia,serif; letter-spacing:0; }
+    .modal-btn    { width:100%; padding:14px; border-radius:10px; border:none; background:var(--orange); color:#fff; font-family:'Nunito',sans-serif; font-size:20px; letter-spacing:2px; cursor:pointer; margin-bottom:10px; }
+    .modal-btn.secondary { background:var(--surface2); color:var(--dim); font-size:15px; font-family:'Nunito',sans-serif; letter-spacing:0; }
     .week-day { cursor:pointer; transition:transform 0.1s; }
     .week-day:active { transform:scale(0.92); }
 
@@ -170,7 +170,7 @@
     .modal-sheet { background:var(--surface); border-radius:20px 20px 0 0; padding:24px 20px 40px; width:100%; max-height:85vh; overflow-y:auto; }
     .modal-handle { width:48px; height:5px; background:var(--border); border-radius:3px; margin:0 auto 20px; cursor:pointer; touch-action:none; }
     .modal-date  { font-size:11px; letter-spacing:3px; color:var(--dim); text-transform:uppercase; margin-bottom:6px; }
-    .modal-title { font-family:'Bebas Neue',sans-serif; font-size:30px; letter-spacing:1px; margin-bottom:6px; }
+    .modal-title { font-family:'Nunito',sans-serif; font-size:30px; letter-spacing:1px; margin-bottom:6px; }
     .modal-desc  { font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:18px; }
     .modal-section { font-size:10px; letter-spacing:3px; color:var(--dim); text-transform:uppercase; margin-bottom:10px; margin-top:16px; }
     .modal-ex { display:flex; align-items:flex-start; gap:12px; padding:10px 0; border-bottom:1px solid var(--surface2); }
@@ -179,19 +179,19 @@
     .modal-ex-name { font-size:14px; font-weight:700; }
     .modal-ex-sets { font-size:12px; color:var(--dim); margin-top:2px; }
     .modal-ex-cue  { font-size:13px; color:var(--muted); margin-top:4px; line-height:1.6; }
-    .modal-go-btn  { width:100%; padding:14px; border-radius:10px; border:none; background:var(--orange); color:#fff; font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; cursor:pointer; margin-top:20px; }
+    .modal-go-btn  { width:100%; padding:14px; border-radius:10px; border:none; background:var(--orange); color:#fff; font-family:'Nunito',sans-serif; font-size:20px; letter-spacing:2px; cursor:pointer; margin-top:20px; }
     .modal-close   { width:100%; padding:12px; border-radius:10px; border:1px solid var(--border); background:transparent; color:var(--dim); font-size:14px; cursor:pointer; margin-top:10px; }
     .modal-detail  { font-size:14px; color:var(--muted); line-height:1.7; margin-bottom:14px; }
     .modal-steps   { margin-bottom:8px; }
     .modal-step    { display:flex; align-items:flex-start; gap:10px; padding:9px 0; border-bottom:1px solid var(--surface2); font-size:13px; color:var(--muted); line-height:1.5; }
     .modal-step:last-child { border-bottom:none; }
-    .modal-btn     { width:100%; padding:14px; border-radius:10px; border:none; background:var(--orange); color:#fff; font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; cursor:pointer; margin-top:16px; display:block; }
-    .modal-btn.secondary { background:transparent; border:1px solid var(--border); color:var(--dim); font-family:'Crimson Pro',Georgia,serif; font-size:14px; letter-spacing:0; margin-top:10px; }
+    .modal-btn     { width:100%; padding:14px; border-radius:10px; border:none; background:var(--orange); color:#fff; font-family:'Nunito',sans-serif; font-size:20px; letter-spacing:2px; cursor:pointer; margin-top:16px; display:block; }
+    .modal-btn.secondary { background:transparent; border:1px solid var(--border); color:var(--dim); font-family:'Nunito',sans-serif; font-size:14px; letter-spacing:0; margin-top:10px; }
     /* ── STEPPERS ── */
     .stepper-row  { display:flex; align-items:center; background:var(--surface2); border:1px solid var(--border); border-radius:10px; overflow:hidden; height:44px; }
     .stepper-btn  { width:44px; height:44px; border:none; background:transparent; font-size:24px; color:var(--orange); cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:300; transition:background 0.1s; user-select:none; -webkit-user-select:none; }
     .stepper-btn:active { background:rgba(200,16,46,0.12); }
-    .stepper-val  { flex:1; text-align:center; font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--text); letter-spacing:1px; }
+    .stepper-val  { flex:1; text-align:center; font-family:'Nunito',sans-serif; font-size:22px; color:var(--text); letter-spacing:1px; }
     .stepper-unit { font-size:9px; color:var(--dim); letter-spacing:1px; text-transform:uppercase; text-align:center; margin-top:3px; }
     .cardio-type-btn.active-type { border-color:var(--orange); background:rgba(200,16,46,0.15); color:var(--orange-light); }
     .cardio-saved-banner { background:linear-gradient(135deg,#e8f0e8,#d8eed8); border:1px solid #a0c8a0; border-radius:12px; padding:16px 18px; margin-bottom:14px; display:none; text-align:center; }
@@ -199,7 +199,7 @@
 
     .complete-banner { background:linear-gradient(135deg,#e8f0e8,#d8eed8); border:1px solid #a0c8a0; border-radius:12px; padding:16px 18px; margin-bottom:14px; display:none; text-align:center; }
     .complete-banner.show { display:block; }
-    .cb-title { font-family:'Bebas Neue',sans-serif; font-size:22px; color:#2a6a2a; letter-spacing:1px; }
+    .cb-title { font-family:'Nunito',sans-serif; font-size:22px; color:#2a6a2a; letter-spacing:1px; }
     .cb-sub   { font-size:13px; color:#3a7a3a; margin-top:4px; }
 
     .recovery-card  { background:#e0dbd4; border:1px solid #d5d0c8; border-radius:12px; padding:16px 18px; margin-top:8px; display:flex; gap:14px; align-items:center; }
@@ -209,13 +209,13 @@
 
     .wh-streak  { display:flex; gap:10px; margin-bottom:16px; }
     .streak-card { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 10px; text-align:center; }
-    .streak-val  { font-family:'Bebas Neue',sans-serif; font-size:32px; line-height:1; }
+    .streak-val  { font-family:'Nunito',sans-serif; font-size:32px; line-height:1; }
     .streak-lbl  { font-size:9px; color:var(--dim); letter-spacing:2px; text-transform:uppercase; margin-top:3px; }
     .wh-session  { background:var(--surface); border:1px solid var(--border); border-radius:12px; margin-bottom:12px; overflow:hidden; }
     .wh-header   { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; cursor:pointer; }
     .wh-date     { font-size:15px; font-weight:700; color:var(--text); }
     .wh-sub      { font-size:11px; color:var(--dim); margin-top:2px; }
-    .wh-badge    { font-family:'Bebas Neue',sans-serif; font-size:18px; padding:3px 10px; border-radius:6px; }
+    .wh-badge    { font-family:'Nunito',sans-serif; font-size:18px; padding:3px 10px; border-radius:6px; }
     .wh-badge-a      { background:rgba(200,16,46,0.12); color:#C8102E; }
     .wh-badge-b      { background:rgba(24,95,165,0.12); color:var(--blue-light); }
     .wh-badge-c      { background:rgba(76,175,80,0.2);  color:#2a6a2a; }
@@ -234,7 +234,7 @@
     .db-hero { background:linear-gradient(135deg,#C8102E,#a00d25); border-radius:18px; padding:18px; margin-bottom:12px; position:relative; overflow:hidden; }
     .db-hero::before { content:''; position:absolute; top:-20px; right:-20px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.07); }
     .db-hero-label { font-size:10px; color:rgba(255,255,255,0.6); letter-spacing:2px; margin-bottom:4px; }
-    .db-hero-val { font-family:'Bebas Neue',sans-serif; font-size:56px; color:#fff; line-height:1; }
+    .db-hero-val { font-family:'Nunito',sans-serif; font-size:56px; color:#fff; line-height:1; }
     .db-hero-sub { font-size:12px; color:rgba(255,255,255,0.7); margin-bottom:14px; }
     .db-prog { background:rgba(255,255,255,0.25); height:5px; border-radius:3px; overflow:hidden; }
     .db-prog-fill { height:100%; background:#fff; border-radius:3px; transition:width 0.6s ease; }
@@ -242,14 +242,14 @@
     .db-prog-lbls span { font-size:10px; color:rgba(255,255,255,0.5); }
     .db-counter-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px; }
     .db-counter { background:var(--surface); border-radius:14px; padding:12px; text-align:center; border:1px solid var(--border); }
-    .db-counter-val { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--orange); }
+    .db-counter-val { font-family:'Nunito',sans-serif; font-size:28px; color:var(--orange); }
     .db-counter-lbl { font-size:9px; color:var(--dim); letter-spacing:1px; margin-top:2px; }
     .db-card { background:var(--surface); border-radius:16px; padding:16px; margin-bottom:12px; border:1px solid var(--border); }
     .db-card-label { font-size:10px; color:var(--dim); letter-spacing:2px; margin-bottom:12px; }
     .db-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
     .db-mc { background:var(--surface); border-radius:14px; padding:14px; border:1px solid var(--border); }
     .db-mc-icon { font-size:20px; margin-bottom:6px; }
-    .db-mc-val { font-family:'Bebas Neue',sans-serif; font-size:22px; color:var(--text); }
+    .db-mc-val { font-family:'Nunito',sans-serif; font-size:22px; color:var(--text); }
     .db-mc-lbl { font-size:9px; color:var(--dim); letter-spacing:1px; }
     .db-mc-sub { font-size:10px; margin-top:3px; }
     .db-mc.db-warn .db-mc-val { color:#e87020; }
@@ -257,7 +257,7 @@
     .db-mc.db-good .db-mc-val { color:var(--green); }
     .db-mc.db-good .db-mc-sub { color:var(--green); }
     .db-readiness { background:var(--surface); border-radius:16px; padding:16px; display:flex; align-items:center; gap:14px; margin-bottom:12px; border:1px solid var(--border); }
-    .db-r-score { font-family:'Bebas Neue',sans-serif; font-size:52px; color:var(--orange); line-height:1; flex-shrink:0; }
+    .db-r-score { font-family:'Nunito',sans-serif; font-size:52px; color:var(--orange); line-height:1; flex-shrink:0; }
     .db-r-lbl { font-size:10px; color:var(--dim); letter-spacing:2px; margin-bottom:3px; }
     .db-r-msg { font-size:12px; color:var(--text); margin-bottom:10px; }
     .db-brow { display:flex; align-items:center; gap:8px; margin-bottom:5px; }
@@ -266,11 +266,11 @@
     .db-bfil { height:100%; border-radius:2px; }
     .db-week-days { display:flex; gap:6px; margin-top:10px; }
     .db-wd { flex:1; aspect-ratio:1; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; background:var(--surface2); }
-    .db-wd-name { font-size:8px; color:var(--dim); }
-    .db-wd-icon { font-size:11px; }
+    .db-wd-name { font-size:11px; font-weight:700; color:var(--dim); }
+    .db-wd-icon { font-size:16px; }
     .db-insight { background:rgba(200,16,46,0.08); border:1px solid rgba(200,16,46,0.2); border-radius:12px; padding:12px 14px; margin-bottom:8px; }
-    .db-insight-title { font-size:12px; color:var(--orange); font-weight:600; margin-bottom:3px; }
-    .db-insight-body { font-size:12px; color:var(--muted); line-height:1.5; }
+    .db-insight-title { font-size:15px; font-weight:800; color:var(--orange); font-weight:600; margin-bottom:3px; }
+    .db-insight-body { font-size:14px; font-weight:500; color:var(--muted); line-height:1.5; }
     .db-insight.good { background:rgba(76,175,80,0.08); border-color:rgba(76,175,80,0.2); }
     .db-insight.good .db-insight-title { color:var(--green); }
     .db-insight.info { background:rgba(66,133,244,0.08); border-color:rgba(66,133,244,0.2); }
@@ -280,7 +280,7 @@
     .db-fi-icon { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0; background:var(--surface2); }
     .db-fi-title { font-size:13px; color:var(--text); }
     .db-fi-sub { font-size:11px; color:var(--dim); margin-top:1px; }
-    .db-fi-val { font-family:'Bebas Neue',sans-serif; font-size:15px; color:var(--orange); }
+    .db-fi-val { font-family:'Nunito',sans-serif; font-size:15px; color:var(--orange); }
     .db-sbars { display:flex; gap:4px; align-items:flex-end; height:48px; margin-top:10px; }
     .db-sbar { flex:1; border-radius:3px 3px 0 0; }
 
@@ -350,7 +350,7 @@
   <div id="add-game-modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.5);align-items:flex-end">
     <div style="background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%">
       <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px"></div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:6px">Add Game Night ⚽</div>
+      <div style="font-family:'Nunito',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:6px">Add Game Night ⚽</div>
       <div style="font-size:13px;color:var(--dim);margin-bottom:16px">Block a date as soccer — no training that day.</div>
       <div style="margin-bottom:16px">
         <div class="field-label">Date</div>
@@ -445,7 +445,7 @@
             <div class="stepper-row">
               <button class="stepper-btn" onclick="adjCardio('dur',-5)">−</button>
               <input type="number" class="stepper-val" id="c-duration-val" value="30" min="5" max="120"
-                style="border:none;background:transparent;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:22px;width:60px;color:var(--text)"
+                style="border:none;background:transparent;text-align:center;font-family:'Nunito',sans-serif;font-size:22px;width:60px;color:var(--text)"
                 oninput="cardioVals.dur=parseFloat(this.value)||0;document.getElementById('c-duration').value=this.value;updateCalcPreview()"
                 onblur="this.value=Math.max(5,Math.min(120,parseFloat(this.value)||30))"/>
               <button class="stepper-btn" onclick="adjCardio('dur',5)">+</button>
@@ -457,7 +457,7 @@
             <div class="stepper-row">
               <button class="stepper-btn" onclick="adjCardio('inc',-0.5)">−</button>
               <input type="number" class="stepper-val" id="c-incline-val" value="6.0" min="0" max="15" step="0.5"
-                style="border:none;background:transparent;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:22px;width:60px;color:var(--text)"
+                style="border:none;background:transparent;text-align:center;font-family:'Nunito',sans-serif;font-size:22px;width:60px;color:var(--text)"
                 oninput="cardioVals.inc=parseFloat(this.value)||0;document.getElementById('c-incline').value=this.value;updateCalcPreview()"
                 onblur="this.value=Math.max(0,Math.min(15,parseFloat(this.value)||0)).toFixed(1)"/>
               <button class="stepper-btn" onclick="adjCardio('inc',0.5)">+</button>
@@ -469,7 +469,7 @@
             <div class="stepper-row">
               <button class="stepper-btn" onclick="adjCardio('spd',-0.1)">−</button>
               <input type="number" class="stepper-val" id="c-speed-val" value="3.5" min="1" max="15" step="0.1"
-                style="border:none;background:transparent;text-align:center;font-family:'Bebas Neue',sans-serif;font-size:22px;width:60px;color:var(--text)"
+                style="border:none;background:transparent;text-align:center;font-family:'Nunito',sans-serif;font-size:22px;width:60px;color:var(--text)"
                 oninput="cardioVals.spd=parseFloat(this.value)||0;document.getElementById('c-speed').value=this.value;updateCalcPreview()"
                 onblur="this.value=Math.max(1,Math.min(15,parseFloat(this.value)||1)).toFixed(1)"/>
               <button class="stepper-btn" onclick="adjCardio('spd',0.1)">+</button>
@@ -478,7 +478,7 @@
           </div>
           <div>
             <div class="field-label">Est. Calories</div>
-            <div id="cal-preview" style="height:44px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--orange-light)">—</div>
+            <div id="cal-preview" style="height:44px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border:1px solid var(--border);border-radius:10px;font-family:'Nunito',sans-serif;font-size:22px;color:var(--orange-light)">—</div>
             <div class="stepper-unit">kcal</div>
           </div>
         </div>
@@ -503,9 +503,9 @@
       <div class="card" id="cardio-tip-card">
         <div class="card-label">Tonight's Target</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center">
-          <div><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--orange-light)">4.0</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">INCLINE</div></div>
-          <div><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--orange-light)">3.2</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MPH</div></div>
-          <div><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--orange-light)">25</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MINS</div></div>
+          <div><div style="font-family:'Nunito',sans-serif;font-size:22px;color:var(--orange-light)">4.0</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">INCLINE</div></div>
+          <div><div style="font-family:'Nunito',sans-serif;font-size:22px;color:var(--orange-light)">3.2</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MPH</div></div>
+          <div><div style="font-family:'Nunito',sans-serif;font-size:22px;color:var(--orange-light)">25</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MINS</div></div>
         </div>
         <div style="margin-top:10px;font-size:13px;color:var(--dim);line-height:1.6">Recovery pace — flush the inflammation, burn calories without stressing the muscles. Hands off the rails.</div>
       </div>
@@ -531,7 +531,7 @@
   <div id="log-past-modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.5);align-items:flex-end">
     <div style="background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%;max-height:80vh;overflow-y:auto">
       <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px"></div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:16px">Log Past Session</div>
+      <div style="font-family:'Nunito',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:16px">Log Past Session</div>
       <div style="margin-bottom:14px">
         <div class="field-label">Date</div>
         <input id="past-date" class="field-input" placeholder="e.g. May 8"/>
@@ -563,11 +563,11 @@
   <div id="weight-prompt-modal" style="display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;padding:24px">
     <div style="background:var(--surface);border-radius:24px;padding:28px 24px;width:100%;max-width:360px;text-align:center">
       <div style="font-size:32px;margin-bottom:12px">⚖️</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;margin-bottom:6px">Morning Weigh-In</div>
+      <div style="font-family:'Nunito',sans-serif;font-size:26px;letter-spacing:2px;margin-bottom:6px">Morning Weigh-In</div>
       <div style="font-size:13px;color:var(--dim);margin-bottom:20px;line-height:1.5">Log today's weight to keep your dashboard accurate and track your progress toward 180 lbs.</div>
       <input id="weight-prompt-input" type="number" step="0.1" min="150" max="250"
         placeholder="e.g. 187.3"
-        style="width:100%;padding:14px;border-radius:12px;border:2px solid var(--border);background:var(--surface2);font-size:22px;text-align:center;font-family:'Bebas Neue',sans-serif;color:var(--text);margin-bottom:14px"
+        style="width:100%;padding:14px;border-radius:12px;border:2px solid var(--border);background:var(--surface2);font-size:22px;text-align:center;font-family:'Nunito',sans-serif;color:var(--text);margin-bottom:14px"
         onkeydown="if(event.key==='Enter')saveWeightPrompt()"/>
       <button onclick="saveWeightPrompt()" class="btn-primary" style="margin-bottom:10px">Log Weight</button>
       <button onclick="skipWeightPrompt()" style="width:100%;padding:12px;border-radius:10px;border:none;background:transparent;color:var(--dim);font-size:13px;cursor:pointer;letter-spacing:1px">Skip for later →</button>
@@ -1270,7 +1270,7 @@ function renderSchedule() {
       +(plan.type==='easy' && !done ? '<button onclick="setScreen(\'workout\');setWorkout(\'C\');setTimeout(function(){setCardioType(\'Fat Burn Walk\');},100)" style="margin-top:8px;width:100%;padding:12px;border-radius:8px;border:none;background:var(--orange);color:#fff;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer">🔥 Upgrade to Fat Burn Walk</button>' : '')
       +(plan.type!=='rest' && plan.type!=='soccer' && plan.type!=='easy' && !done ? '<button onclick="setScreen(\'workout\');setWorkout(\'C\')" style="margin-top:8px;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--dim);font-size:12px;cursor:pointer;letter-spacing:1px">🔄 Log Different Activity</button>' : '')
       +(plan.type==='easy' && !done ? '<button onclick="setScreen(\'workout\');setWorkout(\'C\')" style="margin-top:8px;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--dim);font-size:12px;cursor:pointer;letter-spacing:1px">🔄 Log Different Activity</button>' : '')
-      +(plan.type==='soccer' ? '<button onclick="openSoccerLogger()" style="width:100%;padding:12px;border-radius:10px;border:none;background:#2a3a6a;color:#88aaff;font-family:Bebas Neue,sans-serif;font-size:18px;letter-spacing:1px;cursor:pointer;margin-top:8px">📊 Log Game Stats</button>' : '')
+      +(plan.type==='soccer' ? '<button onclick="openSoccerLogger()" style="width:100%;padding:12px;border-radius:10px;border:none;background:#2a3a6a;color:#88aaff;font-family:Nunito,sans-serif;font-size:18px;letter-spacing:1px;cursor:pointer;margin-top:8px">📊 Log Game Stats</button>' : '')
       +'</div>'
       // Skip button — only show on active non-completed days
       +(plan.type!=='rest' && plan.type!=='soccer' && !done
@@ -1358,8 +1358,8 @@ function renderSchedule() {
   var pct = Math.round((RUN5K_SESSIONS / phaseData.sessions) * 100);
   ugHtml += '<div class="card" style="margin-top:12px">'
     +'<div class="card-label">🏃 5K Training Progress</div>'
-    +'<div style="font-size:13px;font-weight:600;margin-bottom:4px">Phase '+RUN5K_PHASE+' · '+phaseData.weeks+'</div>'
-    +'<div style="font-size:12px;color:var(--dim);margin-bottom:8px">'+phaseData.detail+'</div>'
+    +'<div style="font-size:16px;font-weight:700;margin-bottom:4px">Phase '+RUN5K_PHASE+' · '+phaseData.weeks+'</div>'
+    +'<div style="font-size:14px;color:var(--dim);margin-bottom:8px">'+phaseData.detail+'</div>'
     +'<div style="background:var(--surface2);border-radius:4px;height:6px;overflow:hidden">'
     +'<div style="background:var(--orange);height:100%;width:'+pct+'%;border-radius:4px;transition:width 0.3s"></div>'
     +'</div>'
@@ -1681,8 +1681,8 @@ function renderDashboard() {
           var parts = s.split('|');
           var isTotal = i===5;
           return '<div style="background:var(--surface2);border-radius:12px;padding:10px;text-align:center;border:'+(isTotal?'2px solid var(--orange)':'1px solid var(--border)')+'">'
-            +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:36px;color:var(--orange);line-height:1;text-shadow:0 2px 6px rgba(200,16,46,0.15)">'+parts[1]+'</div>'
-            +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:13px;color:'+(isTotal?'var(--green)':'var(--dim)')+';line-height:1;margin:2px 0">/ '+parts[2]+'</div>'
+            +'<div style="font-family:\'Nunito\',sans-serif;font-size:36px;color:var(--orange);line-height:1;text-shadow:0 2px 6px rgba(200,16,46,0.15)">'+parts[1]+'</div>'
+            +'<div style="font-family:\'Nunito\',sans-serif;font-size:13px;color:'+(isTotal?'var(--green)':'var(--dim)')+';line-height:1;margin:2px 0">/ '+parts[2]+'</div>'
             +'<div style="font-size:8px;color:var(--dim);letter-spacing:1px;margin-top:4px">'+parts[0]+'</div>'
             +'</div>';
         }).join('')
@@ -1692,8 +1692,8 @@ function renderDashboard() {
     // 5K Progress
     +'<div class="db-card">'
       +'<div class="db-card-label">🏃 5K TRAINING PROGRESS</div>'
-      +'<div style="font-size:13px;font-weight:600;margin-bottom:4px">Phase '+RUN5K_PHASE+' · '+phaseData.weeks+'</div>'
-      +'<div style="font-size:12px;color:var(--dim);margin-bottom:10px">'+phaseData.detail+'</div>'
+      +'<div style="font-size:16px;font-weight:700;margin-bottom:4px">Phase '+RUN5K_PHASE+' · '+phaseData.weeks+'</div>'
+      +'<div style="font-size:14px;color:var(--dim);margin-bottom:10px">'+phaseData.detail+'</div>'
       +'<div style="background:var(--border);border-radius:3px;height:6px;overflow:hidden">'
         +'<div style="background:linear-gradient(90deg,var(--orange),#ff6644);height:100%;width:'+fiveKPct+'%;border-radius:3px;transition:width 0.4s"></div>'
       +'</div>'
@@ -1783,9 +1783,9 @@ function setCardioType(type) {
   if (tipCard) {
     tipCard.innerHTML = '<div class="card-label">Coaching Tip</div>'
       + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;margin-bottom:12px">'
-      + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.incline+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">INCLINE</div></div>'
-      + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.speed+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MPH</div></div>'
-      + '<div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.duration+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MINS</div></div>'
+      + '<div><div style="font-family:\'Nunito\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.incline+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">INCLINE</div></div>'
+      + '<div><div style="font-family:\'Nunito\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.speed+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MPH</div></div>'
+      + '<div><div style="font-family:\'Nunito\',sans-serif;font-size:22px;color:var(--orange-light)">'+p.duration+'</div><div style="font-size:10px;color:var(--dim);letter-spacing:1px">MINS</div></div>'
       + '</div>'
       + '<div style="font-size:13px;color:var(--dim);line-height:1.6">'+p.tip+'</div>';
   }
@@ -2514,7 +2514,7 @@ function renderStreakToday() {
   var emoji = streak >= 10 ? '🔥' : streak >= 5 ? '⚡' : '✅';
   el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 0 12px">'
     +'<div style="background:rgba(200,16,46,0.1);border:1px solid var(--orange);border-radius:10px;padding:8px 20px;text-align:center">'
-    +'<span style="font-family:\'Bebas Neue\',sans-serif;font-size:28px;color:var(--orange)">'+emoji+' '+streak+'</span>'
+    +'<span style="font-family:\'Nunito\',sans-serif;font-size:28px;color:var(--orange)">'+emoji+' '+streak+'</span>'
     +'<span style="font-size:10px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;display:block;margin-top:2px">Day Streak</span>'
     +'</div></div>';
 }
@@ -2568,16 +2568,16 @@ function showNewLowCelebration(newLow, prevLow) {
     // Content
     +'<div style="position:relative;z-index:2;width:100%">'
       +'<div style="font-size:72px;margin-bottom:8px;animation:bounceIn 0.6s ease">🎉</div>'
-      +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:20px;letter-spacing:6px;color:#C8102E;margin-bottom:4px">NEW PERSONAL BEST</div>'
-      +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:88px;color:#fff;line-height:1;letter-spacing:-2px;margin:8px 0;text-shadow:0 0 40px rgba(200,16,46,0.5)">'+newLow+'</div>'
-      +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:18px;color:#888;letter-spacing:3px;margin-bottom:20px">LBS</div>'
+      +'<div style="font-family:\'Nunito\',sans-serif;font-size:20px;letter-spacing:6px;color:#C8102E;margin-bottom:4px">NEW PERSONAL BEST</div>'
+      +'<div style="font-family:\'Nunito\',sans-serif;font-size:88px;color:#fff;line-height:1;letter-spacing:-2px;margin:8px 0;text-shadow:0 0 40px rgba(200,16,46,0.5)">'+newLow+'</div>'
+      +'<div style="font-family:\'Nunito\',sans-serif;font-size:18px;color:#888;letter-spacing:3px;margin-bottom:20px">LBS</div>'
       +'<div style="background:rgba(200,16,46,0.15);border:1px solid rgba(200,16,46,0.3);border-radius:16px;padding:16px 20px;margin-bottom:16px;display:inline-block">'
-        +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:28px;color:#4caf50;letter-spacing:1px">↓ '+diff+' lbs below previous best</div>'
+        +'<div style="font-family:\'Nunito\',sans-serif;font-size:28px;color:#4caf50;letter-spacing:1px">↓ '+diff+' lbs below previous best</div>'
         +'<div style="font-size:13px;color:#888;margin-top:4px">'+totalLost+' lbs lost since March 10 · 12.7 to go</div>'
       +'</div>'
       +'<div style="font-size:14px;color:#666;margin-bottom:32px;line-height:1.6">The 180s are right there.<br>Keep going — you\'re doing this.</div>'
       +'<button onclick="document.getElementById(\'new-low-celebration\').remove()" '
-        +'style="padding:16px 48px;border-radius:14px;border:none;background:#C8102E;color:#fff;font-family:\'Bebas Neue\',sans-serif;font-size:22px;letter-spacing:2px;cursor:pointer;box-shadow:0 8px 30px rgba(200,16,46,0.5)">'
+        +'style="padding:16px 48px;border-radius:14px;border:none;background:#C8102E;color:#fff;font-family:\'Nunito\',sans-serif;font-size:22px;letter-spacing:2px;cursor:pointer;box-shadow:0 8px 30px rgba(200,16,46,0.5)">'
         +'LET\'S GO! 🔴'
       +'</button>'
     +'</div>';
@@ -2649,7 +2649,7 @@ function openSoccerLogger() {
   el.innerHTML = '<div style="background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%;max-height:80vh;overflow-y:auto">'
     +'<div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px"></div>'
     +'<div style="font-size:9px;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin-bottom:4px">Log Game</div>'
-    +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:28px;color:#88aaff;margin-bottom:16px">⚽ Soccer Session</div>'
+    +'<div style="font-family:\'Nunito\',sans-serif;font-size:28px;color:#88aaff;margin-bottom:16px">⚽ Soccer Session</div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">'
     +'<div><div class="field-label">Duration (mins)</div><input id="sg-duration" class="field-input" type="number" placeholder="57" value="57"/></div>'
     +'<div><div class="field-label">Calories</div><input id="sg-calories" class="field-input" type="number" placeholder="864" value=""/></div>'
