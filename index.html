@@ -265,9 +265,9 @@
     .db-btrk { flex:1; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
     .db-bfil { height:100%; border-radius:2px; }
     .db-week-days { display:flex; gap:6px; margin-top:10px; }
-    .db-wd { flex:1; aspect-ratio:1; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; background:var(--surface2); }
-    .db-wd-name { font-size:11px; font-weight:800; color:var(--dim); }
-    .db-wd-icon { font-size:20px; }
+    .db-wd { flex:1; aspect-ratio:1; border-radius:11px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; background:var(--surface2); }
+    .db-wd-name { font-size:13px; font-weight:800; color:var(--dim); }
+    .db-wd-icon { font-size:24px; }
     .db-insight { background:rgba(200,16,46,0.08); border:1px solid rgba(200,16,46,0.2); border-radius:12px; padding:14px 16px; margin-bottom:10px; }
     .db-insight-title { font-size:16px; font-weight:900; color:var(--orange); margin-bottom:5px; }
     .db-insight-body { font-size:15px; font-weight:500; color:var(--muted); line-height:1.6; }
@@ -1518,11 +1518,11 @@ function renderDashboard() {
       }
       row += '<div class="db-wd" style="background:'+bg+';'+border+'">'
         +'<div class="db-wd-name">'+dayNames[d]+'</div>'
-        +'<div style="font-size:9px;color:var(--dim);margin-bottom:1px">'+day.getDate()+'</div>'
+        +'<div style="font-size:16px;font-weight:900;color:var(--text);line-height:1;margin-bottom:2px">'+day.getDate()+'</div>'
         +'<div class="db-wd-icon" style="'+(icon==='—'?'color:var(--dim)':'')+'">'+icon+'</div>'
         +'</div>';
     }
-    return '<div style="margin-bottom:6px;font-size:9px;color:var(--dim);letter-spacing:1px">'+label+'</div>'
+    return '<div style="margin-bottom:8px;font-size:11px;font-weight:800;color:var(--dim);letter-spacing:1px">'+label+'</div>'
       +'<div class="db-week-days" style="margin-bottom:10px">'+row+'</div>';
   }
 
