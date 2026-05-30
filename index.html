@@ -1127,12 +1127,7 @@ function getDynamicPlan(dateStr) {
     return {type:'rest', label:'Rest Day', detail:'Full recovery after last night\'s game. Hot tub, stretch, water.'};
   }
 
-  // Day BEFORE a soccer date — rest, save legs
-  var nextDay = new Date(d); nextDay.setDate(nextDay.getDate()+1);
-  var nextKey = dateKey(nextDay);
-  if (SOCCER_DATES.indexOf(nextKey) >= 0) {
-    return {type:'rest', label:'Rest Day', detail:'Rest up — soccer game tomorrow night. Save the legs for the pitch.'};
-  }
+  // Day BEFORE a soccer date — follow normal rotation, no special rule
 
   // Calculate rotation — skip soccer, day-before, day-after from count
   var diffDays = Math.round((d - ROTATION_ANCHOR) / (1000*60*60*24));
