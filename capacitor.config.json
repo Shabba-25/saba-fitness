@@ -1,0 +1,8 @@
+{
+  "appId": "com.saba.fitness",
+  "appName": "Saba Fitness",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
