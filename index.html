@@ -444,7 +444,7 @@
           <button class="cardio-type-btn active-type" onclick="setCardioType('Recovery Walk')"    id="ct-rw">🚶 Recovery Walk</button>
           <button class="cardio-type-btn"             onclick="setCardioType('Fat Burn Walk')"    id="ct-fb">🔥 Fat Burn Walk</button>
           <button class="cardio-type-btn"             onclick="setCardioType('HIIT Intervals')"   id="ct-hi">⚡ HIIT Intervals</button>
-          <button class="cardio-type-btn"             onclick="setCardioType('Easy Walk')"        id="ct-ew">😌 Easy Walk</button>
+          <button class="cardio-type-btn"             onclick="setCardioType('5K Training')"        id="ct-ew">😌 5K Training</button>
           <button class="cardio-type-btn"             onclick="setCardioType('5K Training')"      id="ct-5k">🏃 5K Training</button>
         </div>
       </div>
@@ -706,7 +706,7 @@ var CARDIO_PRESETS = {
   'Recovery Walk': {duration:25,incline:5.0,speed:4.0,tip:'Easy recovery pace — the goal is blood flow and inflammation flush, not intensity. Hands off the rails. You should be able to hold a full conversation throughout.'},
   'Fat Burn Walk':  {duration:30,incline:7.0,speed:4.7,tip:'Your primary fat burner. Higher incline cranks up glute and hamstring engagement and keeps heart rate in the fat-burning zone without beating up the joints. No holding the rails.'},
   'HIIT Intervals': {duration:25,incline:1.0,speed:12.0,tip:'30 sec sprint @ 12.0 mph, 60 sec walk @ 4.5 mph. Repeat 8–10 rounds. Go hard on every sprint.'},
-  'Easy Walk':      {duration:20,incline:3.0,speed:4.2,tip:'Active recovery or pre-game pace. Keep it comfortable — legs should feel fresh after this, not tired.'},
+  '5K Training':      {duration:20,incline:3.0,speed:4.2,tip:'Active recovery or pre-game pace. Keep it comfortable — legs should feel fresh after this, not tired.'},
   '5K Training':    {duration:24,incline:1.0,speed:7.0,tip:'Phase 3: 5 min @ 7.0 mph then 1 min walk @ 3.5 mph. Repeat 4 rounds. Focus on breathing rhythm — in through nose, out through mouth. Total ~24 mins.'}
 };
 
@@ -1077,35 +1077,35 @@ var PLAN_STATIC = {
   '2026-04-15': {type:'A',    label:'Workout A',       detail:'Upper Body & Chest.', workout:'A'},
   '2026-04-16': {type:'rest', label:'Rest Day',        detail:'Hot tub, stretch, water.'},
   '2026-04-17': {type:'B',    label:'Workout B',       detail:'HIIT Engine. Sprints, KB work, push-ups, cool down.', workout:'B'},
-  '2026-04-18': {type:'easy', label:'5K Training',     detail:'5 min run @ 6.0 mph / 1 min walk x 4 rounds.', workout:'C'},
+  '2026-04-18': {type:'5k', label:'5K Training',     detail:'5 min run @ 6.0 mph / 1 min walk x 4 rounds.', workout:'C'},
   '2026-04-19': {type:'soccer',label:'⚽ Soccer',      detail:'Game night 10:00pm. No training today.'},
   '2026-04-20': {type:'rest', label:'Rest Day',        detail:'Full recovery.'},
   '2026-04-21': {type:'cardio',label:'Recovery Walk',  detail:'25 mins · Incline 5.0 · Speed 4.0 mph.', workout:'C'},
   '2026-04-22': {type:'A',    label:'Workout A',       detail:'Upper Body & Chest.', workout:'A'},
   '2026-04-23': {type:'cardio',label:'Fat Burn Walk',  detail:'30 mins · Incline 7.0 · Speed 4.7 mph.', workout:'C'},
   '2026-04-24': {type:'B',    label:'Workout B',       detail:'HIIT Engine.', workout:'B'},
-  '2026-04-25': {type:'easy', label:'5K Training',     detail:'5 min run @ 6.0 mph / 1 min walk x 4 rounds.', workout:'C'},
+  '2026-04-25': {type:'5k', label:'5K Training',     detail:'5 min run @ 6.0 mph / 1 min walk x 4 rounds.', workout:'C'},
   '2026-04-26': {type:'soccer',label:'⚽ Soccer',      detail:'Game night 10:00pm. No training today.'},
   '2026-04-27': {type:'rest', label:'Rest Day',        detail:'Full recovery.'},
   '2026-04-28': {type:'cardio',label:'Recovery Walk',  detail:'25 mins · Incline 5.0 · Speed 4.0 mph.', workout:'C'},
   '2026-04-29': {type:'A',    label:'Workout A',       detail:'Upper Body & Chest.', workout:'A'},
   '2026-04-30': {type:'cardio',label:'Fat Burn Walk',  detail:'30 mins · Incline 7.0 · Speed 4.7 mph.', workout:'C'},
   '2026-05-01': {type:'B',    label:'Workout B',       detail:'HIIT Engine.', workout:'B'},
-  '2026-05-02': {type:'easy', label:'5K Training',     detail:'5 min run @ 6.0 mph / 1 min walk x 4 rounds.', workout:'C'},
+  '2026-05-02': {type:'5k', label:'5K Training',     detail:'5 min run @ 6.0 mph / 1 min walk x 4 rounds.', workout:'C'},
   '2026-05-03': {type:'soccer',label:'⚽ Soccer',      detail:'Game night 10:00pm. No training today.'},
   '2026-05-04': {type:'rest', label:'Rest Day',        detail:'Full recovery.'},
   '2026-05-05': {type:'cardio',label:'Recovery Walk',  detail:'25 mins · Incline 5.0 · Speed 4.0 mph.', workout:'C'},
   '2026-05-06': {type:'A',    label:'Workout A',       detail:'Upper Body & Chest.', workout:'A'},
   '2026-05-07': {type:'cardio',label:'Fat Burn Walk',  detail:'30 mins · Incline 7.0 · Speed 4.7 mph.', workout:'C'},
   '2026-05-08': {type:'B',    label:'Workout B',       detail:'HIIT Engine.', workout:'B'},
-  '2026-05-09': {type:'easy', label:'5K Training',     detail:'5 min run @ 6.0 mph / 1 min walk x 4 rounds.', workout:'C'},
+  '2026-05-09': {type:'5k', label:'5K Training',     detail:'5 min run @ 6.0 mph / 1 min walk x 4 rounds.', workout:'C'},
   '2026-05-10': {type:'soccer',label:'⚽ Soccer',      detail:'Game night 9:00pm. No training today.'},
   '2026-05-11': {type:'rest', label:'Rest Day',        detail:'Full recovery.'},
   '2026-05-12': {type:'cardio',label:'Recovery Walk',  detail:'25 mins · Incline 5.0 · Speed 4.0 mph.', workout:'C'},
   '2026-05-13': {type:'A',    label:'Workout A',       detail:'Upper Body & Chest.', workout:'A'},
   '2026-05-14': {type:'cardio',label:'Fat Burn Walk',  detail:'30 mins · Incline 7.0 · Speed 4.7 mph.', workout:'C'},
   '2026-05-15': {type:'B',    label:'Workout B',       detail:'HIIT Engine.', workout:'B'},
-  '2026-05-16': {type:'easy', label:'5K Training',     detail:'5 min run @ 6.0 mph / 1 min walk x 4 rounds.', workout:'C'},
+  '2026-05-16': {type:'5k', label:'5K Training',     detail:'5 min run @ 6.0 mph / 1 min walk x 4 rounds.', workout:'C'},
   '2026-05-17': {type:'soccer',label:'⚽ Soccer',      detail:'Game night 9:00pm. No training today.'},
   '2026-05-18': {type:'rest', label:'Rest Day',        detail:'Full recovery.'},
 };
@@ -1244,9 +1244,9 @@ function renderSchedule() {
       +'<div class="today-sub">'+plan.detail+'</div>'
       +(done ? '<div style="text-align:center;font-size:28px;margin-bottom:8px">✅</div><div style="text-align:center;font-size:13px;color:var(--green);margin-bottom:12px">'+getTodayDoneLabel()+'</div>' : '')
       +(plan.type!=='rest' && plan.type!=='soccer' && !done ? '<button class="'+btnClass+'" '+btnClick+'>'+btnLabel+'</button>' : '')
-      +(plan.type==='easy' && !done ? '<button onclick="setScreen(\'workout\');setWorkout(\'C\');setTimeout(function(){setCardioType(\'Fat Burn Walk\');},100)" style="margin-top:8px;width:100%;padding:12px;border-radius:8px;border:none;background:var(--orange);color:#fff;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer">🔥 Upgrade to Fat Burn Walk</button>' : '')
-      +(plan.type!=='rest' && plan.type!=='soccer' && plan.type!=='easy' && !done ? '<button onclick="setScreen(\'workout\');setWorkout(\'C\')" style="margin-top:8px;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--dim);font-size:12px;cursor:pointer;letter-spacing:1px">🔄 Log Different Activity</button>' : '')
-      +(plan.type==='easy' && !done ? '<button onclick="setScreen(\'workout\');setWorkout(\'C\')" style="margin-top:8px;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--dim);font-size:12px;cursor:pointer;letter-spacing:1px">🔄 Log Different Activity</button>' : '')
+      +(plan.type==='5k' && !done ? '<button onclick="setScreen(\'workout\');setWorkout(\'C\');setTimeout(function(){setCardioType(\'Fat Burn Walk\');},100)" style="margin-top:8px;width:100%;padding:12px;border-radius:8px;border:none;background:var(--orange);color:#fff;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer">🔥 Upgrade to Fat Burn Walk</button>' : '')
+      +(plan.type!=='rest' && plan.type!=='soccer' && plan.type!=='5k' && !done ? '<button onclick="setScreen(\'workout\');setWorkout(\'C\')" style="margin-top:8px;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--dim);font-size:12px;cursor:pointer;letter-spacing:1px">🔄 Log Different Activity</button>' : '')
+      +(plan.type==='5k' && !done ? '<button onclick="setScreen(\'workout\');setWorkout(\'C\')" style="margin-top:8px;width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--dim);font-size:12px;cursor:pointer;letter-spacing:1px">🔄 Log Different Activity</button>' : '')
       +(plan.type==='soccer' ? '<button onclick="openSoccerLogger()" style="width:100%;padding:12px;border-radius:10px;border:none;background:#2a3a6a;color:#88aaff;font-family:Nunito,sans-serif;font-size:18px;letter-spacing:1px;cursor:pointer;margin-top:8px">📊 Log Game Stats</button>' : '')
       +'</div>'
       // Skip button — only show on active non-completed days
@@ -1293,7 +1293,7 @@ function renderSchedule() {
       if (done2) icon = '✅';
       else if (dp && dp.type==='soccer') icon = '⚽';
       else if (dp && dp.type==='rest') icon = '😴';
-      else if (dp && dp.type==='easy') icon = '🚶';
+      else if (dp && dp.type==='5k') icon = '🚶';
       else if (dp && dp.type==='cardio') icon = '🔥';
       else if (dp && dp.type==='5k') icon = '🏃';
       else if (dp && dp.type==='A') icon = '💪';
@@ -1491,7 +1491,7 @@ function renderDashboard() {
         else if (plan.type==='5k') icon='🏃';
         else if (plan.type==='cardio') icon='🔥';
         else if (plan.type==='rest') icon='😴';
-        else if (plan.type==='easy') icon='🚶';
+        else if (plan.type==='5k') icon='🚶';
       }
       row += '<div style="flex:1;min-height:88px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:10px 2px;background:'+bg+';'+border+'">'        +'<div style="font-size:11px;font-weight:800;color:#888;text-transform:uppercase;letter-spacing:0">'+dayNames[d]+'</div>'        +'<div style="font-size:20px;font-weight:900;color:#1a1a1a;line-height:1.1">'+day.getDate()+'</div>'        +'<div style="font-size:21px;line-height:1;'+(icon==='\u2014'?'color:#bbb':'')+'">'+icon+'</div>'        +'</div>';    }    return '<div style="margin-bottom:8px;font-size:11px;font-weight:800;color:#888;letter-spacing:1px;text-transform:uppercase">'+label+'</div>'      +'<div style="display:flex;gap:5px;margin-bottom:12px">'+row+'</div>';
   }
@@ -1707,7 +1707,7 @@ function setWorkout(key) {
 
 function setCardioType(type) {
   cardioType = type;
-  var map = {'Recovery Walk':'ct-rw','Fat Burn Walk':'ct-fb','HIIT Intervals':'ct-hi','Easy Walk':'ct-ew','5K Training':'ct-5k'};
+  var map = {'Recovery Walk':'ct-rw','Fat Burn Walk':'ct-fb','HIIT Intervals':'ct-hi','5K Training':'ct-ew','5K Training':'ct-5k'};
   Object.keys(map).forEach(function(k){ var el=document.getElementById(map[k]); if(el) el.classList.remove('active-type'); });
   var activeEl = document.getElementById(map[type]);
   if (activeEl) activeEl.classList.add('active-type');
@@ -2074,11 +2074,11 @@ function showDayModal(dk) {
       +'<div class="modal-step">🤜 Push-Ups (Tower): 3 sets to failure</div>'
       +'<div class="modal-step">🧘 Cool Down + Stretch: 5 mins + hip flexor stretch</div>'
       +'</div>';
-  } else if (plan && (plan.type==='cardio' || plan.type==='easy')) {
+  } else if (plan && (plan.type==='cardio' || plan.type==='5k')) {
     var presets = {
       'Recovery Walk':  '25 mins · Incline 5.0 · Speed 4.0 mph',
       'Fat Burn Walk':  '30 mins · Incline 7.0 · Speed 4.5 mph',
-      'Easy Walk':      '20 mins · Incline 3.0 · Speed 4.2 mph'
+      '5K Training':      '20 mins · Incline 3.0 · Speed 4.2 mph'
     };
     var pKey = plan.label;
     var pDetail = presets[pKey] || plan.detail;
